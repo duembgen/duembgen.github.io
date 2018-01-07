@@ -14,13 +14,18 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Frederike Dümbgen
-email: frederike.duembgen@epfl.ch
+email: firstname.lastname(with ue)@epfl.ch
+address: EPFL BC324
+phone: "+41 (0)21 693 67 92"
 description: >- # this means to ignore newlines until "baseurl:"
-  Personal website of Frederike Dümbgen
+  Personal website
+
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://duembgen.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: ""
+
+#twitter_username: duembgen
 github_username:  duembgen
+linkedin_username:  duembgen
 
 # Build settings
 markdown: kramdown
