@@ -11,8 +11,8 @@ This repository contains the source code for the personal website created based 
 To run this locally, simply type
 
 ```bash
-jekyll build
-jekyll serve
+bundle exec jekyll build
+bundle exec jekyll serve
 ```
 
 which generates the homepage into `./_site`. You can display it by visiting [https://localhost:4000](https://localhost:4000) in your preferred browser. 
