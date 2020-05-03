@@ -26,6 +26,7 @@ url: "http://duembgen.github.io" # the base hostname & protocol for your site, e
 #twitter_username: duembgen
 github_username:  duembgen
 linkedin_username:  duembgen
+scholar: true
 
 # Build settings
 markdown: kramdown
