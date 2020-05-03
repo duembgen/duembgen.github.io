@@ -2,31 +2,30 @@
 layout: default
 ---
 
-  <header class="post-header">
-    <h1 class="post-title">Blog</h1>
-  </header>
-  
-  {%- if site.posts.size > 0 -%}
+<header class="post-header">
+  <h1 class="post-title">Blog</h1>
+</header>
 
-  {{ content }}
+{{ content }}
 
-  <ul class="post-list">
-    {% for post in site.posts %}
-      <li>
-        {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
+{% assign psize = site.posts | size %}
+{% if psize > 0 %}
 
-        <h2>
-          <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-        </h2>
-      </li>
-    {% endfor %}
-  </ul>
+<ul class="post-list">
+  {% for post in site.posts %}
+    <li>
+      {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+      <span class="post-meta">{{ post.date | date: date_format }}</span>
 
-  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+      <h2>
+        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+      </h2>
+    </li>
+  {% endfor %}
+</ul>
 
-  {%- else -%}
+{% else %}
 
-  <p> There are currently no blog posts publicly available. </p>
+<p> There are no blog posts publicly available yet. Coming soon! </p>
 
-  {%- endif -%}
+{% endif %}

@@ -1,0 +1,29 @@
+---
+layout: default
+---
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+	  <h1 class="post-title">{{ page.title }}</h1>
+  </header>
+
+  {% if page.image %}
+  <img src="/assets/images/{{ page.image }}" class="img-fluid" alt="{{ page.image-alt}}"/>
+  {% endif %}
+
+  <div class="page-content" itemprop="articleBody">
+    <b> Abstract: </b>
+    {{ content }}
+  </div>
+
+  {% if page.ref-link %}
+  <a href="{{ page.ref-link }}">[link]</a>
+  {% endif %}
+  {% if page.ref-video %}
+  <a href="{{ page.ref-video }}">[video]</a>
+  {% endif %}
+  {% if page.ref-code %}
+  <a href="{{ page.ref-code }}">[code]</a>
+  {% endif %}
+
+</article>
