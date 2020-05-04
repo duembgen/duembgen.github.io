@@ -11,8 +11,21 @@ layout: default
   {% endif %}
   </header>
 
-  <div class="post-content">
-    {{ content }}
+<div class="container">
+  <div class="row" style:"display:flex;">
+  	{% if page.image %}
+		<div class="col-sm-3">
+			<img src="/assets/images/{{ page.image }}" alt="Portrait picture" class="img-circle"
+       style="max-height:200px;"> 
+		</div>
+  	{% endif %}
+ 		<div class="col-xs-12 visible-xs"><br></div>
+    <div class="col-sm-7">
+    <div class="col">
+	  {{ content }}
+    </div>
   </div>
+</div> 
+
 
 </article>
