@@ -9,15 +9,17 @@ layout: default
 {{ content }}
 
 <ul class="publication-list">
-  {% for post in site.publications %}
-  {% if post.category == Conference %}
+  {% assign sorted = (site.publications | sort: 'year') | reverse %}
+  {% for post in sorted %}
     <li> <p> 
       {% for author in post.ref-authors %}
-      {% if author == "me" %}<u>F. Dümbgen</u>
-      {% else %}{{ author }}{% endif %},
+      {% if author == "F. Dümbgen" %}<u>{% endif %}
+      {{ author }},
+      {% if author == "F. Dümbgen" %}</u>{% endif %}
       {% endfor %}
       <a href="{{ post.url | relative_url }}"><b>{{ post.title | escape }}</b></a>, {{ post.ref-journal }}, {{ post.ref-year }}. 
     </p>
+    <p>
     {% if post.ref-link %}
     <a href="{{ post.ref-link }}">[link]</a>
     {% endif %}
@@ -28,6 +30,6 @@ layout: default
     <a href="{{ post.ref-code }}">[code]</a>
     {% endif %}
     </li>
-  {% endif %}
+    </p>
   {% endfor %}
 </ul>

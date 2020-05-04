@@ -4,8 +4,9 @@ title: "Realizability of Planar Point Embeddings from Angle Measurements"
 categories: Conference
 image: icassp2020-angles.jpg
 image-alt: "image with drones and angles"
+id: Duembgen2020
 
-ref-authors: [me, M. El Helou, A. Scholefield]
+ref-authors: [F. Dümbgen, M. El Helou, A. Scholefield]
 ref-year: 2020
 ref-journal: IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
 

@@ -1,7 +1,7 @@
 ---
 layout: publications
 title: Publications
-permalink: /publications/index
+permalink: /publications-index
 ---
 
-Last update: May 3rd 2020
+Last update: May 4th 2020
