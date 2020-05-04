@@ -2,7 +2,7 @@
 layout: publication
 categories: Conference
 ref-authors:
-- M. Helou
+- M. El Helou
 - "F. D\xFCmbgen"
 - R. Achanta
 - "S. S\xFCsstrunk"
