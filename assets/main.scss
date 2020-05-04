@@ -17,3 +17,9 @@
 .tab {
   padding-left: 8px;
 }
+
+.card > img {
+  object-fit: cover; 
+  object-position: 0 0;
+  vertical-align: bottom; 
+}

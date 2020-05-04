@@ -7,8 +7,9 @@ ref-authors:
 - S. Liu
 ref-journal: U.S. Patent
 ref-link: https://patents.google.com/patent/US20200105056A1/en
-ref-year: '2020'
+ref-year: 2020
 title: Dense Reconstruction for Narrow Baseline Motion Observations
+image: patent.png
 ---
 
 

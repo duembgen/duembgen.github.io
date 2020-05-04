@@ -8,8 +8,9 @@ ref-authors:
 - "S. S\xFCsstrunk"
 ref-journal: IS and T International Symposium on Electronic Imaging Science and Technology
 ref-link: https://doi.org/10.2352/ISSN.2470-1173.2018.16.COLOR-321
-ref-year: '2018'
+ref-year: 2018
 title: Near-infrared fusion for photorealistic image dehazing
+image: dehazing.jpg
 ---
 
 

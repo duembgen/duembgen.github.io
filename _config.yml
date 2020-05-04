@@ -39,6 +39,8 @@ google_analytics: UA-112074562-1
 collections: 
   publications:
     output: true
+  research:
+    output: true
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list

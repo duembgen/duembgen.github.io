@@ -74,7 +74,7 @@ if __name__ == "__main__":
         dict_to_write = {}
         dict_to_write['ref-authors'] = author_names
         dict_to_write['title'] = clean(entry['title'])[0]
-        dict_to_write['ref-year'] = entry['year']
+        dict_to_write['ref-year'] = int(entry['year'])
         dict_to_write['ref-journal'] = get_journal(entry)
         dict_to_write['ref-link'] = get_link(entry)
         dict_to_write['categories'] = categories.get(entry['ENTRYTYPE'],

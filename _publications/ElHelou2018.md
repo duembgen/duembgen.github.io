@@ -8,8 +8,9 @@ ref-authors:
 - "S. S\xFCsstrunk"
 ref-journal: arXiv preprint arXiv:1809.04187
 ref-link: http://arxiv.org/abs/1809.04187
-ref-year: '2018'
+ref-year: 2018
 title: Fourier-Domain Optimization for Image Processing
+image: fourier.jpg
 ---
 
 

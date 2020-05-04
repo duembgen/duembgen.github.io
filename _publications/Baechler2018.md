@@ -12,8 +12,9 @@ ref-authors:
 ref-journal: IEEE International Conference on Acoustics, Speech and Signal Processing
   (ICASSP)
 ref-link: https://doi.org/10.1109/ICASSP.2018.8462441
-ref-year: '2018'
+ref-year: 2018
 title: Combining range and direction for improved localization
+image: icassp18.jpg
 ---
 
 

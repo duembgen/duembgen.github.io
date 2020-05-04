@@ -1,0 +1,18 @@
+---
+layout: default
+---
+
+<header class="post-header">
+	<h1 class="post-title">Research</h1>
+</header>
+
+{{ content }}
+
+<hr style="width:100%; margin-top:0.2em; margin-bottom:0.5em">
+
+<h3> Past Projects </h3>
+
+{% assign sorted_research = (site.research | sort: 'date') | reverse %}
+{% for post in sorted_research %}
+{% include research_card.html post=post %}
+{% endfor %}

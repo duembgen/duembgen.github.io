@@ -7,8 +7,9 @@ ref-authors:
 - A. Scholefield
 ref-journal: IEEE Robotics and Automation Letters
 ref-link: https://doi.org/10.1109/LRA.2020.2970952
-ref-year: '2020'
+ref-year: 2020
 title: 'Relax and Recover : Guaranteed Range-Only Continuous Localization'
+image: relax.jpg
 ---
 
 

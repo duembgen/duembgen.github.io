@@ -1,0 +1,31 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="text-center">
+    <div class="col-xs-2">
+			{% if post.image %}
+			<a href="{{ post.url | relative_url }}">
+      <img src="/assets/images/{{ post.image }}" class="card-img" alt="{{ post.image-alt }}" 
+      style="object-fit:cover; object-position: 0 0; height:100px">
+			</a>
+			{% endif %}
+    </div>
+    </div>
+    <div class="col-xs-10">
+      <div class="card-body">
+        <p class="card-text">
+					{% for author in post.ref-authors %}
+					{% if author == "F. Dümbgen" %}<u>{% endif %}{{ author }}{% if author == "F. Dümbgen" %}</u>{% endif %},
+					{% endfor %}
+					<a href="{{ post.url | relative_url }}"><b>{{ post.title | escape }}</b></a>, {{ post.ref-journal }}, {{ post.ref-year }}. 
+					</p>
+					<p class="card-text">
+					{% if post.ref-link %} <a href="{{ post.url | relative_url }}">[Details]</a> {% endif %}
+					{% if post.ref-link %} <a href="{{ post.ref-link }}">[Paper]</a> {% endif %}
+					{% if post.ref-video %} <a href="{{ post.ref-video }}">[Video]</a> {% endif %}
+					{% if post.ref-code %} <a href="{{ post.ref-code }}">[Code]</a> {% endif %}
+				</p>
+      </div>
+    </div>
+  </div>
+</div>
+<hr style="width:70%; margin-top:0.2em; margin-bottom:0.5em">

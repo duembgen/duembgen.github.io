@@ -12,8 +12,9 @@ ref-authors:
 ref-journal: International Conference on Indoor Positioning and Indoor Navigation
   (IPIN)
 ref-link: https://doi.org/10.1109/IPIN.2019.8911765
-ref-year: '2019'
+ref-year: 2019
 title: Multi-Modal Probabilistic Indoor Localization on a Smartphone
+image: ipin2.jpg
 ---
 
 

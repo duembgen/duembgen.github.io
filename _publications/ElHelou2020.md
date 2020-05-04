@@ -8,9 +8,10 @@ ref-authors:
 ref-journal: IEEE International Conference on Acoustics, Speech and Signal Processing
   (ICASSP)
 ref-link: https://arxiv.org/abs/2003.03633
-ref-year: '2020'
+ref-year: 2020
 title: 'AL2 : Progressive Activation Loss for Learning General Representations in
   Classification Neural Networks'
+image: al2.jpg
 ---
 
 

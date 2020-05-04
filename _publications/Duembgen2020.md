@@ -2,8 +2,6 @@
 layout: publication
 title: "Realizability of Planar Point Embeddings from Angle Measurements"
 categories: Conference
-image: icassp2020-angles.jpg
-image-alt: "image with drones and angles"
 id: Duembgen2020
 
 ref-authors: [F. Dümbgen, M. El Helou, A. Scholefield]
@@ -13,6 +11,9 @@ ref-journal: IEEE International Conference on Acoustics, Speech and Signal Proce
 ref-link: "https://infoscience.epfl.ch/record/274650"
 ref-code: "https://github.com/duembgen/AngleRealizability"
 ref-video: "https://www.youtube.com/watch?v=XZi0NK60NCI&feature=youtu.be"
+
+image: icassp2020-angles.jpg
+image-alt: "image with drones and angles"
 ---
 
 Localization of a set of nodes is an important and a thoroughly researched problem in robotics and sensor networks. This paper is concerned with the theory of localization from inner-angle measurements. We focus on the challenging case where no anchor locations are known. 
