@@ -2,8 +2,8 @@
 layout: publication
 categories: Conference
 ref-authors:
-- G. Baechler
-- "F. D\xFCmbgen"
+- G. Baechler*
+- "F. D\xFCmbgen*"
 - G. Elhami
 - M. Krekovic
 - R. Scheibler
@@ -13,6 +13,7 @@ ref-journal: IEEE International Conference on Acoustics, Speech and Signal Proce
   (ICASSP)
 ref-link: https://doi.org/10.1109/ICASSP.2018.8462441
 ref-year: 2018
+ref-code: https://github.com/lcav/localization-icassp2018
 title: Combining range and direction for improved localization
 image: icassp18.jpg
 ---

@@ -14,9 +14,12 @@
       <div class="card-body">
         <p class="card-text">
 					{% for author in post.ref-authors %}
-					{% if author == "F. Dümbgen" %}<u>{% endif %}{{ author }}{% if author == "F. Dümbgen" %}</u>{% endif %},
+					{% if author contains "Dümbgen" %}<u>{% endif %}{{ author }}{% if author contains "Dümbgen" %}</u>{% endif %},
 					{% endfor %}
 					<a href="{{ post.url | relative_url }}"><b>{{ post.title | escape }}</b></a>, {{ post.ref-journal }}, {{ post.ref-year }}. 
+          {% if post.note %}
+          <b><i>{{ post.note }}</i></b>
+          {% endif %}
 					</p>
 					<p class="card-text">
 					{% if post.ref-link %} <a href="{{ post.url | relative_url }}">[Details]</a> {% endif %}

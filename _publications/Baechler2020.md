@@ -2,10 +2,10 @@
 layout: publication
 categories: Journal
 ref-authors:
-- G. Baechler
-- "F. D\xFCmbgen"
-- G. Elhami
-- M. Krekovic
+- G. Baechler*
+- "F. D\xFCmbgen*"
+- G. Elhami*
+- M. Krekovic*
 - M. Vetterli
 ref-journal: SIAM Journal on Matrix Analysis and Applications
 ref-link: https://doi.org/10.1137/18m123428x

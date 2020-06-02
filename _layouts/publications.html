@@ -10,5 +10,9 @@ layout: default
 
 {% assign sorted = (site.publications | sort: 'ref-year') | reverse %}
 {% for post in sorted %}
+{% if post.title %}
 {% include publication_card.html post=post %}
+{% endif %}
 {% endfor %}
+
+<p><b>* in authors means equal contributions</b></p>

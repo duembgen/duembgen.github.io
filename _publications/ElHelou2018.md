@@ -9,6 +9,7 @@ ref-authors:
 ref-journal: arXiv preprint arXiv:1809.04187
 ref-link: http://arxiv.org/abs/1809.04187
 ref-year: 2018
+ref-code: https://github.com/duembgen/fourier-deconv
 title: Fourier-Domain Optimization for Image Processing
 image: fourier.jpg
 ---
