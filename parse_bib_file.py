@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-parse_to_yml.py: Convert raw bibtex file to yml format. 
+parse_bib_file.py: Convert raw bibtex file to yml format and md pages. 
 """
 
 import os
@@ -47,10 +47,21 @@ def clean(list_of_string):
     return clean_list
 
 
+def check_for_overwrite(fname):
+    answer = ""
+    if os.path.exists(fname): 
+        while answer not in ["y", "n"]: 
+            answer = input(f"{fname} exists, overwrite? (y/[n])") or "n"
+    if answer == "n":
+        return False
+    return True
+
+
 if __name__ == "__main__":
+    import sys 
+
     in_name_bib = "_data/mendeley-export.bib"
     out_name_data = "_data/mendeley-export.yml"
-
     out_folder_pages = "_publications"
 
     with open(in_name_bib, 'r') as f:
@@ -83,16 +94,22 @@ if __name__ == "__main__":
         all_dicts.append(dict_to_write)
 
         fname = os.path.join(out_folder_pages, entry['ID'] + '.md')
+
+        if not check_for_overwrite(fname):
+            continue
+
         with open(fname, 'w') as f:
             f.write('---\n')
             f.write('layout: publication\n')
             f.write(yaml.dump(dict_to_write))
-            f.write('---\n')
-            f.write('\n')
-            f.write('\n')
+            f.write('---\n\n\n')
             f.write(entry.get('abstract', ''))
             f.write('\n')
         print('wrote', fname)
+
+
+    if not check_for_overwrite(out_name_data):
+        sys.exit(0) # successful termination
 
     with open(out_name_data, 'w') as f:
         f.write(yaml.dump(all_dicts))
