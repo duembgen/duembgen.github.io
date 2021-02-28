@@ -1,0 +1,26 @@
+<div class="card mb-3">
+  <div class="row no-gutters">
+    <div class="text-center">
+    <div class="col-xs-2">
+      <img src="/assets/images/projects/{{post.student}}.svg" class="card-img"
+           style="object-fit:cover; object-position: 0 0; height:50px">
+    </div>
+    </div>
+    <div class="col-xs-10">
+      <div class="card-body">
+        <p class="card-text">
+
+        <a href="{{ post.ext-url }}"><b>{{ post.title | escape }}</b></a>, {{ post.student }} {{ post.subject }}, {{ post.semester}} {{ post.year }}. 
+          {% if post.details %}
+          <b><i>{{ post.details }}</i></b>.
+          {% endif %}
+          Supervisors: 
+					{% for supervisor in post.supervisors %}
+					{% if supervisor contains "Dümbgen" %}<u>{% endif %}{{ supervisor }}{% if supervisor contains "Dümbgen" %}</u>{% endif %},
+					{% endfor %}
+				</p>
+      </div>
+    </div>
+  </div>
+</div>
+<hr style="width:70%; margin-top:0.2em; margin-bottom:0.5em">

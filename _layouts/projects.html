@@ -1,0 +1,20 @@
+---
+layout: default
+---
+
+<header class="post-header">
+	<h1 class="post-title">Supervised Projects</h1>
+</header>
+
+{{ content }}
+
+<!-- sort posts by year and semester type, most recent on top !-->
+{% assign posts_by_year = site.projects | group_by: 'year' | sort: 'name' | reverse %}
+{% for posts in posts_by_year %}
+  {% assign posts_sorted = posts.items | sort: 'semester' %}
+  {% for post in posts_sorted %}
+    {% if post.title %}
+      {% include project_card.html post=post %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
