@@ -1,6 +1,6 @@
 ---
 title: Multi-Modal Indoor Localization
-image: research/ipin2.png
+image: ipin2.png
 date: 2020-01-04
 categories: past
 ---

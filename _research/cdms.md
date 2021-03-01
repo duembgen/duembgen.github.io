@@ -1,6 +1,6 @@
 ---
 title: Coordinate Difference Matrices
-image: research/cdm.jpg
+image: cdm.jpg
 date: 2020-01-01
 categories: past
 --- 

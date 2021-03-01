@@ -1,6 +1,6 @@
 ---
 title: Image Processing and Computer Vision
-image: research/master.png
+image: master.png
 date: 2020-01-03
 categories: past
 ---
