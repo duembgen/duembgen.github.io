@@ -3,7 +3,7 @@ title: Biography
 layout: page
 ---
 
-I am a 4th year PhD student in the Laboratory of Audiovisual Communications ([**LCAV**](https://lcav.epfl.ch)) at École polytechnique fédérale de Lausanne (**EPFL**).
+I am a 5th year PhD student in the Laboratory of Audiovisual Communications ([**LCAV**](https://lcav.epfl.ch)) at École polytechnique fédérale de Lausanne (**EPFL**).
 
 I hold a Master's degree of Mechnical Engineering with specialization in control and mechatronics from EPFL. I had the opportunity to conduct my Master's Thesis at the Autonomous Systems Lab ([**ASL**](https://asl.ethz.ch)) at the Eidgenössische Technische Hochschule Zürich (**ETHZ**). I also visited the University of **Heriot Watt** in Edinburgh during the third year of my Bachelor studies.  
 
