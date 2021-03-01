@@ -2,8 +2,8 @@
   <div class="row no-gutters">
     <div class="text-center">
     <div class="col-xs-2">
-      <img src="/assets/images/projects/{{post.student}}.svg" class="card-img"
-           style="object-fit:cover; object-position: 0 0; height:50px">
+      <!-- mx-auto for centering, img-fuild for resizing, rounded for round corners. -->
+      <img src="/assets/images/projects/{{post.student}}.svg" class="img-fluid mx-auto d-block rounded">
     </div>
     </div>
     <div class="col-xs-10">
@@ -16,7 +16,7 @@
           {% endif %}
           Supervisors: 
 					{% for supervisor in post.supervisors %}
-					{% if supervisor contains "Dümbgen" %}<u>{% endif %}{{ supervisor }}{% if supervisor contains "Dümbgen" %}</u>{% endif %},
+					  {% if supervisor contains "Dümbgen" %}<u>{% endif %}{{ supervisor }}{% if supervisor contains "Dümbgen" %}</u>{% endif %}
 					{% endfor %}
 				</p>
       </div>
