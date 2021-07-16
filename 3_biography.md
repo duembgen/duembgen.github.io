@@ -13,4 +13,4 @@ For the past few years, I have also been a proud supporter of a few great initia
 
 I am grateful for receiving the *Women Techmaker Scholarship* from Google in 2020, the *EDIC* fellowship for the first year of my PhD in 2016, and the *NCCR Robotics Scholarship for Women* for my Master's Thesis.  
 
-More information can be found on my [CV](/assets/pdfs/FrederikeDuembgenCV.pdf) (last update: June 2nd 2020). 
+For more information or for my latest CV, do not hesitate to get in touch with me.
