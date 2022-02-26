@@ -1,5 +1,5 @@
 ---
-title: Image Processing and Computer Vision
+title: Computer Vision
 image: master.png
 date: 2020-01-03
 categories: past

@@ -1,5 +1,5 @@
 ---
-title: Multi-Modal Indoor Localization
+title: Indoor localization
 image: ipin2.png
 date: 2020-01-04
 categories: past
