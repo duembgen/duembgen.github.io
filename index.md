@@ -4,8 +4,6 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a 5th-year PhD student in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL). 
+I am a researcher at the intersection of signal processing and robotics. I obtained my PhD in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield. I am excited to be starting a Postdoc at the University of Toronto in the Autonomous Space Robotics Lab (ASRL) led by Tim Barfoot, where I will be continuing my work to develop novel localization systems for a variety of mobile devices.
 
-I am interested in the localization of connected devices such as smartphones, drones, and other mobile robots. In a broader sense, I am interested in robotics, signal processing, and in data analysis and machine learning.
-
-*Last update: March 1st 2021*
+*Last update: February 26 2022*
