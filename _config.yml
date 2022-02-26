@@ -14,9 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Frederike Dümbgen
-email: firstname.lastname(replace ü with ue)@epfl.ch
-address: EPFL BC324
-phone: "+41 (0)21 693 67 92"
+email: firstname.lastname(replace ü with ue)@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Frederike Dümbgen's personal website
 

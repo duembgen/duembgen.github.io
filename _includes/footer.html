@@ -9,28 +9,9 @@
       <div class="row">
         <div class="col-sm-4">
           <ul class="contact-list">
-              <li>
-              {% if site.author %}
-                {{ site.author | escape }}
-              {% else %}
-                {{ site.title | escape }}
-              {% endif %}
-              </li>
-              {% if site.address %}
-              <li> {{ site.address | escape }} </li>
-              {% endif %}
-              {% if site.phone %}
-              <li> {{ site.phone | escape }} </li>
-              {% endif %}
-          </ul>
-        </div>
-
-        <div class="col-sm-4">
-          <ul class="contact-list">
           <li> {{ site.email | escape}} </li>
           </ul>
         </div>
-
         <div class="col-sm-4">
           <ul class="social-media-list">
             {% if site.github_username %}
