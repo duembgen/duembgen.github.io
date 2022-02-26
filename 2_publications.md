@@ -4,4 +4,6 @@ title: Publications
 permalink: /publications-index
 ---
 
-Last update: May 4th 2020
+Selected list of publications. You can find the full list on my [Google Scholar](https://scholar.google.com/citations?hl=en&user=_ABmvmkAAAAJ) account.
+
+Last update: February 26 2022. 
