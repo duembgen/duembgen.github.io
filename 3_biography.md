@@ -3,7 +3,7 @@ title: Biography
 layout: page
 ---
 
-I obtained my PhD from the Laboratory of Audiovisual Communications ([**LCAV**](https://lcav.epfl.ch)) at École polytechnique fédérale de Lausanne (**EPFL**), under the supervision of Martin Vetterli and Adam Scholefield.
+I am currently a Postdoc at the University of Toronto, working with Prof. Tim Barfoot, which I started in March 2022. Before that, I obtained my PhD from the Laboratory of Audiovisual Communications ([**LCAV**](https://lcav.epfl.ch)) at École polytechnique fédérale de Lausanne (**EPFL**), under the supervision of Martin Vetterli and Adam Scholefield.
 
 I hold a Master's degree of Mechnical Engineering with specialization in control and mechatronics from EPFL. I had the opportunity to conduct my Master's Thesis at the Autonomous Systems Lab ([**ASL**](https://asl.ethz.ch)) at the Eidgenössische Technische Hochschule Zürich (**ETHZ**), and I performed the third year of my Bachelor studies at the University of **Heriot Watt** in Edinburgh.  
 

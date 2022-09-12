@@ -5,8 +5,10 @@
       <h3 class="card-title"> {{ post.title }} </h3>
         <div class="text-center">
 			  {% if post.image %}
+        <a href="/assets/images/research/{{ post.image }}">
         <img src="/assets/images/research/{{ post.image }}" class="card-img" alt="{{ post.image-alt }}" 
       style="max-height:200px;">
+        </a>
 			  {% endif %}
         </div>
       </div>

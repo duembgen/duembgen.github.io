@@ -8,7 +8,7 @@ layout: default
 
 {{ content }}
 
-{% assign sorted = (site.publications | sort: 'ref-year') | reverse %}
+{% assign sorted = site.publications | sort: 'ref-year' | reverse %}
 {% for post in sorted %}
 {% if post.title %}
 {% include publication_card.html post=post %}

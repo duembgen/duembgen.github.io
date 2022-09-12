@@ -1,8 +1,8 @@
 ---
-title: Localization of drones
-image: crazyflie.jpg
-date: 2020-01-05
+title: Acoustic echolocation for small robots
+image: drone-epuck.jpg
+date: 2022-09-11
 categories: past
 --- 
 
-I am currently working on localization solutions for the [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/) drone, a developer-friendly nano drone. In particular, we have built a custom audio deck with microphones and a buzzer for bat-like wall detection. We have also built a custom UWB extension deck that can be used in connection with our method for [non-synchronous distance measurements](/publications/Pacholska2020.html) for recovery of the drone's trajectories. 
+We have investigated ways to use audio signals for localization and mapping on small robots, getting rid of the commonly placed requirement for high-quality measurement microphones and powerful speakers, and replacing it with more commonly available MEMS microphones and little alarm-like buzzers. Our research shows that walls can be reliably detected and avoided, based on sound only, on small robots such as the [Crazyflie](https://www.bitcraze.io/products/crazyflie-2-1/) drone, a developer-friendly nano drone, and the [e-puck2](https://e-puck.gctronic.com/) education robot. For this purpose, we have built a custom extension deck with microphones and a buzzer for the Crazyflie drone, thus emulating a "bat drone". More details are available in our [paper](https://ieeexplore.ieee.org/document/9844245), published in RA-L and (soon-to-be) presented at IROS in Kyoto. 

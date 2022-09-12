@@ -1,6 +1,6 @@
 ---
 title: Computer Vision
-image: master.png
+image: master.jpg
 date: 2020-01-03
 categories: past
 ---

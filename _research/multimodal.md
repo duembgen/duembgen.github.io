@@ -1,6 +1,6 @@
 ---
 title: Indoor localization
-image: ipin2.png
+image: ipin.jpg
 date: 2020-01-04
 categories: past
 ---
