@@ -9,6 +9,7 @@ ref-authors:
 - M. Vetterli
 ref-journal: IEEE Robotics and Automation Letters 
 ref-link: https://ieeexplore.ieee.org/document/9844245
+ref-arxiv: https://arxiv.org/abs/2301.08327
 ref-year: 2022
 ref-code: https://github.com/lcav/audioROS
 title: "Blind as a Bat: Audible Echolocation on Small Robots"
