@@ -10,6 +10,8 @@ I am a researcher in robotics, with a focus on optimization and signal processin
 
 *Last update: January 18, 2023.*
 
+**February 2023** Our research on echolocation on drones and wheeled robots was featured in the [New Scientist](https://www.newscientist.com/article/2357770-flying-robot-echolocates-like-a-bat-to-avoid-banging-into-walls/), [TechXplore](https://techxplore.com/news/2023-02-bat-inspired-framework-equip-robots-sound-based.html), [netzwoche](https://www.netzwoche.ch/news/2023-02-19/diese-drohne-orientiert-sich-nur-ueber-das-echo), [popsci](https://www.popsci.com/technology/robot-echolocation-bat/) and [engadget](https://www.popsci.com/technology/robot-echolocation-bat/). Great to see this much interest in bat-like robots!   
+
 **January 2023** Thank you to the *bitcraze* team for inviting me to write a [blogpost](https://www.bitcraze.io/2023/01/from-crazyflies-to-crazybats) about the Crazybat project!  
 
 **December 2022** Our [paper](https://doi.org/10.1109/LRA.2022.3233232) (also available on [arXiv](https://arxiv.org/abs/2209.04266)) on certified range-only localization was accepted to RA-L! Happy to present it at the upcoming IROS conference in Detroit. 
