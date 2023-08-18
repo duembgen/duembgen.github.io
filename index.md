@@ -8,7 +8,9 @@ I am a researcher in robotics, with a focus on optimization and signal processin
 
 ## News 
 
-*Last update: April 7, 2023.*
+*Last update: August 18, 2023.*
+
+**August 2023** Two new pre-prints of our latest work are now available on arXiv. Our work on automatically tightening semidefintie relaxations can be found [here](https://arxiv.org/abs/2308.05783) and our work on tightness of matrix-weighted SLAM relaxations can be found [here](https://arxiv.org/abs/2308.07275).
 
 **March 2023** I gave a talk about our latest research in the Toronto AI in Robotics (AIR) Seminar. The recording is available [here](https://www.youtube.com/watch?v=vA8pCuMY_2E&t=2523s).
 
@@ -16,7 +18,7 @@ I am a researcher in robotics, with a focus on optimization and signal processin
 
 **January 2023** Thank you to the *bitcraze* team for inviting me to write a [blogpost](https://www.bitcraze.io/2023/01/from-crazyflies-to-crazybats) about the Crazybat project!  
 
-**December 2022** Our [paper](https://doi.org/10.1109/LRA.2022.3233232) (also available on [arXiv](https://arxiv.org/abs/2209.04266)) on certified range-only localization was accepted to RA-L! Happy to present it at the upcoming IROS conference in Detroit. 
+**December 2022** Our [paper](https://doi.org/10.1109/LRA.2022.3233232) (also available on [arXiv](https://arxiv.org/abs/2209.04266)) on certified range-only localization was accepted to RA-L! Happy to present it at the upcoming IROS conference in Detroit in October 2023. 
 
 **October 2022**: I will be presenting our RA-L [paper](https://ieeexplore.ieee.org/document/9844245) on audible echolocation on small robots (aka the Crazybat project) at IROS 2022 in Kyoto.
 
