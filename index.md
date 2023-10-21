@@ -4,13 +4,18 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a researcher in robotics, with a focus on optimization and signal processing. I am currently a Postdoc at the University of Toronto in the Autonomous Space Robotics Lab (ASRL) of Tim Barfoot, where I work on certifiable perception algorithms, or in other words, how to make sure a robot has a viable estimate of its location and/or surroundings. I obtained my PhD in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield. 
+I am a researcher in robotics, working on bringing more formal guarantees to robotics algorithms. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Timothy D. Barfoot, on certifiable perception algorithms, or in other words, how to make sure a robot has a viable estimate of its location and/or surroundings. Before that, I obtained my Ph.D. in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
 
 ## News 
 
-*Last update: August 18, 2023.*
+*Last update: October 21, 2023.*
 
-**August 2023** Two new pre-prints of our latest work are now available on arXiv. Our work on automatically tightening semidefintie relaxations can be found [here](https://arxiv.org/abs/2308.05783) and our work on tightness of matrix-weighted SLAM relaxations can be found [here](https://arxiv.org/abs/2308.07275).
+**September 2023** More pre-prints of our brilliant students now available! Zi Cong (Daniel) Guo's work on Koopman SLAM is now available [here](https://arxiv.org/pdf/2309.04375.pdf) and Abhishek Goudar's work on certifiable range-only pose estimation is available [here](https://arxiv.org/abs/2309.09011). 
+
+**August 2023** So grateful to speak at [this](https://lcav25.info/) wonderful 2-day anniversary celebration of "Signal Processing and Friends" organized by my former lab, LCAV, EPFL Switzerland. Also, presented our latest research at Aude Billard's LASA lab at EPFL. Slides available [here](https://docs.google.com/presentation/d/e/2PACX-1vStOD9jTtpyO-FV8Gf56D5Iip0aFabYmzaETrmQKatf1HQFNIA5SoquGsN30NWCsr_rVNrfVGcx_n5_/pub?start=false&loop=false&delayms=3000).
+
+**August 2023** Two new pre-prints of our latest work are now available on arXiv. Our work on automatically tightening semidefintie relaxations can be found [here](https://arxiv.org/abs/2308.05783) and Connor Holmes work on tightness of matrix-weighted SLAM relaxations can be found [here](https://arxiv.org/abs/2308.07275).
+
 
 **March 2023** I gave a talk about our latest research in the Toronto AI in Robotics (AIR) Seminar. The recording is available [here](https://www.youtube.com/watch?v=vA8pCuMY_2E&t=2523s).
 
