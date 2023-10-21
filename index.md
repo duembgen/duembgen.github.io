@@ -4,7 +4,7 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a researcher in robotics, with a focus on optimization and signal processing. I am currently a Postdoc at the University of Toronto in the Autonomous Space Robotics Lab (ASRL) of Tim Barfoot, where I work on certifiable perception algorithms, or in other words, how to make sure a robot has a viable representation of its location and/or surroundings. I obtained my PhD in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield. 
+I am a researcher in robotics, with a focus on optimization and signal processing. I am currently a Postdoc at the University of Toronto in the Autonomous Space Robotics Lab (ASRL) of Tim Barfoot, where I work on certifiable perception algorithms, or in other words, how to make sure a robot has a viable estimate of its location and/or surroundings. I obtained my PhD in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield. 
 
 ## News 
 

@@ -37,7 +37,9 @@ google_analytics: UA-112074562-1
 collections: 
   publications:
     output: true
-  research:
+  current_research:
+    output: true
+  past_research:
     output: true
   projects:
     output: true

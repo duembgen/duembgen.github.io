@@ -10,7 +10,15 @@ layout: default
 
 <hr style="width:100%; margin-top:0.2em; margin-bottom:0.5em">
 
-{% assign sorted_research = site.research | sort: 'date' | reverse %}
+<h3> Current research </h3>
+{% assign sorted_research = site.current_research | sort: 'date' | reverse %}
+{% for post in sorted_research %}
+{% include research_card.html post=post %}
+{% endfor %}
+
+
+<h3> Past research </h3>
+{% assign sorted_research = site.past_research | sort: 'date' | reverse %}
 {% for post in sorted_research %}
 {% include research_card.html post=post %}
 {% endfor %}
