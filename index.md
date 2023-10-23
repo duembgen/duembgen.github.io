@@ -4,7 +4,7 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a researcher in robotics, working on bringing more formal guarantees to robotics algorithms. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Timothy D. Barfoot, on certifiable perception algorithms, or in other words, how to make sure a robot has a viable estimate of its location and/or surroundings. Before that, I obtained my Ph.D. in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
+I am a postdoctoral researcher in robotics, interested in making robots more robust and trustworthy. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Tim Barfoot on certifiable state estimation algorithms, in other words, how to make sure a robot has a viable estimate of its location and/or surroundings. Before that, I obtained my Ph.D. in the Laboratory of Audiovisual Communications (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception, in other words, how to make sure a robot can navigate when cameras are unavailable.
 
 ## News 
 
