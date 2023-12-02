@@ -4,7 +4,7 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a postdoctoral researcher in robotics, interested in making robots more robust and trustworthy. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Tim Barfoot on certifiable state estimation algorithms, for example, on how to make sure a robot has a viable estimate of its location and/or surroundings. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception, in other words, how to make sure a robot (or phone) can be navigated when cameras are unavailable.
+I am a researcher in robotics, interested in making autonomous robots more robust and trustworthy. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Tim Barfoot on certifiable state estimation algorithms, making sure, for example, that a robot has a viable estimate of its location and surroundings. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception, in other words, how to make sure a robot (or phone) can navigate when cameras are unavailable.
 
 ## News 
 
