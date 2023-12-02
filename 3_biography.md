@@ -3,9 +3,9 @@ title: Biography
 layout: page
 ---
 
-*For my full biography, please refer to my [CV](assets/pdfs/cv_website.pdf).*
+*Last update: December 2nd, 2023*
 
-*Last update: October 21, 2023*
+*For my full biography, please refer to my [CV](assets/pdfs/cv_website.pdf).*
 
 I am currently a Postdoc at the University of Toronto, working with Prof. Tim Barfoot, which I started in March 2022. Before that, I obtained my PhD from the Laboratory of Audiovisual Communications ([**LCAV**](https://lcav.epfl.ch)) at École polytechnique fédérale de Lausanne (**EPFL**), under the supervision of Prof. Martin Vetterli and Dr. Adam Scholefield.
 
