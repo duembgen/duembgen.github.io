@@ -4,11 +4,21 @@ layout: page
 image: profile-crop.png
 ---
 
-I am a researcher in robotics, interested in making autonomous robots more robust and trustworthy. I am currently a Postdoc at the University of Toronto in the Robotics Institute working with Tim Barfoot on certifiable state estimation algorithms, making sure, for example, that a robot has a viable estimate of its location and surroundings. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception, in other words, how to make sure a robot (or phone) can navigate when cameras are unavailable.
+I am a researcher in robotics, interested in making autonomous robots more robust and trustworthy. I am currently a starting researcher in the WILLOW research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
 
 ## News 
 
-*Last update: November 27, 2023.*
+*Last update: June 5, 2024.*
+
+**June 2024** We have created a [Summary paper](assets/pdfs/summary_paper_2024.pdf) of our latest research on certifiably optimal estimation. It is intended as an entry point for anyone who wants to learn about this topic and for an overview of our recent advances in the area.   
+
+**May 2024** Very grateful to be in this year's cohort of [RSS Pioneers](https://sites.google.com/view/rsspioneers2024/)!
+
+**May 2024** I am delighted to be starting my new appointment as Starting Researcher in the WILLOW research group at Inria Paris, where I will be working with Justin Carpentier, Stéphane Caron and an amazing team of robotics/optimization researchers and engineers. 
+
+**March 2024 - April 2024** I had the opportunity to visit the lab of Nicolas Boumal, EPFL, and Sylvain Calinon, IDIAP, Switzerland, giving talks about our work at both institutes, and getting to know a lot of cool new research! Thank you for hosting me!
+
+**March 2024** Our full-day workshop on [Frontiers of optimization for robotics](https://sites.google.com/robotics.utias.utoronto.ca/frontiers-optimization-rss24/home) was accepted for RSS 2024. Looking forward to a great lineup of speakers and a day full of interesting discussions!
 
 **November 2023** What a pleasure to be presenting our latest research at MIT, Harvard and Northeastern University in Boston! The recording from my talk at MIT is available [here](https://www.youtube.com/watch?v=KzTp3jQrM00) and the slides are available [here](https://docs.google.com/presentation/d/e/2PACX-1vQ4JcmF12qCUjJacpTgdrZHj0emQiGN5_Jrm4EM0XxrZpBtGZoGbMXXC65zGf7AUJdIH-AV4W1ZvheF/pub?start=false&loop=false&delayms=30000). Thank you to everyone for hosting me! 
 
