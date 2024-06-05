@@ -14,7 +14,7 @@ I am a researcher in robotics, interested in making autonomous robots more robus
 
 **May 2024** Very grateful to be in this year's cohort of [RSS Pioneers](https://sites.google.com/view/rsspioneers2024/)!
 
-**May 2024** I am delighted to be starting my new appointment as Starting Researcher in the WILLOW research group at Inria Paris, where I will be working with Justin Carpentier, Stéphane Caron and an amazing team of robotics/optimization researchers and engineers. 
+**May 2024** I am delighted to begin my new appointment as starting researcher in the [WILLOW research group](https://www.di.ens.fr/willow/) at Inria Paris, where I will be working with Justin Carpentier, Stéphane Caron and an amazing team of robotics/optimization researchers and engineers. 
 
 **March 2024 - April 2024** I had the opportunity to visit the lab of Nicolas Boumal, EPFL, and Sylvain Calinon, IDIAP, Switzerland, giving talks about our work at both institutes, and getting to know a lot of cool new research! Thank you for hosting me!
 
