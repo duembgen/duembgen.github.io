@@ -12,7 +12,7 @@ I am a researcher in robotics, interested in making autonomous robots more robus
 
 **November 2024** We organized a workshop on [Differentiable Optimization Everywhere](https://sites.google.com/seas.upenn.edu/corl-2024-workshop-diff/) at CoRL 2024, taking place at TUM, Munich. Amazing speakers, a packed room throughout the day, and a social gathering in a Bavarian Biergarten, sponsored by Nvidia -- it was a very fun event!
 
-**November 2024** It was my pleasure to contribute to [this summary paper](https://arxiv.org/abs/2411.03951) on continuous-time state estimation methods in robotics, in particular Gaussian-Process-based and spline-based methods, currently under review, in collaboration with the Robotic Systems Lab at ETHZ. Please get in touch if you have any comments!
+**November 2024** It was a pleasure to collaborate with the Robotic Systems Lab at ETHZ on [this summary paper](https://arxiv.org/abs/2411.03951) about continuous-time state estimation methods in robotics, in particular Gaussian-Process-based and spline-based methods, currently under review. Please get in touch if you have any comments!
 
 **July 2024** We organized the first workshop on the [Frontiers of Optimization for Robotics](https://sites.google.com/robotics.utias.utoronto.ca/frontiers-optimization-rss24/home) at RSS 2024, with a great lineup of speakers, contributors, and turnout of participants. All recordings of the workshop are available [online](https://www.youtube.com/@opt4rob). 
 
