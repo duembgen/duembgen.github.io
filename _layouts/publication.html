@@ -23,6 +23,14 @@ layout: default
 
 </div>
 
+{% if page.summary %}
+<center>
+<h3> One-sentence summary </h3> 
+<h4> {{ page.summary }} </h4>
+</center>
+{% endif %}
+
+<h3> Abstract </h3> 
 <p class="text-justify">
   {{ content }}
 </p>
@@ -30,11 +38,12 @@ layout: default
 {% if page.ref-link %}
 <a href="{{ page.ref-link }}">[Paper]</a>
 {% endif %}
+{% if page.arxiv-link %}
+<a href="{{ page.arxiv-link }}">[arXiv]</a>
+{% endif %}
 {% if page.ref-video %}
 <a href="{{ page.ref-video }}">[Video]</a>
 {% endif %}
 {% if page.ref-code %}
 <a href="{{ page.ref-code }}">[Code]</a>
 {% endif %}
-
-<p><b>* in authors means equal contributions</b></p>

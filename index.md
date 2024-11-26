@@ -8,9 +8,15 @@ I am a researcher in robotics, interested in making autonomous robots more robus
 
 ## News 
 
-*Last update: June 5, 2024.*
+*Last update: November 26, 2024.*
 
-**June 2024** We have created a [Summary paper](assets/pdfs/summary_paper_2024.pdf) of our latest research on certifiably optimal estimation. It is intended as an entry point for anyone who wants to learn about this topic and for an overview of our recent advances in the area.   
+**November 2024** We organized a workshop on [Differentiable Optimization Everywhere](https://sites.google.com/seas.upenn.edu/corl-2024-workshop-diff/) at CoRL 2024, taking place at TUM, Munich. Amazing speakers, a packed room throughout the day, and a social gathering in a Bavarian Biergarten, sponsored by Nvidia -- it was a very fun event!
+
+**November 2024** It was my pleasure to contribute to [this summary paper](https://arxiv.org/abs/2411.03951) on continuous-time state estimation methods in robotics, in particular Gaussian-Process-based and spline-based methods, currently under review, in collaboration with the Robotic Systems Lab at ETHZ. Please get in touch if you have any comments!
+
+**July 2024** We organized the first workshop on the [Frontiers of Optimization for Robotics](https://sites.google.com/robotics.utias.utoronto.ca/frontiers-optimization-rss24/home) at RSS 2024, with a great lineup of speakers, contributors, and turnout of participants. All recordings of the workshop are available [online](https://www.youtube.com/@opt4rob). 
+
+**June 2024** We have created a [Summary paper](assets/pdfs/summary_paper_2024.pdf) of our latest research on certifiably optimal estimation. It is intended as an entry point for anyone who wants to learn about this topic and for an overview of our recent advances in the area.  This paper will be presented at the [RSS 2024 Safe Autonomy Workshop](https://sites.google.com/view/rss2024-safe-autonomy/). 
 
 **May 2024** Very grateful to be in this year's cohort of [RSS Pioneers](https://sites.google.com/view/rsspioneers2024/)!
 

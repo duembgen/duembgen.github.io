@@ -4,8 +4,8 @@ categories: Conference
 ref-authors:
 - G. Baechler*
 - "F. D\xFCmbgen*"
-- G. Elhami
-- M. Krekovic
+- "G. Elhami*"
+- "M. Krekovic*"
 - R. Scheibler
 - A. Scholefield
 - M. Vetterli
@@ -16,6 +16,7 @@ ref-year: 2018
 ref-code: https://github.com/lcav/localization-icassp2018
 title: Combining range and direction for improved localization
 image: icassp18.jpg
+summary: "Extend concepts from Euclidean Distance Matrices, created for distance (range) measurements only, to angle (direction) measurements, to enable estimating locations from a mixture of range and direction measurements."
 ---
 
 

@@ -6,4 +6,4 @@ permalink: /publications-index
 
 Selected list of publications. You can find the full list on my [Google Scholar](https://scholar.google.com/citations?hl=en&user=_ABmvmkAAAAJ) account.
 
-*Last update: October 21, 2023*
+*Last update: November 26, 2024*

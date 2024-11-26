@@ -7,11 +7,12 @@ ref-authors: [F. Dümbgen, M. El Helou, A. Scholefield]
 ref-year: 2020
 ref-journal: IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)
 ref-link: "https://doi.org/10.1109/ICASSP40776.2020.9053903"
-ref-arxiv: "https://arxiv.org/abs/2005.04469"
+arxiv-link: "https://arxiv.org/abs/2005.04469"
 ref-code: "https://github.com/duembgen/AngleRealizability"
 ref-video: "https://www.youtube.com/watch?v=XZi0NK60NCI&feature=youtu.be"
 image: icassp2020-angles.jpg
 image-alt: "image with drones and angles"
+summary: "A novel scheme to use angle measurements between pairs of devices, exploiting trigonometric properties of inner angles to first denoise a measurement set, followed by a simple triangulation scheme for point reconstruction."
 ---
 
 Localization of a set of nodes is an important and a thoroughly researched problem in robotics and sensor networks. This paper is concerned with the theory of localization from inner-angle measurements. We focus on the challenging case where no anchor locations are known. 

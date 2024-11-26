@@ -12,6 +12,7 @@ ref-link: https://doi.org/10.1137/18m123428x
 ref-year: 2020
 title: Coordinate Difference Matrices
 image: cdm.jpg
+summary: "Introduces and studies Coordinate Difference Matrices (CDMs) -- a mathematical object similar to Euclidean Distance Matrices (EDMs), useful for combining distances and absolute direction measurements, arising in structure from motion, microphone calibration, protein folding, and other application areas."
 ---
 
 

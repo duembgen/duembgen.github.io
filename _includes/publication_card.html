@@ -24,7 +24,7 @@
 					<p class="card-text">
 					{% if post.ref-link %} <a href="{{ post.url | relative_url }}">[Details]</a> {% endif %}
 					{% if post.ref-link %} <a href="{{ post.ref-link }}">[Paper]</a> {% endif %}
-					{% if post.ref-arxiv %} <a href="{{ post.arxiv-link}}">[arXiv]</a> {% endif %}
+					{% if post.arxiv-link %} <a href="{{ post.arxiv-link}}">[arXiv]</a> {% endif %}
 					{% if post.ref-video %} <a href="{{ post.ref-video }}">[Video]</a> {% endif %}
 					{% if post.ref-code %} <a href="{{ post.ref-code }}">[Code]</a> {% endif %}
 				</p>

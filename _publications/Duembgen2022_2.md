@@ -9,11 +9,12 @@ ref-authors:
 - M. Vetterli
 ref-journal: IEEE Robotics and Automation Letters 
 ref-link: https://ieeexplore.ieee.org/document/9844245
-ref-arxiv: https://arxiv.org/abs/2301.08327
+arxiv-link: https://arxiv.org/abs/2301.08327
 ref-year: 2022
 ref-code: https://github.com/lcav/audioROS
 title: "Blind as a Bat: Audible Echolocation on Small Robots"
 image: drone-epuck.jpg
+summary: "Use the echoes of emitted frequency sweeps, in particular interference patterns, to detect nearby obstacles using low-cost microphones and speakers on the Crazyflie drone and the e-puck robot, through a cascade of spectral analysis, particle filters, and graph SLAM algorithms."
 ---
 
 For safe and efficient operation, mobile robots need
