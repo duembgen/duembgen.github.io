@@ -1,21 +1,25 @@
 ---
 # Do not put a title here to avoid this page being listed in the navbar.
 layout: page
-image: profile-crop.png
+image: profile-crop.jpg
 ---
 
-I am a researcher in robotics, interested in making autonomous robots more robust and trustworthy. I am currently a starting researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
+I am an incoming assistant professor at CMU Mechanical Engineering, with courtesy appointment with the CMU Robotics Institute. My research interest is to make autonomous robots more capable and trustworthy by exploiting recent advances in optimization and artificial intelligence. I am currently a starting researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
 
 [Google Scholar](https://scholar.google.com/citations?hl=en&user=45QAZbUAAAAJ) / [LinkedIn](https://www.linkedin.com/in/duembgen/)
 
 
 ### Working with me
 
-I am currently looking for Master or PhD-level interns to work with me on (global or other) optimization for robotics and reinforcement learning. Feel free to get in touch via e-mail to hear about current possibilities!
+If you are passionate about optimization for robotics, and would like to work with me at CMU starting January 2026 or September 2026, please get in touch via e-mail with your CV and a short research statement. 
 
 ### Latest news 
 
-*Last update: March 19, 2024.*
+*Last update: June 21, 2025.*
+
+**June 2025** I was faculty chair for this year's [RSS Pioneers workshop](https://sites.google.com/view/rsspioneers2025/home?authuser=0) in Los Angeles, California. After RSS I am honored to be presenting our latest research at the [CCDC at UC Santa Barbara](https://www.ccdc.ucsb.edu/). 
+
+**May 2025** Visited Georgia Tech after ICRA 2025 in Atlanta and gave a talk in [Lunar lab](https://sites.gatech.edu/lunarlab/). Thank you, Lu Gan, for the the warm welcome! 
 
 **March 2025** I will be presenting our latest research at the MIT JTL Urban Mobility Lab's [online research seminar series](https://sites.mit.edu/jtl-seminar/).
 
