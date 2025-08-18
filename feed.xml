@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-18T18:22:16+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">Writing blog-posts in 2025</title><link href="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html" rel="alternate" type="text/html" title="Writing blog-posts in 2025" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025</id><content type="html" xml:base="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html"><![CDATA[<p><em>I created this blogpost when writing <a href="/research/2025/08/18/kernel-image-primal-dual.html">this other post</a> but I might keep reiterating as I refine my methodology.</em></p>
+
+<p>This is a recipe for how I am writing blogposts, with a little help from LLMs (Gemini, in my case). By sharing how I am using this tool I hope to either tell you something that you might find helpful, or to hear from you how I could improve my pipeline.</p>
+
+<h2 id="first-step-hand-write-notes">First step: hand-write notes</h2>
+
+<p>I still like writing notes by hand, that is, on my Samsung tablet. Writing helps me think, I enjoy the creative process of moving things around, changing layout. (There is also the practical aspects that many coffee shops in Paris have a no-laptop policy on certain days, but Tablets are fine, and a tablet heats up my lap way less than my laptop when I am on a train in summer.)</p>
+
+<p>I try to keep my handwriting relatively clear, and for the sake of the model, I try to keep a normal layout, as opposed to having flowchart-diagrams, trees, and other weird stuff that are fun to do but a bit unpractical for an LLM to translate to a blogpost.</p>
+
+<p>If you are curious, <a href="/assets/pdfs/KernelImagePrimalDual.pdf">here</a> is the first version of my (messy) scribbles at the basis of this blogpost.</p>
+
+<h2 id="second-step-write-instructions">Second step: write instructions</h2>
+
+<p>I created this little general context prompt that I can use for future blog posts as well. Additions from the second iteration are written in <strong>bold</strong>.</p>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You are an expert academic writing a blog post. In doing so, you should: 
+<span class="p">
+-</span> The output should in markdown format compatible with the jekyll template “minima” that I use for my homepage.
+<span class="p">-</span> Keep the sections short, use hyperlinks to move between different sections. 
+<span class="p">-</span> Write math using the mathjax syntax. <span class="gs">**Note that you need to add a clear line before and after block-equations that are delimited with $$, for them to render correctly.**</span>
+<span class="p">-</span> The writing should be understandable by students with basic mathematical education. 
+<span class="p">-</span> Write matrix and vector variables in boldface. 
+<span class="p">-</span> Give optimization problems a name so that it is easy to refer to them. 
+<span class="p">-</span> Add a little text in the beginning to explain the context. 
+<span class="p">-</span> Add a little text in the end to conclude the findings. 
+
+You can find below the pdf-version of the scribbles based on which I would like you to write this post. 
+</code></pre></div></div>
+
+<p>Then, I added these few lines for this particular blog post:</p>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For this post in particular, also do the following:
+<span class="p">
+-</span> There are some questions. Can you figure out if there is a mistake in my math? If so, fix the math with as minimal changes as possible. 
+<span class="p">-</span> Add a table that lists the final optimization for the kernel vs. image form and the dual vs. primal form, in the beginning of the post. This helps the reader to have a good overview. 
+</code></pre></div></div>
+
+<h2 id="third-step-call-llm">Third step: call LLM</h2>
+
+<p>For this particular blogpost, I add a set of additional instructions. In fact there were some points in my mathematical derivation that did not pan out 100%. I asked Gemini to fix those points, while changing as few things as possible. I also ask for a nice overview table. The gneration took 90 seconds. I copy the text to after the preamble, which I wrote myself, and investigated the rendered site.</p>
+
+<h2 id="forth-step-reiterate">Forth step: reiterate</h2>
+
+<p>First, I had to fix the MathJax rendering, by adding a little code snippet to my <code class="highlighter-rouge">_includes/head.html</code> file. I did this by asking Gemini, of course :)</p>
+
+<p>Then, I went through the generated, rendered blog post. The main thing I needed to do is fix some spacing. I went ahead and added a note about that in the instructions as well, for future usage.</p>
+
+<p>In terms of the math, I removed a few trivial statements.</p>
+
+<p>There was a note generated by Gemini that it did not understand one of my comments:</p>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gt">&gt; **A Note on the Scribbles:** The notes ask about "3 variables." For our example, there is only one degree of freedom, hence one slack variable. The mention of three variables likely comes from a different example, perhaps a bivariate polynomial, which can have more complex dependencies between coefficients and thus more degrees of freedom.</span>
+</code></pre></div></div>
+<p>Indeed, that comment came from a Youtube video that I watched on the topic. It confirms my suspicion that it was just a small mistake by the speaker. I removed the comment.</p>
+
+<p>Finally, Gemini omitted a couple of technical details. I asked it to add those back, making it each time write a new paragraph so that I can paste it easily where I want. I did this for the derivation of the Dual Problem, and for explicitly writing out the forms of the matrices $A_0$ to $A_4$ and $B_1$.</p>
+
+<p>I also added some motivational paragraphs and shortened the writing here and there.</p>
+
+<h2 id="final-step-optional-code">Final step (optional): code</h2>
+
+<p>For this particular blog post, it seemed appropriate to also have a coded version, to verify the math, and to provide more intuition. 
+I generated a new template prompt that could be used for this purpose.</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You are an expert academic who wants to provide a jupyter notebook that goes with the blogpost. In doing so, you should
+<span class="p">
+-</span> Use cvxpy with the open-source solver CVXOPT for solving SDPs. 
+<span class="p">-</span> Also create the requirements.txt file that contains all requirements, so that it can be easily run using mybinder.org
+<span class="p">-</span> Reduce the text to a minimum and use EXACTLY the same names and notation that are used in the blogpost. 
+
+For this particular post, I would like you to:
+<span class="p">
+-</span> Create 4 different functions that take in the problem data and output the solution to the 4 different optimization problems. 
+<span class="p">-</span> Create one feasible and one infeasible problem. For each problem, show what matrix the different approaches produce and also print out how long it took. 
+
+The original post is attached below. 
+</code></pre></div></div>
+
+<h2 id="final-final-step-oops-reiterate-blog-post">Final final step (oops): reiterate blog post</h2>
+
+<p>As it turns out, Gemini did not see an important mistake in my original dual problems. The dual problems I had written <em>assumed</em> that the value 0 was attained, so they actually only worked for feasible primal problems. I noticed this thanks to the code. In fact, the “interpretations” that Gemini hat written in the notebook had many logical inconsistencies, which was a red flag. And this confirmed my suspicion that there <em>was</em> something wrong in my original notes, it just was not exactly what I expected. I went back to my whiteboard and my tablet and figured out what happened here. Then, I gave the following prompt to Gemini:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I have written a blogpost that had a mistake. It was based on a handwritten note. I have now fixed the handwritten note -- see the attached Pdf. Can you adjust the blogpost accordingly? The blogpost is also attached. The mistake was that the dual problem was always feasible, ie, it attained the value zero. This is of course wrong -- when the primal is infeasible the dual should also be able to take value infinity. I forgot that I had to use the theorem of strong alternatives when dealing with these feasibility problems.
+</code></pre></div></div>
+<p>I attached my new <a href="/assets/pdfs/KernelImagePrimalDual_v2.pdf">notes</a> and the blogpost source file. The output was pretty usable after a few minor edits.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>After almost a full day of work (I started this at ca. 11:30, I am done now and it is 19:00), I have</p>
+
+<ul>
+  <li>Two blog posts</li>
+  <li>A proof-of-concept jupyter notebook</li>
+  <li>A pipeline in place for writing future blog posts:
+    <ul>
+      <li>Prompt templates that I can reuse in the future</li>
+      <li>My blog setup with bibliography automatically exported from Zotoro.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>I wish I knew how much time I actually saved by using Gemini, and if I would have found my mistake more easily had I not been in “LLM” mode with my brain. But it for sure felt like a pleasant and productive day, and I did learn a ton, not only about optimization but also about interacting with Gemini.</p>]]></content><author><name></name></author><category term="misc" /><summary type="html"><![CDATA[I created this blogpost when writing this other post but I might keep reiterating as I refine my methodology.]]></summary></entry><entry><title type="html">Kernel-Image-Primal-Dual: Navigating SOS Formulations</title><link href="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html" rel="alternate" type="text/html" title="Kernel-Image-Primal-Dual: Navigating SOS Formulations" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html"><![CDATA[<p><em>I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing <a href="/misc/2025/08/18/blog-posts-in-2025.html">another blogpost</a> about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.</em></p>
+
+<p>Checking if a polynomial is non-negative is a fundamental problem that appears in many areas of engineering and mathematics. While checking for non-negativity is computationally hard in general, a powerful sufficient condition is to check if the polynomial can be written as a sum of squares (SOS) of other polynomials. This condition is not only tractable—it can be checked by solving a semidefinite program (SDP)—but it is also a key component in a wide range of optimization methods for polynomial systems.</p>
+
+<p>In this post, we’ll explore how to formulate the SOS problem as an SDP. We will see that there isn’t just one way to do it. We’ll look at two primary approaches, often called the “kernel form” and the “image form,” and then explore their dual problems. This will give us four different, but related, optimization problems for tackling the same question.</p>
+
+<p>My motivation to write this blogpost was the misconception I had about this topic. I recently watched a nice <a href="https://www.youtube.com/watch?v=CGPHaHxCG2w&amp;t=815s">talk</a> that helped me uncover this misconception: one can solve a SOS problem in kernel <em>or</em> in image form, <em>and</em> in dual <em>or</em> primal form – so there are really 4 options. In my head, the lines between the dual/image and primal/kernel, respectively, were kind of blurred.</p>
+
+<h3 id="a-quick-overview">A Quick Overview</h3>
+
+<p>Checking if a polynomial is a sum of squares (SOS) can be formulated as a semidefinite programming (SDP) feasibility problem. There are four common ways to frame this problem, arising from two primal perspectives (Kernel and Image) and their corresponding duals. The table below presents the general form of each of these four formulations.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"><strong>Kernel Form</strong></th>
+      <th style="text-align: left"><strong>Image Form</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Primal</strong></td>
+      <td style="text-align: left"><strong>(P-K) Primal Kernel Problem</strong> <br /> Find a Gram matrix $\mathbf{X}$ that satisfies linear coefficient-matching constraints. <br /><br /> \(\begin{aligned} \text{find} \quad &amp; \mathbf{X} \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad \forall i \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(P-I) Primal Image Problem</strong> <br /> Find slack variables $\mathbf{s}$ that make the parameterized Gram matrix positive semidefinite. <br /><br /> \(\begin{aligned} \text{find} \quad &amp; \mathbf{s} \\ \text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) + \sum_{j} s_j \mathbf{B}_j \succeq 0 \end{aligned}\)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Dual</strong></td>
+      <td style="text-align: left"><strong>(D-K) Dual Kernel Problem</strong> <br /> Maximize a linear function of the coefficients subject to a linear matrix inequality. <br /><br /> \(\begin{aligned} \max_{\boldsymbol{\lambda}} \quad &amp; -\sum_i \lambda_i p_i \\ \text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(D-I) Dual Image Problem</strong> <br /> Maximize an inner product subject to orthogonality constraints. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}} \quad &amp; -\langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see these four formulations at work in this simple Jupyter notebook:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-08-18-kernel-image-primal-dual.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<p>Now, let’s dive into the details of where each of these formulations comes from.</p>
+
+<h3 id="the-primal-problems">The Primal Problems</h3>
+
+<p>A polynomial $p(x)$ is a sum of squares if and only if it can be written in the form
+\(p(x) = \mathbf{v}(x)^\top \mathbf{X} \mathbf{v}(x)\)
+for some positive semidefinite matrix $\mathbf{X} \succeq 0$, called the Gram matrix, and where $\mathbf{v}(x)$ is a vector of monomials.</p>
+
+<p>Our goal is to find such a matrix $\mathbf{X}$. Let’s consider a simple example to make things concrete: a univariate polynomial of degree 4.
+\(p(x) = p_0 + p_1x + p_2x^2 + p_3x^3 + p_4x^4\)
+The monomial basis vector is $\mathbf{v}(x) = [1, x, x^2]^\top$. The Gram matrix $\mathbf{X}$ will be a $3 \times 3$ symmetric matrix. The condition $p(x) = \mathbf{v}(x)\top \mathbf{X} \mathbf{v}(x)$ can be expanded and written as an inner product:
+\(p(x) = \langle \mathbf{X}, \mathbf{v}(x)\mathbf{v}(x)\top \rangle\)
+By matching the coefficients of the powers of $x$ on both sides, we get a system of linear equations that our matrix $\mathbf{X}$ must satisfy.</p>
+
+<h4 id="the-primal-kernel-form">The Primal Kernel Form</h4>
+
+<p>The most direct approach is to write these linear equations as constraints in an optimization problem. This is the <strong>kernel form</strong>, as it describes the feasible set as the kernel of a linear operator.</p>
+
+<p>For our example, matching coefficients yields:</p>
+<ul>
+  <li>$p_0 = X_{00}$</li>
+  <li>$p_1 = 2X_{01}$</li>
+  <li>$p_2 = 2X_{02} + X_{11}$</li>
+  <li>$p_3 = 2X_{12}$</li>
+  <li>$p_4 = X_{22}$</li>
+</ul>
+
+<p>This gives us a feasibility problem in the primal kernel form:</p>
+
+\[\textbf{(P-K)}\quad
+\begin{align}
+\text{find} \quad &amp; \mathbf{X} \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad i=0, \dots, 4 \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<p>Here, the matrices $\mathbf{A}_i$ are cleverly chosen to pick out the right elements of $\mathbf{X}$ to match the coefficients $p_i$. 
+They are given by:</p>
+
+\[\mathbf{A}_0 = \begin{pmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{pmatrix}, \quad
+\mathbf{A}_1 = \begin{pmatrix} 0 &amp; 1 &amp; 0 \\ 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{pmatrix}, \quad
+\mathbf{A}_2 = \begin{pmatrix} 0 &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; 0 \\ 1 &amp; 0 &amp; 0 \end{pmatrix}\]
+
+\[\mathbf{A}_3 = \begin{pmatrix} 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 \\ 0 &amp; 1 &amp; 0 \end{pmatrix}, \quad
+\mathbf{A}_4 = \begin{pmatrix} 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{pmatrix}\]
+
+<h4 id="the-primal-image-form">The Primal Image Form</h4>
+
+<p>An alternative is the <strong>image form</strong>. Instead of defining the valid matrices $\mathbf{X}$ by what constraints they must satisfy, we provide a direct parameterization for any valid $\mathbf{X}$.</p>
+
+<p>Notice that our system of 5 linear equations has 6 variables (the unique entries of the symmetric matrix $\mathbf{X}$). This means there is one degree of freedom. We can introduce a “slack” variable, let’s call it $s$, to parameterize all possible solutions. A bit of algebra shows that any valid Gram matrix $\mathbf{X}$ can be written as:</p>
+
+\[\mathbf{X} =
+\begin{bmatrix}
+p_0 &amp; p_1/2 &amp; -s/2 \\
+p_1/2 &amp; p_2+s &amp; p_3/2 \\
+-s/2 &amp; p_3/2 &amp; p_4
+\end{bmatrix}\]
+
+<p>This can be expressed as $\mathbf{X} = \mathbf{Y}(\mathbf{p}) + s \mathbf{B}_1$, where $\mathbf{Y}(\mathbf{p})$ is the matrix containing the parameters $\mathbf{p}$, and $\mathbf{B}_1$ is a matrix that adds the slack term. The problem is then to find if there <em>exists</em> a slack variable $s$ that makes this matrix positive semidefinite.</p>
+
+\[\textbf{(P-I)}\quad
+\begin{align}
+\text{find} \quad &amp; s \\
+\text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) + s \mathbf{B}_1 \succeq 0
+\end{align}\]
+
+<p>The matrix $\mathbf{B}_1$ is a matrix from the null space of the linear operator that maps a Gram matrix to its polynomial coefficients, meaning $\langle \mathbf{B}_1, \mathbf{v}(x)\mathbf{v}(x)\top \rangle = 0$. For our example, this matrix is:</p>
+
+\[\mathbf{B}_1 = \begin{pmatrix} 0 &amp; 0 &amp; -1/2 \\ 0 &amp; 1 &amp; 0 \\ -1/2 &amp; 0 &amp; 0 \end{pmatrix}\]
+
+<p>You can verify that adding any multiple $s \mathbf{B}_1$ to a valid Gram matrix $\mathbf{X}$ produces another valid Gram matrix that generates the exact same polynomial $p(x)$, as all the new terms cancel out in the coefficient matching equations.</p>
+
+<p>For more complex polynomials, we might have multiple slack variables, leading to a more general constraint:</p>
+
+\[\mathbf{Y}(\mathbf{p}) + \sum_j s_j \mathbf{B}_j \succeq 0.\]
+
+<blockquote>
+  <p>Now here is the main source of confusion, and the reason I wanted to write this blog post. For someone having looked a lot at SDP programs, problem (P-I) looks a lot like the dual of (P-K). Is it just the dual problem? As it turns out, no.</p>
+</blockquote>
+
+<h3 id="the-dual-problems">The Dual Problems</h3>
+
+<p>Every optimization problem has a dual, which provides deep insights and often alternative solution methods. Let’s find the duals of our two primal forms.</p>
+
+<h4 id="dual-of-the-kernel-form">Dual of the Kernel Form</h4>
+
+<p>Starting with the primal kernel problem (P-K), we can form its Lagrangian and derive the dual problem. The derivation is standard, and provided in the <a href="#derivation-of-the-dual-problem">Appendix</a>. Calling the dual variables of the linear constraints $\lambda_i$, we obtain the dual optimization problem:</p>
+
+\[\textbf{(D-K)}\quad
+\begin{align}
+\max_{\boldsymbol{\lambda}} \quad &amp; -\sum_{i=0}^4 \lambda_i p_i \\
+\text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0
+\end{align}\]
+
+<p>For our example, the matrix in the constraint, $\sum \lambda_i \mathbf{A}_i$, turns out to be a beautiful and structured matrix—a Hankel matrix:</p>
+
+\[\sum_{i=0}^4 \lambda_i \mathbf{A}_i =
+\begin{bmatrix}
+\lambda_0 &amp; \lambda_1 &amp; \lambda_2 \\
+\lambda_1 &amp; \lambda_2 &amp; \lambda_3 \\
+\lambda_2 &amp; \lambda_3 &amp; \lambda_4
+\end{bmatrix} \succeq 0\]
+
+<p>By strong duality, the primal problem (P-K) is feasible if and only if the optimal value of this dual problem (D-K) is 0. If (P-K) is infeasible, (D-K) will be unbounded. In particular, we can derive a simple feasibility problem to get a certificate of (in)feasibility, as derived next.</p>
+
+<p>Let’s take a closer look at the dual problem (D-K) and its relationship with the primal. The dual problem has two possible outcomes. First, if for every feasible $\boldsymbol{\lambda}$ we have $-\sum_i \lambda_i p_i \le 0$, then the optimal value of the dual is 0. This is because $\boldsymbol{\lambda} = \mathbf{0}$ is always a feasible point (since $ \sum 0 \cdot \mathbf{A}_i = \mathbf{0} \succeq 0$) and yields an objective value of 0. On the other hand, if there exists even one feasible $ \boldsymbol{\lambda}^{\star} $ for which $-\sum_i \lambda_i p_i &gt; 0$, 
+then the dual problem is unbounded. This is because the feasible set is a cone, so any positive multiple $\alpha \boldsymbol{\lambda}^\star $ is also feasible, and we can make the objective $\alpha(-\sum_i \lambda_i p_i)$ arbitrarily large.</p>
+
+<p>By strong duality, these two outcomes correspond directly to the feasibility of the primal problem (P-K):</p>
+
+<ul>
+  <li>If <strong>(P-K) is feasible</strong>, its optimal value is 0, so the dual optimal value must also be 0.</li>
+  <li>If <strong>(P-K) is infeasible</strong>, the dual problem must be unbounded.</li>
+</ul>
+
+<p>This gives us a practical way to check for primal infeasibility. Instead of solving the dual optimization problem, we can check for its unboundedness by solving a related feasibility problem. Specifically, we can ask: “Does there exist a feasible $\boldsymbol{\lambda}$ that achieves any strictly positive objective value, for instance, $\varepsilon &gt; 0$?” This leads to the dual feasibility formulation:</p>
+
+\[\textbf{(Df-K)}\quad
+\begin{align*}
+\text{find} \quad &amp; \boldsymbol{\lambda} \\
+\text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i p_i = -\varepsilon \\
+&amp; \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0
+\end{align*}\]
+
+<p>If this problem is feasible for any $\varepsilon &gt; 0$, it serves as a certificate that the dual (D-K) is unbounded and, therefore, that the original primal problem (P-K) is infeasible.</p>
+
+<p>Now let us compare (D-K) to the <a href="#the-primal-image-form">Primal Image Form</a> and problem (P-I). The variables seem related, but they are fundamentally different problems. For instance, if we try to set the variables $\lambda_i$ according to the entries of the parameterized Gram matrix from (P-I), such as $\lambda_0=p_0$, $\lambda_1=p_1/2$, etc., we find they do not generally provide a feasible (let alone optimal) solution to (D-K).</p>
+
+<blockquote>
+  <p>This confirms that (P-K) is not simply the dual of (P-I).</p>
+</blockquote>
+
+<h4 id="dual-of-the-image-form">Dual of the Image Form</h4>
+
+<p>For completeness, let’s find the dual of the primal image problem (P-I). The dual variable here will be a matrix, which we’ll call $\mathbf{X}$ (as it lives in the same space as our original primal variable). The derivation leads to the following dual optimization problem:</p>
+
+\[\textbf{(D-I)}\quad
+\begin{align}
+\max_{\mathbf{X}} \quad &amp; -\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{B}_1, \mathbf{X} \rangle = 0  \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<p>This dual problem seeks to maximize $-\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle$ over all positive semidefinite matrices $\mathbf{X}$ that are orthogonal to the basis of the null space, $\mathbf{B}_1$. Again, the primal (P-I) is feasible if and only if the optimal value of this dual is 0.  The same analysis as for the kernel form applies here to derive a simple feasibility problem for any value $\epsilon &gt; 0$:</p>
+
+\[\textbf{(Df-I)}\quad
+\begin{align}
+\text{find} \quad &amp; \mathbf{X} \\
+\text{s.t.} \quad &amp; \langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle = -\epsilon\\
+&amp; \langle \mathbf{B}_1, \mathbf{X} \rangle = 0  \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>The choice between the different forms can have practical consequences. For a polynomial with few variables but high degree (small $n$, large $d$), the kernel form is often more efficient as it avoids parameterizing a potentially high-dimensional affine space. Conversely, for many variables and low degree (large $n$, small $d$), the image form can be simpler as there are fewer, or even no, slack variables.</p>
+
+<h3 id="appendix">Appendix</h3>
+
+<h4 id="derivation-of-the-dual-problem">Derivation of the Dual Problem</h4>
+
+<p>To derive the dual of the kernel formulation, we begin with the primal problem (P-K). Since it’s a feasibility problem, we can think of it as minimizing a zero objective function. We introduce a vector of Lagrange multipliers $\boldsymbol{\lambda}$ for the linear equality constraints $\langle \mathbf{A}_i, \mathbf{X} \rangle = p_i$, and a positive semidefinite matrix multiplier $\mathbf{H} \succeq 0$ for the cone constraint $\mathbf{X} \succeq 0$. The Lagrangian $\mathcal{L}(\mathbf{X}, \boldsymbol{\lambda}, \mathbf{H})$ is formed by adding the constraints to the objective:</p>
+
+\[\mathcal{L}(\mathbf{X}, \boldsymbol{\lambda}, \mathbf{H}) = 0 + \sum_{i} \lambda_i (p_i - \langle \mathbf{A}_i, \mathbf{X} \rangle) - \langle \mathbf{H}, \mathbf{X} \rangle\]
+
+<p>The dual problem involves maximizing the <em>Lagrange dual function</em>, which we find by minimizing the Lagrangian with respect to the primal variable $\mathbf{X}$. Let’s group the terms involving $\mathbf{X}$:</p>
+
+\[\mathcal{L}(\mathbf{X}, \boldsymbol{\lambda}, \mathbf{H}) = -\left\langle \sum_{i} \lambda_i \mathbf{A}_i + \mathbf{H}, \mathbf{X} \right\rangle + \sum_{i} \lambda_i p_i\]
+
+<p>This expression is linear in $\mathbf{X}$. For its minimum over the cone of positive semidefinite matrices to be bounded (i.e., not $-\infty$), the matrix multiplying $\mathbf{X}$ must be zero, which gives us the condition $\sum_i \lambda_i \mathbf{A}_i + \mathbf{H} = \mathbf{0}$. If this holds, the Lagrangian simplifies to $\sum_i \lambda_i p_i$. The dual problem is to maximize this value subject to the conditions on the dual variables:</p>
+
+\[\begin{align}
+\max_{\boldsymbol{\lambda}, \mathbf{H}} \quad &amp; \sum_i \lambda_i p_i \\
+\text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i + \mathbf{H} = \mathbf{0} \\
+&amp; \mathbf{H} \succeq 0
+\end{align}\]
+
+<p>We can eliminate $\mathbf{H}$ by substituting $\mathbf{H} = -\sum_i \lambda_i \mathbf{A}_i$. The constraint $\mathbf{H} \succeq 0$ then becomes $-\sum_i \lambda_i \mathbf{A}_i \succeq 0$. Multiplying the objective and the constraint by -1 (which turns the maximization into a minimization and flips the inequality) gives an equivalent problem. For consistency with the table, we’ll stick to the maximization form:</p>
+
+\[\begin{align}
+\max_{\boldsymbol{\lambda}} \quad &amp; -\sum_i \lambda_i p_i \\
+\text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0
+\end{align}\]
+
+<h3 id="references--further-reading">References / further reading</h3>
+
+<p>The topic of kernel vs. image form and dual vs. primal problems, are discussed, for example, in <a class="citation" href="#parrilo_semidefinite_2003">(Parrilo, 2003)</a>, Section 6. As mentioned earlier, the motivation of this post was actually this <a href="https://www.youtube.com/watch?v=CGPHaHxCG2w&amp;t=815s">talk</a>, where the topic is also discussed briefly.</p>
+
+<h3 id="bibliography">Bibliography</h3>
+
+<ol class="bibliography"><li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing another blogpost about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.]]></summary></entry></feed>
