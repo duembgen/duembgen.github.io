@@ -31,6 +31,7 @@ markdown: kramdown
 #theme: minima
 plugins_dir:
   - jekyll-feed
+  - jekyll-scholar
 
 google_analytics: UA-112074562-1
 
@@ -44,6 +45,19 @@ collections:
   projects:
     output: true
 
+scholar: 
+  style: apa
+  locale: en
+
+  sort_by: author
+  order: ascending
+
+  source: _data
+  bibliography: blogposts-export.bib
+
+  bibliography_class: bibliography
+  bibliography_template: "{{reference}}"
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
@@ -55,3 +69,5 @@ collections:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+

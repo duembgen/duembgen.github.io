@@ -20,9 +20,16 @@ gem "jekyll", "~> 4.0.1"
 # If you have any plugins, put them here!
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.6"
+  gem "jekyll-scholar"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "webrick"
+
+
+# Explicitly add default gems that are dependencies of other gems.
+# # This is required for modern Ruby/Bundler versions to avoid errors in CI.
+gem "uri"
+gem "open-uri"
 
