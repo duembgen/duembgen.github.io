@@ -11,9 +11,14 @@ I am an incoming assistant professor at CMU Mechanical Engineering, with courtes
 
 ### Working with me
 
+
+**CMU MechE Research Students**: I am happy to co-advise students starting September 2025, if there is a strong fit. Don't hesitate to get in touch (see below).
+
 If you are passionate about optimization for robotics, and would like to work with me at CMU starting January 2026 or September 2026, please get in touch via e-mail with your CV and a short research statement. 
 
+
 ### Latest news 
+
 
 *Last update: June 21, 2025.*
 
