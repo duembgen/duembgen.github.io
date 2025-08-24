@@ -7,20 +7,21 @@ categories: [research]
 
 _I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing [another blogpost](/misc/2025/08/18/blog-posts-in-2025.html) about my process to generated this blogpost (and hopefully a few more in the future) using Gemini._
 
+
 Checking if a polynomial is non-negative is a fundamental problem that appears in many areas of engineering and mathematics. While checking for non-negativity is computationally hard in general, a powerful sufficient condition is to check if the polynomial can be written as a sum of squares (SOS) of other polynomials. This condition is not only tractable—it can be checked by solving a semidefinite program (SDP)—but it is also a key component in a wide range of optimization methods for polynomial systems.
 
 In this post, we'll explore how to formulate the SOS problem as an SDP. We will see that there isn't just one way to do it. We'll look at two primary approaches, often called the "kernel form" and the "image form," and then explore their dual problems. This will give us four different, but related, optimization problems for tackling the same question.
 
-My motivation to write this blogpost was the misconception I had about this topic. I recently watched a nice [talk](https://www.youtube.com/watch?v=CGPHaHxCG2w&t=815s) that helped me uncover this misconception: one can solve a SOS problem in kernel *or* in image form, *and* in dual *or* primal form -- so there are really 4 options. In my head, the lines between the dual/image and primal/kernel, respectively, were kind of blurred. 
+My motivation to write this blogpost was the misconception I had about this topic. I recently watched a nice [talk](https://www.youtube.com/watch?v=CGPHaHxCG2w&t=815s) that helped me uncover this misconception: one can solve a SOS problem in kernel *or* in image form, *and* in dual *or* primal form -- so there are really 4 options. In my head, the lines between the dual/image and primal/kernel, respectively, were kind of blurred.
 
-### A Quick Overview
+### Kernel-Image-Primal-Dual (KIPD) Formulations
 
 Checking if a polynomial is a sum of squares (SOS) can be formulated as a semidefinite programming (SDP) feasibility problem. There are four common ways to frame this problem, arising from two primal perspectives (Kernel and Image) and their corresponding duals. The table below presents the general form of each of these four formulations.
 
 | | **Kernel Form** | **Image Form** |
 |:---|:---|:---|
 | **Primal** | **(P-K) Primal Kernel Problem** <br> Find a Gram matrix $\mathbf{X}$ that satisfies linear coefficient-matching constraints. <br><br> $$\begin{aligned} \text{find} \quad & \mathbf{X} \\ \text{s.t.} \quad & \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad \forall i \\ & \mathbf{X} \succeq 0 \end{aligned}$$ | **(P-I) Primal Image Problem** <br> Find slack variables $\mathbf{s}$ that make the parameterized Gram matrix positive semidefinite. <br><br> $$\begin{aligned} \text{find} \quad & \mathbf{s} \\ \text{s.t.} \quad & \mathbf{Y}(\mathbf{p}) + \sum_{j} s_j \mathbf{B}_j \succeq 0 \end{aligned}$$ |
-| **Dual** | **(D-K) Dual Kernel Problem** <br> Maximize a linear function of the coefficients subject to a linear matrix inequality. <br><br> $$\begin{aligned} \max_{\boldsymbol{\lambda}} \quad & -\sum_i \lambda_i p_i \\ \text{s.t.} \quad & \sum_i \lambda_i \mathbf{A}_i \succeq 0 \end{aligned}$$ | **(D-I) Dual Image Problem** <br> Maximize an inner product subject to orthogonality constraints. <br><br> $$\begin{aligned} \max_{\mathbf{X}} \quad & -\langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad & \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ & \mathbf{X} \succeq 0 \end{aligned}$$ |
+| **Dual** | **(D-K) Dual Kernel Problem** <br> Maximize a linear function of the coefficients subject to a linear matrix inequality. <br><br> $$\begin{aligned} \max_{\boldsymbol{\lambda}} \quad & -\sum_i \lambda_i p_i \\ \text{s.t.} \quad & \sum_i \lambda_i \mathbf{A}_i \succeq 0 \end{aligned}$$ | **(Dm-I) Dual Image Problem** <br> Maximize an inner product subject to orthogonality constraints. <br><br> $$\begin{aligned} \max_{\mathbf{X}} \quad & -\langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad & \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ & \mathbf{X} \succeq 0 \end{aligned}$$ |
 
 You can see these four formulations at work in this simple Jupyter notebook: 
 
@@ -127,13 +128,14 @@ Every optimization problem has a dual, which provides deep insights and often al
 Starting with the primal kernel problem (P-K), we can form its Lagrangian and derive the dual problem. The derivation is standard, and provided in the [Appendix](#derivation-of-the-dual-problem). Calling the dual variables of the linear constraints $\lambda_i$, we obtain the dual optimization problem:
 
 $$
-\textbf{(D-K)}\quad
+\textbf{(mD-K)}\quad
 \begin{align}
 \max_{\boldsymbol{\lambda}} \quad & -\sum_{i=0}^4 \lambda_i p_i \\
 \text{s.t.} \quad & \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0
 \end{align}
 $$
 
+We (mD-K) stands for "maximization Dual-Kernel" method, to distinguish from the feasibility problem (D-K) that we will derive later. 
 For our example, the matrix in the constraint, $\sum \lambda_i \mathbf{A}_i$, turns out to be a beautiful and structured matrix—a Hankel matrix:
 
 $$
@@ -158,7 +160,7 @@ By strong duality, these two outcomes correspond directly to the feasibility of 
 This gives us a practical way to check for primal infeasibility. Instead of solving the dual optimization problem, we can check for its unboundedness by solving a related feasibility problem. Specifically, we can ask: "Does there exist a feasible $\boldsymbol{\lambda}$ that achieves any strictly positive objective value, for instance, $\varepsilon > 0$?" This leads to the dual feasibility formulation:
 
 $$
-\textbf{(Df-K)}\quad
+\textbf{(D-K)}\quad
 \begin{align*}
 \text{find} \quad & \boldsymbol{\lambda} \\
 \text{s.t.} \quad & \sum_{i=0}^4 \lambda_i p_i = -\varepsilon \\
@@ -167,9 +169,6 @@ $$
 $$
 
 If this problem is feasible for any $\varepsilon > 0$, it serves as a certificate that the dual (D-K) is unbounded and, therefore, that the original primal problem (P-K) is infeasible.
-
-
-
 
 Now let us compare (D-K) to the [Primal Image Form](#the-primal-image-form) and problem (P-I). The variables seem related, but they are fundamentally different problems. For instance, if we try to set the variables $\lambda_i$ according to the entries of the parameterized Gram matrix from (P-I), such as $\lambda_0=p_0$, $\lambda_1=p_1/2$, etc., we find they do not generally provide a feasible (let alone optimal) solution to (D-K).
 
@@ -180,7 +179,7 @@ Now let us compare (D-K) to the [Primal Image Form](#the-primal-image-form) and 
 For completeness, let's find the dual of the primal image problem (P-I). The dual variable here will be a matrix, which we'll call $\mathbf{X}$ (as it lives in the same space as our original primal variable). The derivation leads to the following dual optimization problem:
 
 $$
-\textbf{(D-I)}\quad
+\textbf{(mD-I)}\quad
 \begin{align}
 \max_{\mathbf{X}} \quad & -\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle \\
 \text{s.t.} \quad & \langle \mathbf{B}_1, \mathbf{X} \rangle = 0  \\
@@ -191,7 +190,7 @@ $$
 This dual problem seeks to maximize $-\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle$ over all positive semidefinite matrices $\mathbf{X}$ that are orthogonal to the basis of the null space, $\mathbf{B}_1$. Again, the primal (P-I) is feasible if and only if the optimal value of this dual is 0.  The same analysis as for the kernel form applies here to derive a simple feasibility problem for any value $\epsilon > 0$: 
 
 $$
-\textbf{(Df-I)}\quad
+\textbf{(D-I)}\quad
 \begin{align}
 \text{find} \quad & \mathbf{X} \\
 \text{s.t.} \quad & \langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle = -\epsilon\\
