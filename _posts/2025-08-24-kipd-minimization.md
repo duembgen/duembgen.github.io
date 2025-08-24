@@ -7,6 +7,7 @@ categories: [research]
 
 _This is a follow-up to my [previous post](/research/2025/08/18/kernel-image-primal-dual.html) on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in [other post](/misc/2025/08/18/blog-posts-in-2025.html) about writing blog-posts with the helpf of Gemini_
 
+
 In the last post, we explored how to determine if a polynomial $p(x)$ can be written as a sum of squares. This is a powerful tool for certifying that a polynomial is non-negative. But what if we want to find the *global minimum* of a polynomial? With only a few changes to the optimization problems, we can use SOS techniques to solve this, or at least find a good lower bound. 
 
 The starting point is the following problem: $\min_x p(x)$. Any problem of this form can be reformulated as follows: 
@@ -133,6 +134,9 @@ $$
 
 #### Tangent: Shor's relaxation
 
+<div class="alert alert-warning" role="alert">
+  <strong>Warning:</strong> One point requires clarification: the connection between $\mathbf{A}_i$ and $\mathbf{B}_j$. Normally Shor's relaxation would also have $\mathbf{A}_i$ -- why do they not appear here?
+</div>
 
 As noted above, problem **(D-I)** is identitcal to Shor's relaxation. To see, this we derive Shor's relaxation here. We start by rewriting our original problem as the following QCQP:
 
@@ -146,16 +150,7 @@ $$
 
 where we have introduced $\mathbf{B}_j$ -- all matrices that span the null space of the feasible set. Those can be found by solving a nullspace problem, as formalized in the AutoTight method, or its variant AutoTemplate to scale to larger problem instances {% cite dumbgen_toward_2024 %}.
 
-Shor's relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us the following SDP:
-
-$$
-\begin{aligned}
-\min_{\mathbf{X}} \quad & \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
-\text{s.t.} \quad & \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
-                  & \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
-                  & \mathbf{X} \succeq 0
-\end{aligned}
-$$
+Shor's relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us exactly **(D-I)**.
 
 ### Conclusion
 
