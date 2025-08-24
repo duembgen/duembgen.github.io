@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Kernel-Image-Primal-Dual: Navigating SOS Formulations"
+title: "KIPD: Navigating Formulations for SOS Feasibility"
 date: 2025-08-18
 categories: [research]
 ---
