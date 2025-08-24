@@ -262,6 +262,10 @@
 
 <h4 id="tangent-shors-relaxation">Tangent: Shor’s relaxation</h4>
 
+<div class="alert alert-warning" role="alert">
+  <strong>Warning:</strong> One point requires clarification: the connection between $\mathbf{A}_i$ and $\mathbf{B}_j$. Normally Shor's relaxation would also have $\mathbf{A}_i$ -- why do they not appear here?
+</div>
+
 <p>As noted above, problem <strong>(D-I)</strong> is identitcal to Shor’s relaxation. To see, this we derive Shor’s relaxation here. We start by rewriting our original problem as the following QCQP:</p>
 
 \[\begin{aligned}
@@ -272,14 +276,7 @@
 
 <p>where we have introduced $\mathbf{B}_j$ – all matrices that span the null space of the feasible set. Those can be found by solving a nullspace problem, as formalized in the AutoTight method, or its variant AutoTemplate to scale to larger problem instances <a class="citation" href="#dumbgen_toward_2024">(Dümbgen et al., 2024)</a>.</p>
 
-<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us the following SDP:</p>
-
-\[\begin{aligned}
-\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
-\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
-                  &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
-                  &amp; \mathbf{X} \succeq 0
-\end{aligned}\]
+<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us exactly <strong>(D-I)</strong>.</p>
 
 <h3 id="conclusion">Conclusion</h3>
 

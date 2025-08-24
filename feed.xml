@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-24T12:31:31+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">KIPD: From Feasibility to Unconstrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html" rel="alternate" type="text/html" title="KIPD: From Feasibility to Unconstrained Minimization" /><published>2025-08-23T00:00:00+00:00</published><updated>2025-08-23T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/23/kipd-minimization</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-24T12:37:08+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">KIPD: From Feasibility to Unconstrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html" rel="alternate" type="text/html" title="KIPD: From Feasibility to Unconstrained Minimization" /><published>2025-08-23T00:00:00+00:00</published><updated>2025-08-23T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/23/kipd-minimization</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
 
 <p>In the last post, we explored how to determine if a polynomial $p(x)$ can be written as a sum of squares. This is a powerful tool for certifying that a polynomial is non-negative. But what if we want to find the <em>global minimum</em> of a polynomial? With only a few changes to the optimization problems, we can use SOS techniques to solve this, or at least find a good lower bound.</p>
 
@@ -135,6 +135,10 @@
 
 <h4 id="tangent-shors-relaxation">Tangent: Shor’s relaxation</h4>
 
+<div class="alert alert-warning" role="alert">
+  <strong>Warning:</strong> One point requires clarification: the connection between $\mathbf{A}_i$ and $\mathbf{B}_j$. Normally Shor's relaxation would also have $\mathbf{A}_i$ -- why do they not appear here?
+</div>
+
 <p>As noted above, problem <strong>(D-I)</strong> is identitcal to Shor’s relaxation. To see, this we derive Shor’s relaxation here. We start by rewriting our original problem as the following QCQP:</p>
 
 \[\begin{aligned}
@@ -145,14 +149,7 @@
 
 <p>where we have introduced $\mathbf{B}_j$ – all matrices that span the null space of the feasible set. Those can be found by solving a nullspace problem, as formalized in the AutoTight method, or its variant AutoTemplate to scale to larger problem instances <a class="citation" href="#dumbgen_toward_2024">(Dümbgen et al., 2024)</a>.</p>
 
-<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us the following SDP:</p>
-
-\[\begin{aligned}
-\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
-\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
-                  &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
-                  &amp; \mathbf{X} \succeq 0
-\end{aligned}\]
+<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us exactly <strong>(D-I)</strong>.</p>
 
 <h3 id="conclusion">Conclusion</h3>
 
