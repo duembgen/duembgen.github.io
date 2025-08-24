@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>KIPD: From Feasibility to Unconstrained Minimization</title>
+  <meta name="description" content="This is a follow-up to my previous post on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took ...">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html">
+  <link rel="alternate" type="application/rss+xml" title="Frederike Dümbgen" href="/feed.xml">
+  
+   
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112074562-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  
+
+   
+
+</head>
+
+<!-- MathJax script -->
+<script type="text/javascript">
+    window.MathJax = {
+            tex: {
+                      inlineMath: [['$', '$'], ['\\(', '\\)']],
+                      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                      packages: {'[+]': ['ams']}
+                    },
+            svg: {
+                      fontCache: 'global'
+                    }
+          };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+                                 src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+  
+  
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-header" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="site-title" href="/"> Frederike Dümbgen</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="menu-header">
+        <ul class="nav navbar-nav navbar-right">
+          
+            
+              
+              
+              <li><a href="/research-index">Research</a></li>
+              
+            
+              
+              
+              <li><a href="/publications-index">Publications</a></li>
+              
+            
+              
+              
+              <li><a href="/3_biography.html">Biography</a></li>
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+          
+        </ul>
+      </div> <!-- /.navbar-collapse -->
+    </div> <!-- /.container-fluid -->
+	</nav>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">KIPD: From Feasibility to Unconstrained Minimization</h1>
+    <p class="post-meta">
+      <time datetime="2025-08-23T00:00:00+00:00" itemprop="datePublished">
+        
+        Aug 23, 2025
+      </time>
+      </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
+
+<p>In the last post, we explored how to determine if a polynomial $p(x)$ can be written as a sum of squares. This is a powerful tool for certifying that a polynomial is non-negative. But what if we want to find the <em>global minimum</em> of a polynomial? With only a few changes to the optimization problems, we can use SOS techniques to solve this, or at least find a good lower bound.</p>
+
+<p>The starting point is the following problem: $\min_x p(x)$. Any problem of this form can be reformulated as follows:</p>
+
+\[\begin{aligned}
+\max_{\gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma \geq 0 \quad \forall x, \\
+\end{aligned}\]
+
+<p>i.e. we find the largest value $\gamma$ that lower-bounds $p(x)$. This is, in general, just as hard as our original problem. However, we can use the restriction that the shifted polynomial $p(x) - \gamma$ is a sum of squares. Gor univariate polynomials, this is an exact reformulation; for multivariate polynomials, it provides a lower bound to the optimal cost.  Thus we aim to solve:</p>
+
+\[\begin{aligned}
+\textbf{(SOS-opt)}\quad\max_{\gamma, \mathbf{X}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma = \mathbf{v}(x)^\top \mathbf{X} \mathbf{v}(x) \\
+&amp; \mathbf{X} \succeq 0
+\end{aligned}\]
+
+<p>Just like the feasibility problem, this SOS optimization problem, which we will call \textbf{SOS-opt} is a semidefinite program (SDP). And just like before, there are four related ways to formulate it: the Primal-Kernel, Primal-Image, Dual-Kernel, and Dual-Image form.</p>
+
+<h3 id="a-quick-overview">A Quick Overview</h3>
+
+<p>The problem of maximizing $\gamma$ such that $p(x) - \gamma$ is SOS can be formulated as an SDP in four ways. The key difference from the feasibility problem is that $\gamma$ is now an optimization variable, and the objective is no longer zero. The constant term of the polynomial, $p_0$, is now $p_0 - \gamma$. This small change propagates through all four formulations.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"><strong>Kernel Form</strong></th>
+      <th style="text-align: left"><strong>Image Form</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Primal</strong></td>
+      <td style="text-align: left"><strong>(P-K) Primal Kernel Problem</strong> <br /> Maximize $\gamma$ subject to linear coefficient-matching constraints on the Gram matrix $\mathbf{X}$. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}, \gamma} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle + \gamma = p_0 \\ &amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad \forall i&gt;0 \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(P-I) Primal Image Problem</strong> <br /> Maximize $\gamma$ subject to a parameterized Gram matrix being positive semidefinite. <br /><br /> \(\begin{aligned} \max_{\mathbf{s}, \gamma} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_{j} s_j \mathbf{B}_j \succeq 0 \end{aligned}\)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Dual</strong></td>
+      <td style="text-align: left"><strong>(D-K) Dual Kernel Problem</strong> <br /> Minimize a linear function of the polynomial’s coefficients. <br /><br /> \(\begin{aligned} \min_{\boldsymbol{\lambda}} \quad &amp; \sum_i \lambda_i p_i \\ \text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0 \\ &amp; \lambda_0 = 1 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(D-I) Dual Image Problem</strong> <br /> Minimize an inner product subject to normalization and orthogonality constraints. <br /><br /> \(\begin{aligned} \min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\ &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see these four optimization formulations at work in this Jupyter notebook:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-08-25-sos-optimization-primal-dual.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<p>Now, let’s look at how each of these is derived.</p>
+
+<h4 id="the-primal-kernel-form">The Primal Kernel Form</h4>
+
+<p>The primal formulation starts from $\textbf{(SOS-opt)}$ and simply matches coefficients between the left-hand and right-hand sides of the equality constraints  $p(x) - \gamma = v(x)^\top X v(x)$.</p>
+
+<p>For the running example from the previous blogpost, a univariate polynomial of degree 4 with $v(x) = [1, x, x²]^\top$, the constraints are:</p>
+<ul>
+  <li>$p_0 - \gamma = X_{00}$</li>
+  <li>$p_1 = 2X_{01}$</li>
+  <li>$p_2 = 2X_{02} + X_{11}$</li>
+  <li>$p_3 = 2X_{12}$</li>
+  <li>$p_4 = X_{22}$</li>
+</ul>
+
+<p>Note that these equations are almost identical to the ones in the feasibility problem, only the first element and cost function now contain $\gamma$.</p>
+
+<p>The most direct approach is to make $\gamma$ and the entries of $X$ our optimization variables. This gives the <strong>primal kernel</strong> formulation.</p>
+
+\[\textbf{(P-K)}\quad
+\begin{align}
+\max_{\mathbf{X}, \gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle + \gamma = p_0 \\
+&amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad i=1, \dots, 4 \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<p>The matrices $A_i$ are the same as in the feasibility problem, used to extract the correct combinations of elements from $X$. This is an SDP where we are maximizing $\gamma$ over the set of feasible Gram matrices.</p>
+
+<h4 id="the-primal-image-form">The Primal Image Form</h4>
+
+<p>The <strong>primal image</strong> form again parameterizes the space of all valid Gram matrices. Any $\mathbf{X}$ satisfying the coefficient-matching equations for $p(x) - \gamma$ can be written as:</p>
+
+\[\mathbf{X} = \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_j s_j \mathbf{B}_j\]
+
+<p>Here, $\mathbf{Y}(\mathbf{p})$ is the same matrix as in the feasibility problem, constructed from the coefficients of the original polynomial $p(x)$. Again, the problem is exactly the same as for the feasibility case, only that the $-\gamma \mathbf{A}_0$ term adjusts the constant coefficient. The $\mathbf{B}_j$ matrices span the null space of the feasible set, as before.</p>
+
+<p>The optimization problem is to find the largest $\gamma$ for which there exist slack variables $s_j$ that make this matrix positive semidefinite.</p>
+
+\[\textbf{(P-I)}\quad
+\begin{align}
+\max_{\mathbf{s}, \gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_j s_j \mathbf{B}_j \succeq 0
+\end{align}\]
+
+<blockquote>
+  <p>For people familiar with the QCQP + rank-relaxation approach (a.k.a. Shor’s relaxation): this problem is exactly the dual of the rank realxation! In particular, $\mathbf{Y}(\mathbf{p})$ is the cost matrix – in other words, $p(x)=v(x)^\top\mathbf{Y}(\mathbf{p})v(x)$.</p>
+</blockquote>
+
+<h3 id="the-dual-problems">The Dual Problems</h3>
+
+<p>We assume that strong duality duality holds for these SDPs, meaning the optimal value of the dual problem will be equal to the optimal $\gamma$ of the primal problem.</p>
+
+<h4 id="dual-of-the-kernel-form">Dual of the Kernel Form</h4>
+
+<p>Taking the Lagrangian dual of the Primal Kernel problem (P-K) yields the <strong>Dual Kernel</strong> formulation. We introduce dual variables $\lambda_i$ for each of the linear constraints. The derivation (similar to the one in the appendix of the previous post) leads to a remarkably structured problem:</p>
+
+\[\textbf{(D-K)}\quad
+\begin{align}
+\min_{\boldsymbol{\lambda}} \quad &amp; \sum_{i=0}^4 \lambda_i p_i \\
+\text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0 \\
+&amp; \lambda_0 = 1
+\end{align}\]
+
+<p>This problem minimizes a linear combination of the original polynomial’s coefficients, subject to an semidefinite constraint and a normalization constraint $\lambda_0 = 1$.</p>
+
+<!--This dual formulation is particularly elegant because it connects to the theory of moments and positive polynomials. The vector $\lambda$ can be interpreted as a vector of pseudo-moments.-->
+
+<h4 id="dual-of-the-image-form">Dual of the Image Form</h4>
+
+<p>Finally, the dual of the Primal Image problem (P-I) gives us the <strong>Dual Image</strong> formulation:</p>
+
+\[\textbf{(D-I)}\quad
+\begin{align}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+&amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<blockquote>
+  <p>Note that this is exactly the same optimization problem as we get through Shor’s relaxation (after adding all redundant constraints). Maybe confusingly, it is often referred to as the Primal problem in that context. This is not surprising since we already made the observation that the Primal-Image form looks like the dual in those formulations.</p>
+</blockquote>
+
+<h4 id="tangent-shors-relaxation">Tangent: Shor’s relaxation</h4>
+
+<p>As noted above, problem <strong>(D-I)</strong> is identitcal to Shor’s relaxation. To see, this we derive Shor’s relaxation here. We start by rewriting our original problem as the following QCQP:</p>
+
+\[\begin{aligned}
+\min_x \quad &amp; \mathbf{x}^\top \mathbf{Y}(\mathbf{p}) \mathbf{x} \\
+\text{s.t.} \quad &amp; \mathbf{x}^\top \mathbf{A}_0 \mathbf{x} = 1 \\
+                  &amp; \mathbf{x}^\top \mathbf{B}_j \mathbf{x} = 0 \quad \forall j
+\end{aligned}\]
+
+<p>where we have introduced $\mathbf{B}_j$ – all matrices that span the null space of the feasible set. Those can be found by solving a nullspace problem, as formalized in the AutoTight method, or its variant AutoTemplate to scale to larger problem instances <a class="citation" href="#dumbgen_toward_2024">(Dümbgen et al., 2024)</a>.</p>
+
+<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us the following SDP:</p>
+
+\[\begin{aligned}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+                  &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
+                  &amp; \mathbf{X} \succeq 0
+\end{aligned}\]
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>By shifting from a feasibility problem to an optimization problem, we can use SOS methods to find guaranteed lower bounds on the global minimum of a polynomial. The four formulations—Primal-Kernel, Primal-Image, and their respective duals—all solve the same underlying problem but offer different computational and theoretical perspectives. Strong duality ensures that no matter which formulation you choose, you will arrive at the same optimal lower bound, $\gamma*$. The choice of which to implement often depends on the specific structure of the problem, such as the number of variables and the degree of the polynomial, which can affect the size and complexity of the resulting SDP.</p>
+
+<h3 id="references--further-reading">References / further reading</h3>
+
+<p>The topic of SOS optimization is a cornerstone of polynomial optimization. The formulations discussed here are detailed in many standard texts and tutorials on the subject. A foundational reference is:
+<a class="citation" href="#parrilo_semidefinite_2003">(Parrilo, 2003)</a></p>
+
+<h3 id="bibliography">Bibliography</h3>
+
+<ol class="bibliography"><li><span id="dumbgen_toward_2024">Dümbgen, F., Holmes, C., Agro, B., &amp; Barfoot, T. D. (2024). Toward Globally Optimal State Estimation Using Automatically Tightened Semidefinite Relaxations. <i>IEEE Transactions on Robotics</i>, <i>40</i>, 4338–4358.</span></li>
+<li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Contact and more</h2>
+
+    <div class=footer-col-wrapper>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <ul class="contact-list">
+          <li> firstname.lastname(replace ü with ue)@gmail.com </li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul class="social-media-list">
+            
+            <li>
+              <a href="https://github.com/duembgen">
+  <span class="icon icon--github"><svg viewBox="0 0 16 16" width="16px" height="16px"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"
+  />
+</svg>
+</span>
+  <span class="username">Github</span>
+</a>
+
+            </li>
+            
+            
+            
+            <li>
+              <a href="https://www.linkedin.com/in/duembgen">
+	<span class="icon  icon--linkedin"><!-- <svg viewBox="0 50 512 512" > -->
+<svg viewBox="0 50 512 512" width="16px" height="16px">
+  <path fill="#828282" d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683
+  C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z
+  M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615
+  c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915
+  s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z"/>
+</svg>
+</span>
+	<span class="username">Linkedin</span>
+</a>
+
+            </li>
+            
+
+            
+
+            
+            <li>
+              <a href="https://scholar.google.com/citations?user=_ABmvmkAAAAJ">
+  <span class="icon icon--scholar"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="16pt"
+   height="16pt"
+   viewBox="0 0 16 16"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg4692"
+   sodipodi:docname="icon-scholar2.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata4698">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4696" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
+     id="namedview4694"
+     showgrid="false"
+     inkscape:zoom="15.404049"
+     inkscape:cx="14.083712"
+     inkscape:cy="18.92775"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4692" />
+  <g
+     transform="matrix(0.00533566,0,0,-0.00533566,0.0375594,16.302718)"
+     id="g4690"
+     style="fill:#000000;fill-opacity:0.32242988;stroke:none">
+    <path
+       d="m 971,2987 c -6,-8 -7,-18 -3,-22 4,-5 2,-5 -4,-2 -7,4 -27,-8 -45,-26 -19,-17 -44,-39 -55,-47 -12,-8 -50,-41 -85,-72 -61,-54 -126,-111 -217,-189 -23,-20 -38,-40 -34,-44 4,-5 2,-5 -5,-2 -6,4 -23,-7 -37,-24 -14,-17 -26,-27 -26,-23 0,4 -11,-3 -25,-16 -13,-12 -22,-27 -18,-33 3,-6 1,-7 -6,-3 -7,5 -29,-10 -57,-37 -25,-25 -46,-45 -48,-44 -8,6 -117,-103 -112,-112 4,-6 1,-9 -7,-6 -17,7 -89,-55 -83,-71 3,-8 0,-11 -10,-7 -15,5 -54,-22 -54,-38 0,-5 138,-10 308,-11 l 307,-3 -3,-25 c -7,-68 41,-276 61,-263 6,3 7,1 3,-5 -9,-15 58,-108 75,-104 8,2 11,0 7,-3 -12,-12 12,-47 27,-41 9,3 12,0 9,-8 -3,-7 6,-18 18,-24 13,-7 38,-23 56,-37 37,-26 126,-63 182,-73 19,-4 81,-7 138,-7 56,0 102,-2 102,-5 0,-3 -7,-23 -15,-45 -30,-83 -8,-204 50,-281 45,-59 46,-58 -83,-69 -67,-6 -110,-12 -269,-42 -18,-3 -31,-8 -29,-12 2,-3 -10,-7 -28,-8 -43,-2 -170,-58 -236,-104 -94,-65 -183,-168 -173,-198 4,-9 3,-13 -2,-9 -11,10 -46,-59 -52,-102 -13,-95 -14,-121 -4,-175 16,-88 85,-207 113,-197 5,1 7,-4 6,-10 -2,-7 3,-12 10,-10 8,1 11,-2 8,-6 -7,-13 30,-46 43,-38 5,4 13,1 17,-5 4,-8 3,-9 -4,-5 -7,4 -12,5 -12,3 0,-12 114,-68 127,-63 8,3 12,2 8,-3 -9,-16 147,-60 270,-77 132,-17 348,3 490,47 92,28 194,75 212,97 8,9 11,10 7,2 -10,-19 44,14 64,38 6,9 12,12 12,8 0,-5 7,-3 15,4 8,7 12,17 8,23 -3,6 -1,7 5,3 7,-4 12,-2 12,4 0,6 4,9 9,6 4,-3 17,4 27,16 12,13 13,18 4,13 -12,-8 -12,-5 1,15 9,14 22,25 30,25 16,0 90,115 92,144 1,12 4,21 8,21 3,0 11,24 17,53 13,55 15,230 4,223 -4,-2 -7,12 -8,32 0,44 -49,156 -64,147 -5,-3 -8,0 -5,7 7,17 -64,100 -79,91 -6,-3 -8,-2 -3,2 9,10 -41,65 -60,65 -7,0 -13,3 -13,8 0,4 -19,22 -41,41 -40,33 -40,33 -62,15 -22,-19 -22,-19 -4,2 16,20 16,21 -1,37 -21,19 -37,22 -26,5 5,-7 3,-8 -5,-4 -7,5 -10,10 -7,13 3,3 -15,28 -39,55 -25,28 -45,54 -45,60 0,5 -4,7 -8,4 -8,-5 -11,11 -13,82 -1,51 36,119 89,166 142,122 243,241 227,267 -5,7 -4,10 3,5 14,-8 48,105 57,189 7,62 -9,191 -25,211 -6,6 -7,14 -3,17 3,4 1,7 -5,7 -6,0 -9,7 -5,17 4,11 3,14 -5,9 -8,-4 -10,-2 -6,7 3,8 1,18 -5,22 -18,10 -12,39 12,57 137,107 186,151 181,160 -4,7 -2,8 4,4 7,-4 12,-2 12,4 0,6 4,9 9,6 4,-3 17,4 27,16 11,12 14,19 8,15 -6,-3 -11,0 -11,8 0,10 5,11 17,5 12,-6 21,-3 32,10 9,10 13,22 10,26 -4,4 -2,4 5,1 12,-7 100,60 96,74 -2,5 4,6 12,3 11,-5 15,-23 15,-75 0,-65 -2,-70 -25,-79 l -24,-9 -1,-526 c 0,-398 3,-525 12,-525 6,0 8,-3 5,-7 -4,-3 0,-15 10,-25 25,-28 103,-25 131,5 l 22,23 v 527 527 l -25,12 c -24,11 -25,15 -25,98 0,55 -5,91 -12,99 -10,11 -10,13 0,7 11,-7 18,13 12,39 -1,6 2,7 5,3 11,-10 47,11 40,23 -4,5 -3,8 2,7 16,-5 54,24 50,37 -4,8 1,11 13,8 10,-3 21,0 24,6 5,7 -230,11 -792,11 -660,0 -801,-2 -811,-13 z m 389,-347 c 30,-10 59,-16 65,-13 5,4 7,3 3,-2 -7,-7 39,-50 53,-50 9,0 24,-15 24,-24 0,-14 43,-60 50,-53 3,4 5,3 4,-3 -5,-14 33,-75 43,-69 4,3 5,-3 1,-12 -5,-13 -3,-15 7,-9 9,5 11,4 6,-3 -4,-6 2,-28 12,-49 43,-85 66,-202 67,-333 0,-122 -1,-126 -34,-195 -19,-38 -33,-74 -32,-78 1,-5 -3,-6 -8,-3 -12,8 -29,-15 -26,-36 2,-10 -1,-20 -5,-23 -5,-3 -7,4 -5,15 4,20 3,20 -28,-2 -18,-12 -34,-25 -37,-28 -3,-3 -12,-6 -20,-7 -8,-1 -39,-6 -67,-12 -38,-7 -69,-7 -110,1 -32,6 -64,11 -70,11 -7,0 -13,4 -13,9 0,4 -6,8 -13,8 -7,0 -42,28 -77,62 -36,34 -69,61 -73,60 -5,-1 -6,2 -3,7 3,5 -12,39 -34,75 -23,37 -43,80 -47,96 -3,17 -10,30 -15,30 -5,0 -7,3 -4,8 2,4 -2,32 -10,62 -25,96 -29,236 -9,310 10,36 18,73 18,82 1,9 4,15 8,12 4,-2 12,9 19,25 6,16 20,37 31,47 10,9 16,21 12,27 -3,5 -1,7 4,4 13,-8 36,17 25,28 -4,5 -1,5 6,1 7,-4 20,-2 28,5 22,18 101,38 154,38 25,0 70,-8 100,-19 z m -725,-19 c 3,-5 2,-12 -3,-15 -5,-3 -9,1 -9,9 0,17 3,19 12,6 z m -115,-75 c 0,-2 -8,-10 -17,-17 -16,-13 -17,-12 -4,4 13,16 21,21 21,13 z m 1190,-831 c 0,-2 -6,-8 -13,-14 -10,-8 -14,-7 -14,2 0,8 6,14 14,14 7,0 13,-1 13,-2 z m -315,-493 c -3,-3 -11,0 -18,7 -9,10 -8,11 6,5 10,-3 15,-9 12,-12 z m 187,-183 c 40,-28 83,-60 95,-71 12,-12 27,-17 34,-13 7,5 10,4 6,-2 -8,-13 17,-36 27,-25 4,4 6,0 4,-8 -2,-8 3,-14 10,-12 8,1 11,-2 8,-7 -6,-9 22,-37 33,-35 3,1 5,-2 3,-7 -1,-5 11,-27 27,-50 16,-22 33,-53 36,-70 4,-16 10,-27 13,-25 4,2 8,-29 10,-69 4,-87 -14,-164 -54,-225 -15,-25 -27,-49 -25,-55 1,-5 -1,-7 -4,-3 -4,4 -22,-3 -39,-16 -45,-34 -133,-77 -191,-93 -81,-22 -220,-27 -320,-13 -111,17 -108,16 -117,20 -5,1 -11,3 -15,4 -5,1 -25,10 -46,19 -21,9 -45,14 -55,11 -13,-5 -14,-4 -4,4 11,7 7,11 -15,16 -15,4 -42,18 -60,32 -17,13 -36,24 -42,24 -6,0 -11,7 -11,15 0,13 -11,19 -31,17 -3,-1 -6,5 -6,11 0,7 -12,31 -26,54 -15,24 -27,47 -27,53 0,6 -3,9 -7,7 -11,-7 -17,52 -17,158 0,85 2,94 37,159 20,38 37,66 37,61 0,-4 18,10 39,31 22,21 37,42 34,47 -3,6 -2,7 4,4 12,-8 173,57 184,75 5,7 9,8 9,3 0,-7 29,-5 83,6 47,10 130,18 194,18 l 113,1 z"
+       id="path4686"
+       style="fill:#000000;fill-opacity:0.32242988"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 1955,390 c -3,-5 -1,-10 4,-10 6,0 11,5 11,10 0,6 -2,10 -4,10 -3,0 -8,-4 -11,-10 z"
+       id="path4688"
+       style="fill:#000000;fill-opacity:0.32242988"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
+</span>
+  <span class="username">Google Scholar</span>
+</a>
+
+            </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Latest compiled and minified JavaScript -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+
+</html>

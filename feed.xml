@@ -1,6 +1,174 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-18T18:35:11+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">Writing blog-posts in 2025</title><link href="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html" rel="alternate" type="text/html" title="Writing blog-posts in 2025" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025</id><content type="html" xml:base="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html"><![CDATA[<p><em>I created this blogpost when writing <a href="/research/2025/08/18/kernel-image-primal-dual.html">this other post</a> but I might keep reiterating as I refine my methodology.</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-24T11:57:50+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">KIPD: From Feasibility to Unconstrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html" rel="alternate" type="text/html" title="KIPD: From Feasibility to Unconstrained Minimization" /><published>2025-08-23T00:00:00+00:00</published><updated>2025-08-23T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/23/kipd-minimization</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/23/kipd-minimization.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
 
-<p>This is a recipe for how I am writing blogposts, with a little help from LLMs (Gemini, in my case). By sharing how I am using this tool I hope to either tell you something that you might find helpful, or to hear from you how I could improve my pipeline.</p>
+<p>In the last post, we explored how to determine if a polynomial $p(x)$ can be written as a sum of squares. This is a powerful tool for certifying that a polynomial is non-negative. But what if we want to find the <em>global minimum</em> of a polynomial? With only a few changes to the optimization problems, we can use SOS techniques to solve this, or at least find a good lower bound.</p>
+
+<p>The starting point is the following problem: $\min_x p(x)$. Any problem of this form can be reformulated as follows:</p>
+
+\[\begin{aligned}
+\max_{\gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma \geq 0 \quad \forall x, \\
+\end{aligned}\]
+
+<p>i.e. we find the largest value $\gamma$ that lower-bounds $p(x)$. This is, in general, just as hard as our original problem. However, we can use the restriction that the shifted polynomial $p(x) - \gamma$ is a sum of squares. Gor univariate polynomials, this is an exact reformulation; for multivariate polynomials, it provides a lower bound to the optimal cost.  Thus we aim to solve:</p>
+
+\[\begin{aligned}
+\textbf{(SOS-opt)}\quad\max_{\gamma, \mathbf{X}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma = \mathbf{v}(x)^\top \mathbf{X} \mathbf{v}(x) \\
+&amp; \mathbf{X} \succeq 0
+\end{aligned}\]
+
+<p>Just like the feasibility problem, this SOS optimization problem, which we will call \textbf{SOS-opt} is a semidefinite program (SDP). And just like before, there are four related ways to formulate it: the Primal-Kernel, Primal-Image, Dual-Kernel, and Dual-Image form.</p>
+
+<h3 id="a-quick-overview">A Quick Overview</h3>
+
+<p>The problem of maximizing $\gamma$ such that $p(x) - \gamma$ is SOS can be formulated as an SDP in four ways. The key difference from the feasibility problem is that $\gamma$ is now an optimization variable, and the objective is no longer zero. The constant term of the polynomial, $p_0$, is now $p_0 - \gamma$. This small change propagates through all four formulations.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"><strong>Kernel Form</strong></th>
+      <th style="text-align: left"><strong>Image Form</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Primal</strong></td>
+      <td style="text-align: left"><strong>(P-K) Primal Kernel Problem</strong> <br /> Maximize $\gamma$ subject to linear coefficient-matching constraints on the Gram matrix $\mathbf{X}$. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}, \gamma} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle + \gamma = p_0 \\ &amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad \forall i&gt;0 \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(P-I) Primal Image Problem</strong> <br /> Maximize $\gamma$ subject to a parameterized Gram matrix being positive semidefinite. <br /><br /> \(\begin{aligned} \max_{\mathbf{s}, \gamma} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_{j} s_j \mathbf{B}_j \succeq 0 \end{aligned}\)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Dual</strong></td>
+      <td style="text-align: left"><strong>(D-K) Dual Kernel Problem</strong> <br /> Minimize a linear function of the polynomial’s coefficients. <br /><br /> \(\begin{aligned} \min_{\boldsymbol{\lambda}} \quad &amp; \sum_i \lambda_i p_i \\ \text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0 \\ &amp; \lambda_0 = 1 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(D-I) Dual Image Problem</strong> <br /> Minimize an inner product subject to normalization and orthogonality constraints. <br /><br /> \(\begin{aligned} \min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\ &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see these four optimization formulations at work in this Jupyter notebook:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-08-25-sos-optimization-primal-dual.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<p>Now, let’s look at how each of these is derived.</p>
+
+<h4 id="the-primal-kernel-form">The Primal Kernel Form</h4>
+
+<p>The primal formulation starts from $\textbf{(SOS-opt)}$ and simply matches coefficients between the left-hand and right-hand sides of the equality constraints  $p(x) - \gamma = v(x)^\top X v(x)$.</p>
+
+<p>For the running example from the previous blogpost, a univariate polynomial of degree 4 with $v(x) = [1, x, x²]^\top$, the constraints are:</p>
+<ul>
+  <li>$p_0 - \gamma = X_{00}$</li>
+  <li>$p_1 = 2X_{01}$</li>
+  <li>$p_2 = 2X_{02} + X_{11}$</li>
+  <li>$p_3 = 2X_{12}$</li>
+  <li>$p_4 = X_{22}$</li>
+</ul>
+
+<p>Note that these equations are almost identical to the ones in the feasibility problem, only the first element and cost function now contain $\gamma$.</p>
+
+<p>The most direct approach is to make $\gamma$ and the entries of $X$ our optimization variables. This gives the <strong>primal kernel</strong> formulation.</p>
+
+\[\textbf{(P-K)}\quad
+\begin{align}
+\max_{\mathbf{X}, \gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle + \gamma = p_0 \\
+&amp; \langle \mathbf{X}, \mathbf{A}_i \rangle = p_i, \quad i=1, \dots, 4 \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<p>The matrices $A_i$ are the same as in the feasibility problem, used to extract the correct combinations of elements from $X$. This is an SDP where we are maximizing $\gamma$ over the set of feasible Gram matrices.</p>
+
+<h4 id="the-primal-image-form">The Primal Image Form</h4>
+
+<p>The <strong>primal image</strong> form again parameterizes the space of all valid Gram matrices. Any $\mathbf{X}$ satisfying the coefficient-matching equations for $p(x) - \gamma$ can be written as:</p>
+
+\[\mathbf{X} = \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_j s_j \mathbf{B}_j\]
+
+<p>Here, $\mathbf{Y}(\mathbf{p})$ is the same matrix as in the feasibility problem, constructed from the coefficients of the original polynomial $p(x)$. Again, the problem is exactly the same as for the feasibility case, only that the $-\gamma \mathbf{A}_0$ term adjusts the constant coefficient. The $\mathbf{B}_j$ matrices span the null space of the feasible set, as before.</p>
+
+<p>The optimization problem is to find the largest $\gamma$ for which there exist slack variables $s_j$ that make this matrix positive semidefinite.</p>
+
+\[\textbf{(P-I)}\quad
+\begin{align}
+\max_{\mathbf{s}, \gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 + \sum_j s_j \mathbf{B}_j \succeq 0
+\end{align}\]
+
+<blockquote>
+  <p>For people familiar with the QCQP + rank-relaxation approach (a.k.a. Shor’s relaxation): this problem is exactly the dual of the rank realxation! In particular, $\mathbf{Y}(\mathbf{p})$ is the cost matrix – in other words, $p(x)=v(x)^\top\mathbf{Y}(\mathbf{p})v(x)$.</p>
+</blockquote>
+
+<h3 id="the-dual-problems">The Dual Problems</h3>
+
+<p>We assume that strong duality duality holds for these SDPs, meaning the optimal value of the dual problem will be equal to the optimal $\gamma$ of the primal problem.</p>
+
+<h4 id="dual-of-the-kernel-form">Dual of the Kernel Form</h4>
+
+<p>Taking the Lagrangian dual of the Primal Kernel problem (P-K) yields the <strong>Dual Kernel</strong> formulation. We introduce dual variables $\lambda_i$ for each of the linear constraints. The derivation (similar to the one in the appendix of the previous post) leads to a remarkably structured problem:</p>
+
+\[\textbf{(D-K)}\quad
+\begin{align}
+\min_{\boldsymbol{\lambda}} \quad &amp; \sum_{i=0}^4 \lambda_i p_i \\
+\text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0 \\
+&amp; \lambda_0 = 1
+\end{align}\]
+
+<p>This problem minimizes a linear combination of the original polynomial’s coefficients, subject to an semidefinite constraint and a normalization constraint $\lambda_0 = 1$.</p>
+
+<!--This dual formulation is particularly elegant because it connects to the theory of moments and positive polynomials. The vector $\lambda$ can be interpreted as a vector of pseudo-moments.-->
+
+<h4 id="dual-of-the-image-form">Dual of the Image Form</h4>
+
+<p>Finally, the dual of the Primal Image problem (P-I) gives us the <strong>Dual Image</strong> formulation:</p>
+
+\[\textbf{(D-I)}\quad
+\begin{align}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+&amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<blockquote>
+  <p>Note that this is exactly the same optimization problem as we get through Shor’s relaxation (after adding all redundant constraints). Maybe confusingly, it is often referred to as the Primal problem in that context. This is not surprising since we already made the observation that the Primal-Image form looks like the dual in those formulations.</p>
+</blockquote>
+
+<h4 id="tangent-shors-relaxation">Tangent: Shor’s relaxation</h4>
+
+<p>As noted above, problem <strong>(D-I)</strong> is identitcal to Shor’s relaxation. To see, this we derive Shor’s relaxation here. We start by rewriting our original problem as the following QCQP:</p>
+
+\[\begin{aligned}
+\min_x \quad &amp; \mathbf{x}^\top \mathbf{Y}(\mathbf{p}) \mathbf{x} \\
+\text{s.t.} \quad &amp; \mathbf{x}^\top \mathbf{A}_0 \mathbf{x} = 1 \\
+                  &amp; \mathbf{x}^\top \mathbf{B}_j \mathbf{x} = 0 \quad \forall j
+\end{aligned}\]
+
+<p>where we have introduced $\mathbf{B}_j$ – all matrices that span the null space of the feasible set. Those can be found by solving a nullspace problem, as formalized in the AutoTight method, or its variant AutoTemplate to scale to larger problem instances <a class="citation" href="#dumbgen_toward_2024">(Dümbgen et al., 2024)</a>.</p>
+
+<p>Shor’s relaxation consists of introducing a new variable $\mathbf{X} = \mathbf{x}\mathbf{x}^\top$ and dropping the non-convex rank-1 constraint on $\mathbf{X}$. This gives us the following SDP:</p>
+
+\[\begin{aligned}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+                  &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0 \quad \forall j \\
+                  &amp; \mathbf{X} \succeq 0
+\end{aligned}\]
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>By shifting from a feasibility problem to an optimization problem, we can use SOS methods to find guaranteed lower bounds on the global minimum of a polynomial. The four formulations—Primal-Kernel, Primal-Image, and their respective duals—all solve the same underlying problem but offer different computational and theoretical perspectives. Strong duality ensures that no matter which formulation you choose, you will arrive at the same optimal lower bound, $\gamma*$. The choice of which to implement often depends on the specific structure of the problem, such as the number of variables and the degree of the polynomial, which can affect the size and complexity of the resulting SDP.</p>
+
+<h3 id="references--further-reading">References / further reading</h3>
+
+<p>The topic of SOS optimization is a cornerstone of polynomial optimization. The formulations discussed here are detailed in many standard texts and tutorials on the subject. A foundational reference is:
+<a class="citation" href="#parrilo_semidefinite_2003">(Parrilo, 2003)</a></p>
+
+<h3 id="bibliography">Bibliography</h3>
+
+<ol class="bibliography"><li><span id="dumbgen_toward_2024">Dümbgen, F., Holmes, C., Agro, B., &amp; Barfoot, T. D. (2024). Toward Globally Optimal State Estimation Using Automatically Tightened Semidefinite Relaxations. <i>IEEE Transactions on Robotics</i>, <i>40</i>, 4338–4358.</span></li>
+<li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[This is a follow-up to my previous post on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in other post about writing blog-posts with the helpf of Gemini]]></summary></entry><entry><title type="html">Writing blog-posts in 2025</title><link href="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html" rel="alternate" type="text/html" title="Writing blog-posts in 2025" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025</id><content type="html" xml:base="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html"><![CDATA[<p><em>I created this blogpost when writing <a href="/research/2025/08/18/kernel-image-primal-dual.html">this other post</a> and the follow-up post <a href="/research/2025/08/24/kipd-minimization.html">here</a>.</em></p>
+
+<p>This is a recipe for how I am writing blogposts, with a little help from LLMs (Gemini, in my case). By sharing how I am using this tool I hope to either tell you something that you might find helpful, or to hear from you about how I could improve my pipeline.</p>
 
 <h2 id="first-step-hand-write-notes">First step: hand-write notes</h2>
 
@@ -81,6 +249,30 @@ The original post is attached below.
 </code></pre></div></div>
 <p>I attached my new <a href="/assets/pdfs/KernelImagePrimalDual_v2.pdf">notes</a> and the blogpost source file. The output was pretty usable after a few minor edits.</p>
 
+<h2 id="follow-up-blogpost">Follow-up blogpost</h2>
+
+<p>I came back to the original blogpost a week later because I needed an evolution of the material described. In particular, I wanted to see what happens to these four formulations when you add a cost, ie, when you are actually minimizing a polynomial. I started with some handwritten notes but I realized that it soon became an almost purely mechanic exercise of reformulating the problems.</p>
+
+<p>So instead, I turned directly to Gemini and asked the following:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I have a blogpost (see attached .md) about SOS feasibility problems using 4 different formulations: Kernel-Primal, Kernel-Dual, Image-Primal, Image-Dual. Now I would like to  extend this to the minimization setup where we want to solve:
+max gamma s.t. p(x) - gamma = v(x)'Xv(x0, X&gt;=0. For univariate polynomials, this will always provide the solution to the problem min p(x). For multivariate polynomials it will at least provide a lower bound.
+
+Can you create a new blog post, following closely the structure of the original blog post, where you treat this variation of the problem? In particular, I want to see a table with the 4 problem formulations and one section for each. Also, I want you to create python notebook that implements this variation.
+
+<span class="gs">**As always, follow these instructions when writing Markdown code for my Jekyll blog:**</span>
+<span class="p">
+-</span> inline math should be surrounded by $. Avoid using symbols like γ and use $<span class="se">\g</span>amma$ instead.
+<span class="p">-</span> full equations should be marked by $$, using a space before and after for correct formatting.
+<span class="ge">**</span>
+</code></pre></div></div>
+<p>After only 30.6 seconds of thinking, it output a blogpost and a runnable jupyter notebook. The only edits I had to do were:</p>
+
+<ul>
+  <li>Fix some notation from symbols to LaTeX math. I added a little general instruction in the prompt for future use.</li>
+  <li></li>
+</ul>
+
 <h2 id="conclusion">Conclusion</h2>
 
 <p>After almost a full day of work (I started this at ca. 11:30, I am done now and it is 19:00), I have</p>
@@ -96,7 +288,7 @@ The original post is attached below.
   </li>
 </ul>
 
-<p>I wish I knew how much time I actually saved by using Gemini, and if I would have found my mistake more easily had I not been in “LLM” mode with my brain. But it for sure felt like a pleasant and productive day, and I did learn a ton, not only about optimization but also about interacting with Gemini.</p>]]></content><author><name></name></author><category term="misc" /><summary type="html"><![CDATA[I created this blogpost when writing this other post but I might keep reiterating as I refine my methodology.]]></summary></entry><entry><title type="html">Kernel-Image-Primal-Dual: Navigating SOS Formulations</title><link href="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html" rel="alternate" type="text/html" title="Kernel-Image-Primal-Dual: Navigating SOS Formulations" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html"><![CDATA[<p><em>I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing <a href="/misc/2025/08/18/blog-posts-in-2025.html">another blogpost</a> about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.</em></p>
+<p>I wish I knew how much time I actually saved by using Gemini, and if I would have found my mistake more easily had I not been in “LLM” mode with my brain. But it for sure felt like a pleasant and productive day, and I did learn a ton, not only about optimization but also about interacting with Gemini.</p>]]></content><author><name></name></author><category term="misc" /><summary type="html"><![CDATA[I created this blogpost when writing this other post and the follow-up post here.]]></summary></entry><entry><title type="html">KIPD: Navigating Formulations for SOS Feasibility</title><link href="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html" rel="alternate" type="text/html" title="KIPD: Navigating Formulations for SOS Feasibility" /><published>2025-08-18T00:00:00+00:00</published><updated>2025-08-18T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/18/kernel-image-primal-dual.html"><![CDATA[<p><em>I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing <a href="/misc/2025/08/18/blog-posts-in-2025.html">another blogpost</a> about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.</em></p>
 
 <p>Checking if a polynomial is non-negative is a fundamental problem that appears in many areas of engineering and mathematics. While checking for non-negativity is computationally hard in general, a powerful sufficient condition is to check if the polynomial can be written as a sum of squares (SOS) of other polynomials. This condition is not only tractable—it can be checked by solving a semidefinite program (SDP)—but it is also a key component in a wide range of optimization methods for polynomial systems.</p>
 
@@ -104,7 +296,7 @@ The original post is attached below.
 
 <p>My motivation to write this blogpost was the misconception I had about this topic. I recently watched a nice <a href="https://www.youtube.com/watch?v=CGPHaHxCG2w&amp;t=815s">talk</a> that helped me uncover this misconception: one can solve a SOS problem in kernel <em>or</em> in image form, <em>and</em> in dual <em>or</em> primal form – so there are really 4 options. In my head, the lines between the dual/image and primal/kernel, respectively, were kind of blurred.</p>
 
-<h3 id="a-quick-overview">A Quick Overview</h3>
+<h3 id="kernel-image-primal-dual-kipd-formulations">Kernel-Image-Primal-Dual (KIPD) Formulations</h3>
 
 <p>Checking if a polynomial is a sum of squares (SOS) can be formulated as a semidefinite programming (SDP) feasibility problem. There are four common ways to frame this problem, arising from two primal perspectives (Kernel and Image) and their corresponding duals. The table below presents the general form of each of these four formulations.</p>
 
@@ -125,7 +317,7 @@ The original post is attached below.
     <tr>
       <td style="text-align: left"><strong>Dual</strong></td>
       <td style="text-align: left"><strong>(D-K) Dual Kernel Problem</strong> <br /> Maximize a linear function of the coefficients subject to a linear matrix inequality. <br /><br /> \(\begin{aligned} \max_{\boldsymbol{\lambda}} \quad &amp; -\sum_i \lambda_i p_i \\ \text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0 \end{aligned}\)</td>
-      <td style="text-align: left"><strong>(D-I) Dual Image Problem</strong> <br /> Maximize an inner product subject to orthogonality constraints. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}} \quad &amp; -\langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(Dm-I) Dual Image Problem</strong> <br /> Maximize an inner product subject to orthogonality constraints. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}} \quad &amp; -\langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
     </tr>
   </tbody>
 </table>
@@ -223,13 +415,14 @@ p_1/2 &amp; p_2+s &amp; p_3/2 \\
 
 <p>Starting with the primal kernel problem (P-K), we can form its Lagrangian and derive the dual problem. The derivation is standard, and provided in the <a href="#derivation-of-the-dual-problem">Appendix</a>. Calling the dual variables of the linear constraints $\lambda_i$, we obtain the dual optimization problem:</p>
 
-\[\textbf{(D-K)}\quad
+\[\textbf{(mD-K)}\quad
 \begin{align}
 \max_{\boldsymbol{\lambda}} \quad &amp; -\sum_{i=0}^4 \lambda_i p_i \\
 \text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i \mathbf{A}_i \succeq 0
 \end{align}\]
 
-<p>For our example, the matrix in the constraint, $\sum \lambda_i \mathbf{A}_i$, turns out to be a beautiful and structured matrix—a Hankel matrix:</p>
+<p>We (mD-K) stands for “maximization Dual-Kernel” method, to distinguish from the feasibility problem (D-K) that we will derive later. 
+For our example, the matrix in the constraint, $\sum \lambda_i \mathbf{A}_i$, turns out to be a beautiful and structured matrix—a Hankel matrix:</p>
 
 \[\sum_{i=0}^4 \lambda_i \mathbf{A}_i =
 \begin{bmatrix}
@@ -252,7 +445,7 @@ then the dual problem is unbounded. This is because the feasible set is a cone, 
 
 <p>This gives us a practical way to check for primal infeasibility. Instead of solving the dual optimization problem, we can check for its unboundedness by solving a related feasibility problem. Specifically, we can ask: “Does there exist a feasible $\boldsymbol{\lambda}$ that achieves any strictly positive objective value, for instance, $\varepsilon &gt; 0$?” This leads to the dual feasibility formulation:</p>
 
-\[\textbf{(Df-K)}\quad
+\[\textbf{(D-K)}\quad
 \begin{align*}
 \text{find} \quad &amp; \boldsymbol{\lambda} \\
 \text{s.t.} \quad &amp; \sum_{i=0}^4 \lambda_i p_i = -\varepsilon \\
@@ -271,7 +464,7 @@ then the dual problem is unbounded. This is because the feasible set is a cone, 
 
 <p>For completeness, let’s find the dual of the primal image problem (P-I). The dual variable here will be a matrix, which we’ll call $\mathbf{X}$ (as it lives in the same space as our original primal variable). The derivation leads to the following dual optimization problem:</p>
 
-\[\textbf{(D-I)}\quad
+\[\textbf{(mD-I)}\quad
 \begin{align}
 \max_{\mathbf{X}} \quad &amp; -\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle \\
 \text{s.t.} \quad &amp; \langle \mathbf{B}_1, \mathbf{X} \rangle = 0  \\
@@ -280,7 +473,7 @@ then the dual problem is unbounded. This is because the feasible set is a cone, 
 
 <p>This dual problem seeks to maximize $-\langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle$ over all positive semidefinite matrices $\mathbf{X}$ that are orthogonal to the basis of the null space, $\mathbf{B}_1$. Again, the primal (P-I) is feasible if and only if the optimal value of this dual is 0.  The same analysis as for the kernel form applies here to derive a simple feasibility problem for any value $\epsilon &gt; 0$:</p>
 
-\[\textbf{(Df-I)}\quad
+\[\textbf{(D-I)}\quad
 \begin{align}
 \text{find} \quad &amp; \mathbf{X} \\
 \text{s.t.} \quad &amp; \langle \mathbf{Y}(\mathbf{p}), \mathbf{X} \rangle = -\epsilon\\
@@ -325,4 +518,5 @@ then the dual problem is unbounded. This is because the feasible set is a cone, 
 
 <h3 id="bibliography">Bibliography</h3>
 
-<ol class="bibliography"><li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing another blogpost about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.]]></summary></entry></feed>
+<ol class="bibliography"><li><span id="dumbgen_toward_2024">Dümbgen, F., Holmes, C., Agro, B., &amp; Barfoot, T. D. (2024). Toward Globally Optimal State Estimation Using Automatically Tightened Semidefinite Relaxations. <i>IEEE Transactions on Robotics</i>, <i>40</i>, 4338–4358.</span></li>
+<li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing another blogpost about my process to generated this blogpost (and hopefully a few more in the future) using Gemini.]]></summary></entry></feed>

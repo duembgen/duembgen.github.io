@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Writing blog-posts in 2025</title>
-  <meta name="description" content="I created this blogpost when writing this other post but I might keep reiterating as I refine my methodology.">
+  <meta name="description" content="I created this blogpost when writing this other post and the follow-up post here.">
 
   <link rel="stylesheet" href="/assets/main.css">
   <link rel="canonical" href="http://duembgen.github.io/misc/2025/08/18/blog-posts-in-2025.html">
@@ -125,9 +125,9 @@
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <p><em>I created this blogpost when writing <a href="/research/2025/08/18/kernel-image-primal-dual.html">this other post</a> but I might keep reiterating as I refine my methodology.</em></p>
+    <p><em>I created this blogpost when writing <a href="/research/2025/08/18/kernel-image-primal-dual.html">this other post</a> and the follow-up post <a href="/research/2025/08/24/kipd-minimization.html">here</a>.</em></p>
 
-<p>This is a recipe for how I am writing blogposts, with a little help from LLMs (Gemini, in my case). By sharing how I am using this tool I hope to either tell you something that you might find helpful, or to hear from you how I could improve my pipeline.</p>
+<p>This is a recipe for how I am writing blogposts, with a little help from LLMs (Gemini, in my case). By sharing how I am using this tool I hope to either tell you something that you might find helpful, or to hear from you about how I could improve my pipeline.</p>
 
 <h2 id="first-step-hand-write-notes">First step: hand-write notes</h2>
 
@@ -207,6 +207,30 @@ The original post is attached below.
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I have written a blogpost that had a mistake. It was based on a handwritten note. I have now fixed the handwritten note -- see the attached Pdf. Can you adjust the blogpost accordingly? The blogpost is also attached. The mistake was that the dual problem was always feasible, ie, it attained the value zero. This is of course wrong -- when the primal is infeasible the dual should also be able to take value infinity. I forgot that I had to use the theorem of strong alternatives when dealing with these feasibility problems.
 </code></pre></div></div>
 <p>I attached my new <a href="/assets/pdfs/KernelImagePrimalDual_v2.pdf">notes</a> and the blogpost source file. The output was pretty usable after a few minor edits.</p>
+
+<h2 id="follow-up-blogpost">Follow-up blogpost</h2>
+
+<p>I came back to the original blogpost a week later because I needed an evolution of the material described. In particular, I wanted to see what happens to these four formulations when you add a cost, ie, when you are actually minimizing a polynomial. I started with some handwritten notes but I realized that it soon became an almost purely mechanic exercise of reformulating the problems.</p>
+
+<p>So instead, I turned directly to Gemini and asked the following:</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I have a blogpost (see attached .md) about SOS feasibility problems using 4 different formulations: Kernel-Primal, Kernel-Dual, Image-Primal, Image-Dual. Now I would like to  extend this to the minimization setup where we want to solve:
+max gamma s.t. p(x) - gamma = v(x)'Xv(x0, X&gt;=0. For univariate polynomials, this will always provide the solution to the problem min p(x). For multivariate polynomials it will at least provide a lower bound.
+
+Can you create a new blog post, following closely the structure of the original blog post, where you treat this variation of the problem? In particular, I want to see a table with the 4 problem formulations and one section for each. Also, I want you to create python notebook that implements this variation.
+
+<span class="gs">**As always, follow these instructions when writing Markdown code for my Jekyll blog:**</span>
+<span class="p">
+-</span> inline math should be surrounded by $. Avoid using symbols like γ and use $<span class="se">\g</span>amma$ instead.
+<span class="p">-</span> full equations should be marked by $$, using a space before and after for correct formatting.
+<span class="ge">**</span>
+</code></pre></div></div>
+<p>After only 30.6 seconds of thinking, it output a blogpost and a runnable jupyter notebook. The only edits I had to do were:</p>
+
+<ul>
+  <li>Fix some notation from symbols to LaTeX math. I added a little general instruction in the prompt for future use.</li>
+  <li></li>
+</ul>
 
 <h2 id="conclusion">Conclusion</h2>
 
