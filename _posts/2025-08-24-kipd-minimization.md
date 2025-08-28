@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "KIPD: From Feasibility to Unconstrained Minimization"
-date: 2025-08-23
+date: 2025-08-24
 categories: [research]
 ---
 
@@ -133,10 +133,6 @@ $$
 > Note that this is exactly the same optimization problem as we get through Shor's relaxation (after adding all redundant constraints). Maybe confusingly, it is often referred to as the Primal problem in that context. This is not surprising since we already made the observation that the Primal-Image form looks like the dual in those formulations. 
 
 #### Tangent: Shor's relaxation
-
-<div class="alert alert-warning" role="alert">
-  <strong>Warning:</strong> One point requires clarification: the connection between $\mathbf{A}_i$ and $\mathbf{B}_j$. Normally Shor's relaxation would also have $\mathbf{A}_i$ -- why do they not appear here?
-</div>
 
 As noted above, problem **(D-I)** is identitcal to Shor's relaxation. To see, this we derive Shor's relaxation here. We start by rewriting our original problem as the following QCQP:
 
