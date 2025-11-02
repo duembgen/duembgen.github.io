@@ -1,7 +1,8 @@
 ---
 layout: post
-title: "SOS & Moments: The Subspace View"
+title: "SOS and Moments: A Subspace View"
 date: 2025-10-27
+categories: [research]
 ---
 
 *This writeup has made my [previous post "series" on Kernel-Image-Primal-Dual SOS formulations](/research/2025/08/24/kipd-minimization.html) somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading [this](https://francisbach.com/sums-of-squares-for-dummies/) great blog post of Francis Bach.*
