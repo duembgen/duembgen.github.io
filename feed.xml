@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-11-02T23:01:17+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">SOS and Moments: A Subspace View</title><link href="http://duembgen.github.io/research/2025/10/27/subspaces.html" rel="alternate" type="text/html" title="SOS and Moments: A Subspace View" /><published>2025-10-27T00:00:00+00:00</published><updated>2025-10-27T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/10/27/subspaces</id><content type="html" xml:base="http://duembgen.github.io/research/2025/10/27/subspaces.html"><![CDATA[<p><em>This writeup has made my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-11-02T23:03:37+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">SOS and Moments: A Subspace View</title><link href="http://duembgen.github.io/research/2025/10/27/subspaces.html" rel="alternate" type="text/html" title="SOS and Moments: A Subspace View" /><published>2025-10-27T00:00:00+00:00</published><updated>2025-10-27T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/10/27/subspaces</id><content type="html" xml:base="http://duembgen.github.io/research/2025/10/27/subspaces.html"><![CDATA[<p><em>This writeup has made my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
 
 <p>In this post, we’ll explore a geometric perspective on sum-of-squares (SOS) and moment relaxations for solving polynomial optimization problems. In the literature, we come across very different formulations, and the connections between those formulations are often blurred. I hope that this blogpost clarifies things for the reader the way it did for me!</p>
 
@@ -324,14 +324,14 @@ done
 
 \[\begin{align*}
 \max_{c, \beta_i} \quad &amp; c \\
-\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i \succeq 0
+\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_j \beta_j \mathbf{U}_j \succeq 0
 \end{align*}\]
 
 <p>This is a “textbook SDP”, and its dual is:</p>
 
 \[\begin{align*}
 \min_{\mathbf{X}} \quad &amp; \langle \mathbf{C}, \mathbf{X} \rangle \\
-\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{U}_i \rangle = 0, \quad i \in [n_u] \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{U}_j \rangle = 0, \quad j \in [n_u] \\
 &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
 &amp; \mathbf{X} \succeq 0
 \end{align*}\]
