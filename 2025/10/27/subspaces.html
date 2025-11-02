@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>SOS &amp; Moments: The Subspace View</title>
+  <meta name="description" content="This writeup has made my previous post “series” on Kernel-Image-Primal-Dual SOS formulations somewhat obsolete. It provides a more mathematically principled ...">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://duembgen.github.io/2025/10/27/subspaces.html">
+  <link rel="alternate" type="application/rss+xml" title="Frederike Dümbgen" href="/feed.xml">
+  
+   
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-112074562-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  
+
+   
+
+</head>
+
+<!-- MathJax script -->
+<script type="text/javascript">
+    window.MathJax = {
+            tex: {
+                      inlineMath: [['$', '$'], ['\\(', '\\)']],
+                      displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                      packages: {'[+]': ['ams']}
+                    },
+            svg: {
+                      fontCache: 'global'
+                    }
+          };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+                                 src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+  
+  
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-header" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="site-title" href="/"> Frederike Dümbgen</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="menu-header">
+        <ul class="nav navbar-nav navbar-right">
+          
+            
+              
+              
+              <li><a href="/research-index">Research</a></li>
+              
+            
+              
+              
+              <li><a href="/publications-index">Publications</a></li>
+              
+            
+              
+              
+              <li><a href="/3_biography.html">Biography</a></li>
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+              
+              
+            
+          
+        </ul>
+      </div> <!-- /.navbar-collapse -->
+    </div> <!-- /.container-fluid -->
+	</nav>
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">SOS &amp; Moments: The Subspace View</h1>
+    <p class="post-meta">
+      <time datetime="2025-10-27T00:00:00+00:00" itemprop="datePublished">
+        
+        Oct 27, 2025
+      </time>
+      </p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><em>This writeup has made my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
+
+<p>In this post, we’ll explore a geometric perspective on sum-of-squares (SOS) and moment relaxations for solving polynomial optimization problems. In the literature, we come across very different formulations, and the connections between those formulations are often blurred. I hope that this blogpost clarifies things for the reader the way it did for me!</p>
+
+<p>You can run the notebook implementing the toy example here:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-10-27-subspaces.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<h3 id="the-original-problem">The Original Problem</h3>
+
+<p>Let’s consider a general non-convex optimization problem of the form:</p>
+
+\[\min_{\mathbf{x} \in \mathcal{X}} p(\mathbf{x})\]
+
+<p>where $p(\mathbf{x})$ is a polynomial and $\mathcal{X}$ is a set defined by polynomial equalities, for instance, $\mathcal{X} = \{ \mathbf{x} \in \mathbb{R}^d \mid q_i(\mathbf{x}) = 0, \,i\in[n] \}$, where we introduced the shorthand $[n]$ for $\{1, \ldots, n\}$. This problem may in general be hard to solve due to the non-convexity of the objective and the feasible set.</p>
+
+<p>A powerful technique to tackle such problems is to solve a series of convex relaxations. To do so, we first rewrite the problem using “lifted” variables. We define a vector of monomials, $\phi(\mathbf{x})$, which in machine learning would be called the feature vector. The objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:</p>
+
+\[\min_{\mathbf{x} \in \mathcal{X}} \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle\]
+
+<p>The matrix $\mathbf{M}(\mathbf{x}) = \phi(\mathbf{x})\phi(\mathbf{x})^\top$ is sometimes known as a (pseudo) moment matrix.</p>
+
+<h3 id="the-subspace-view">The Subspace View</h3>
+
+<p>The core idea is to write everything in terms of the vector space spanned by these moment matrices, and its orthogonal complement. Let’s define the subspace $\mathcal{V}$ as:</p>
+
+\[\mathcal{V} = \text{span} \{ \phi(\mathbf{x})\phi(\mathbf{x})^\top \mid \mathbf{x} \in \mathcal{X} \}\]
+
+<p>Every feasible point of our lifted problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\{ \mathbf{B}_i \}_{i\in[n_b]}$, so that every element $\mathbf{X}$ of $\mathcal{V}$ can be written as</p>
+
+\[\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i,\]
+
+<p>for some choices $\alpha_i$. In particular, there exist some $\alpha$ that allow to characterize each element of the feasible set $\mathcal{X}$.</p>
+
+<p>If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{M}$ for which there exists a positive measure $\mu$ such that $\mathbf{M}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}$ (see <a href="https://francisbach.com/sums-of-squares-for-dummies/">this post</a> for more details, and below for the visualization of our toy example).</p>
+
+<figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/subspaces-export.svg" width="100%" height="auto" alt="Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example" data-zoomable="" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example</p>
+</figcaption>
+  
+</figure>
+
+<div class="example-box">
+
+  <h4 id="running-example">Running Example</h4>
+
+  <p>Let’s make this concrete with a simple example that we’ll follow throughout the post.</p>
+  <ul>
+    <li><strong>Feasible Set</strong>: $\mathcal{X} = \{x \in \mathbb{R} \mid q_0(x)=x^2 - 1 = 0\}$, which is just the set $\{-1, 1\}$.</li>
+    <li><strong>Lifting Map</strong>: We use the monomial vector $\phi(x) = [1, x, x^2, x^3]^\top$.</li>
+  </ul>
+
+  <p>For $x=1$, the moment matrix is:</p>
+
+\[\phi(1)\phi(1)^\top = \begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix} \begin{pmatrix} 1 &amp; 1 &amp; 1 &amp; 1 \end{pmatrix} = \begin{pmatrix} 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \end{pmatrix} =: \mathbf{B}_1\]
+
+  <p>For $x=-1$, the moment matrix is:</p>
+
+\[\phi(-1)\phi(-1)^\top = \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix} \begin{pmatrix} 1 &amp; -1 &amp; 1 &amp; -1 \end{pmatrix} = \begin{pmatrix} 1 &amp; -1 &amp; 1 &amp; -1 \\ -1 &amp; 1 &amp; -1 &amp; 1 \\ 1 &amp; -1 &amp; 1 &amp; -1 \\ -1 &amp; 1 &amp; -1 &amp; 1 \end{pmatrix} =: \mathbf{B}_2\]
+
+  <p>The subspace $\mathcal{V}$ is the span of these two matrices, $\mathcal{V} = \text{span}(\mathbf{B}_1, \mathbf{B}_2)$. This is a 2-dimensional subspace within the ambient space of $4 \times 4$ symmetric matrices, which has dimension $\frac{4 \times 5}{2} = 10$. For a more compact notation, we use the half-vectorization operator and define $\mathbf{b}_i:=\mathrm{vech}(\mathbf{B}_i)\in\mathbb{R}^{10}$, where we scale off-diagonal elements by $\sqrt{2}$ to ensure $\langle \mathbf{A}, \mathbf{B}\rangle = \mathbf{a}^\top\mathbf{b}$.</p>
+</div>
+
+<p>We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the set $\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \}$. Let’s call the basis vectors $\{\mathbf{U}_j\}_{j\in [n_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{X}$, we must have:</p>
+
+\[\langle \mathbf{U}_j, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0\]
+
+<div class="example-box">
+  <h4 id="running-example-1">Running Example</h4>
+  <p>Our ambient space of symmetric $4 \times 4$ matrices is 10-dimensional, and we found that $\text{dim}(\mathcal{V}) = 2$. Therefore, the nullspace $\mathcal{V}^{\perp}$ has dimension $10 - 2 = 8$. This means we have 8 nullspace basis vectors, and it is less straight forward to write them down. Instead, you can see a plot of the numerically found vectors below. The procedure of finding these, using an SVD, is outlined in <a href="#appendix2">Appendix 2</a>.</p>
+
+  <figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/output_7_0.png" width="300" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Numerically found nullspace basis vectors</p>
+</figcaption>
+  
+</figure>
+
+  <figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/output_6_0.png" width="300" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Numerically found span basis vectors</p>
+</figcaption>
+  
+</figure>
+
+</div>
+
+<h3 id="the-moment-relaxation">The Moment Relaxation</h3>
+
+<p>To derive tractable relaxations, we can rewrite the problem as a (linear) problem on the space of measures:</p>
+
+\[\begin{align*}
+\min_{\mu} &amp; \int \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle d\mu(\mathbf{x}) 
+= \langle \mathbf{C}, \int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x}) \rangle 
+\\ 
+&amp; \text{s.t.} \quad \phi(\mathbf{x})\phi(\mathbf{x})^\top \in \mathcal{V}.
+\end{align*}\]
+
+<p>Now we want to find a computationally tractable outer approximation of the set</p>
+
+\[\mathcal{K} = \{\mathbf{M} \;| \mathbf{M} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}\]
+
+<p>An intuitive choice is to add all characteristics of this set that are computationally easy to handle:</p>
+
+\[\mathcal{\widehat{K}} = \{\mathbf{M} \;| \begin{cases} 
+&amp; \mathbf{M} = \sum_i \alpha_i \mathbf{B}_i &amp; \text{(want to lie in same subspace)} \\ 
+&amp; \mathbf{M} \succeq 0 &amp; \text{(because it is an outer product of same vector and $\mu \geq 0$)} \\
+&amp; \langle \mathbf{A}_0, \mathbf{M} \rangle = 1 &amp; \text{(we assume normalization and that $\phi(\mathbf{x})_0=1$)} 
+\end{cases} \}\]
+
+<p>Here, $\mathbf{A}_0$ is a matrix with top-left element equal to 1.  With this choice, we obtain our first convex relaxation:</p>
+
+\[\begin{align*}
+\textbf{(Moment-Image)} \quad \min_{\alpha_i, \gamma} \quad &amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle \\
+\text{s.t.} \quad &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\
+&amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{A}_0 \rangle = 1
+\end{align*}\]
+
+<h3 id="the-sos-relaxation">The SOS Relaxation</h3>
+
+<p>We will see now that we can also derive the classic Sum-of-Squares (SOS) relaxation, using this time the basis ${\mathbf{U}_j}$ for the orthogonal complement of the subspace, $\mathcal{V}^{\perp}$.</p>
+
+<p>The SOS relaxation can be written as:</p>
+
+\[\begin{align*}
+\max_{c, \mathbf{H}} \quad &amp; c \\
+\text{s.t.} \quad &amp; \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle - c = \langle \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle, \quad \forall \mathbf{x} \in \mathcal{X} \\
+&amp; \mathbf{H} \succeq 0
+\end{align*}\]
+
+<p>We can reuse the homogenization matrix $\mathbf{A}_0$ to write $c = c \cdot \langle \mathbf{A}_0, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle$. Thus the constraint becomes:</p>
+
+\[\langle \mathbf{C} - c\mathbf{A}_0 - \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0, \quad \forall \mathbf{x} \in \mathcal{X}\]
+
+<p>In other words, the matrix $\mathbf{C} - c\mathbf{A}_0 - \mathbf{H}$ is in the nullspace of $\mathcal{V}$! This means we can express it as a linear combination of the nullspace basis vectors ${\mathbf{U}_i}$:</p>
+
+\[\mathbf{C} - c\mathbf{A}_0 - \mathbf{H} = \sum_i \beta_i \mathbf{U}_i\]
+
+<p>Rearranging this gives the constraint from our <strong>(SOS-Image)</strong> formulation: $\mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i = \mathbf{H} \succeq 0$.</p>
+
+<p>Therefore, the SOS relaxation is:</p>
+
+\[\begin{align*}
+\textbf{(SOS-Image)} \quad \max_{c, \beta_j} \quad &amp; c \\
+\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_j \beta_j \mathbf{U}_j \succeq 0
+\end{align*}\]
+
+<div class="example-box">
+  <h4 id="running-example-2">Running Example</h4>
+
+  <p>For the running example problem, we now introduce a cost function to minimize, to then check if the convex relaxations are tight.</p>
+
+  <p>We chose $f(x)=1+x$ so that we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. With this choice, we obtain:</p>
+
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="n">cp</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B_basis</span><span class="p">))</span>
+<span class="n">objective</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Minimize</span><span class="p">(</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cp</span><span class="p">.</span><span class="n">trace</span><span class="p">(</span><span class="n">C</span> <span class="o">@</span> <span class="n">Bi</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span>
+<span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Bi</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span> <span class="o">&gt;&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cp</span><span class="p">.</span><span class="n">trace</span><span class="p">(</span><span class="n">A0</span> <span class="o">@</span> <span class="n">Bi</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+<span class="n">problem</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s">"SCS"</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">value</span> <span class="o">*</span> <span class="n">Bi</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  optimal value: </span><span class="si">{</span><span class="n">problem</span><span class="p">.</span><span class="n">value</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  alpha: </span><span class="si">{</span><span class="n">alpha</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  X:</span><span class="se">\n</span><span class="si">{</span><span class="n">X</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div>  </div>
+
+  <pre><code class="language-raw">optimal value: -0.0000
+alpha: [ 0. -4.]
+X:
+[[ 1. -1.  1. -1.]
+ [-1.  1. -1.  1.]
+ [ 1. -1.  1. -1.]
+ [-1.  1. -1.  1.]]
+</code></pre>
+
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">c</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">()</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">U_basis</span><span class="p">))</span>
+<span class="n">objective</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Maximize</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">C</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">A0</span> <span class="o">+</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ui</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Ui</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">U_basis</span><span class="p">)])</span> <span class="o">&gt;&gt;</span> <span class="mi">0</span>
+<span class="p">]</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+<span class="n">problem</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s">"SCS"</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">H</span> <span class="o">=</span> <span class="n">C</span> <span class="o">-</span> <span class="n">problem</span><span class="p">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">A0</span> <span class="o">+</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">value</span> <span class="o">*</span> <span class="n">Ui</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Ui</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">U_basis</span><span class="p">)])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  optimal value: </span><span class="si">{</span><span class="n">problem</span><span class="p">.</span><span class="n">value</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  beta: </span><span class="si">{</span><span class="n">beta</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  H:</span><span class="se">\n</span><span class="si">{</span><span class="n">H</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div>  </div>
+
+  <pre><code class="language-raw">optimal value: -0.0000
+beta: [0.578 0.161 0.409 0.161 0.578 0.41  0.161 0.409]
+H:
+[[0.126 0.125 0.124 0.125]
+ [0.125 0.125 0.125 0.125]
+ [0.124 0.125 0.126 0.125]
+ [0.125 0.125 0.125 0.125]]
+</code></pre>
+
+</div>
+
+<h3 id="kernel-forms">Kernel Forms</h3>
+
+<p>We have called the problem we derived thus far <strong>(Moment-Image)</strong> and <strong>(SOS-Image)</strong> because of their particular form: the matrix variable is parametrized as the image of some basis functions – in one case, the basis of the span, in the other case, the nullspace basis. For each problem, we can also derive a so-called <strong>Kernel</strong> form. We introduce the matrix variable first, and then constrain it to lie in the correct subspace, using elements from the orthogonal complement. Thus, in kernel form, the primal moment relaxation is formulated using the basis of the nullspace $\mathcal{V}^\perp$, and the dual SOS program is formulated using the basis of the subspace $\mathcal{V}$.</p>
+
+<p>Here is a summary table:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><br /></td>
+      <td><strong>Image Form</strong> <br /><br /></td>
+      <td><strong>Kernel Form</strong> <br /><br /></td>
+    </tr>
+    <tr>
+      <td><strong>Dual (SOS)</strong>$\;\;$</td>
+      <td>\(\begin{align} \max\;&amp; c \\ &amp;\text{s.t. }\mathbf{C} - c\mathbf{A}_0- \sum_j \beta_j \mathbf{U}_j \succeq 0\end{align}\)</td>
+      <td>\(\begin{align}\max\;&amp;c  \\  \text{s.t.}\; &amp;\langle \mathbf{B}_i, \mathbf{C} - c \mathbf{A}_0  - \mathbf{H} \rangle = 0, \; i\in[n_b]  \\ &amp;\mathbf{H} \succeq 0 \end{align}\) <br /><br /><br /></td>
+    </tr>
+    <tr>
+      <td><strong>Primal (Moment)</strong>$\;\;$</td>
+      <td>\(\begin{align*}\min &amp;\sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle  \\ \text{s.t. } &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\ &amp; \sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle = 1 \end{align*}\)</td>
+      <td>\(\begin{align*}\min &amp;\langle \mathbf{C}, \mathbf{X} \rangle \\ \text{s.t. }  \; &amp;\langle \mathbf{X}, \mathbf{U}_j \rangle = 0, \; j \in [n_u] \\ &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\ &amp; \mathbf{X} \succeq 0, \end{align*}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Let’s see in more detailed how the kernel forms were derived above:</p>
+
+<p>For the dual form, the condition $\mathbf{H} = \mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_j \mathbf{U}_j$ is equivalent to:</p>
+<ul>
+  <li>$\mathbf{H} - \mathbf{C} + c\mathbf{A}_0$ lies in the affine subspace $(\mathbf{C} - c\mathbf{A}_0) + \mathcal{V}^{\perp}$.</li>
+  <li>This implies $\langle \mathbf{H} - \mathbf{C} + c\mathbf{A}_0, \mathbf{B}_i \rangle = 0$ for all basis vectors $\mathbf{B}_i \in \mathcal{V}$.</li>
+</ul>
+
+<p>For the primal form, the condition $\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i + \gamma \mathbf{A}_0$ is equivalent to:</p>
+<ul>
+  <li>$\mathbf{X}$ lies in the affine subspace $\mathcal{V} + \text{span}(\mathbf{A}_0)$.</li>
+  <li>This implies $\langle \mathbf{X} - \gamma \mathbf{A}_0, \mathbf{U}_j \rangle = 0$ for all basis vectors $\mathbf{U}_j \in \mathcal{V}^{\perp}$.</li>
+</ul>
+
+<p>It is interesting to note that the diagonals of the table are duals of each other! The dual of the image SOS form is the kernel moment form, and the dual of the image moment form is the kernel SOS form. For pedagogical purposes, we derive this in <a href="#appendix1">Appendix 1</a> below.</p>
+
+<hr />
+
+<div class="example-box">
+  <h4 id="running-example-3">Running Example</h4>
+
+  <p>We solve the example problem using each of the four SDP formulations. Since there are only two basis vectors and 8 nullspace basis vectors, we expect the <strong>Moment Image</strong> form and the <strong>SOS Kernel</strong> form to be the most efficient. 
+Below is the output of the provided example script:</p>
+
+  <pre><code class="language-raw">sos image solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 28ms
+
+sos kernel solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 9ms
+
+moment image solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 8ms
+
+moment kernel solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 14ms
+done
+</code></pre>
+  <p>Although the timings are very imprecise (they include the time to setup the problem and convert it to standard form) we can see that the sos kernel and the moment image forms take the least time to solve.</p>
+
+</div>
+
+<h3 id="appendix1">Appendix 1: Verification via dual</h3>
+
+<p>We can verify our calculations by checking that the duals as outlined above.</p>
+
+<h4 id="image-sos">Image SOS</h4>
+<p>The image SOS formulation is:</p>
+
+\[\begin{align*}
+\max_{c, \beta_i} \quad &amp; c \\
+\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i \succeq 0
+\end{align*}\]
+
+<p>This is a “textbook SDP”, and its dual is:</p>
+
+\[\begin{align*}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{C}, \mathbf{X} \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{U}_i \rangle = 0, \quad i \in [n_u] \\
+&amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+&amp; \mathbf{X} \succeq 0
+\end{align*}\]
+
+<p>which is precisely the <strong>Primal (Moment) Kernel Form</strong>.</p>
+
+<h4 id="image-moment">Image Moment</h4>
+
+<p>The image Moment formulation is:</p>
+
+\[\begin{align*}
+\min_{\alpha_i, \gamma} \quad &amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle \\
+\text{s.t.} \quad &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\
+&amp; \sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle = 1
+\end{align*}\]
+
+<p>The Lagrangian is:</p>
+
+\[L(\alpha, H, c) = \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle - \langle \sum_i \alpha_i \mathbf{B}_i, \mathbf{H} \rangle - c(\sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle - 1).\]
+
+<p>Rearranging terms gives:</p>
+
+\[L = \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle + c.\]
+
+<p>The dual function is $\max_{\alpha} L(\alpha, H, c)$, which is $-\infty$ unless $\langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle = 0$ for all $i$. The dual problem is therefore:</p>
+
+\[\begin{align*}
+\max_{c, \mathbf{H}} \quad &amp; c \\
+\text{s.t.} \quad &amp; \langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle = 0, \quad i \in [n_b] \\
+&amp; \mathbf{H} \succeq 0
+\end{align*}\]
+
+<p>This is precisely the <strong>Dual (SOS) Kernel Form</strong>.</p>
+
+<h3 id="appendix2">Appendix 2: Numerical Basis Calclation</h3>
+
+<p>A practical question is how to find the bases ${\mathbf{B}_i}$ for $\mathcal{V}$ and ${\mathbf{U}_j}$ for $\mathcal{V}^\perp$. A simple approach, assuming one can generate feasible samples of $\mathcal{X}$, is to find these bases numerically by sampling. The procedure is as follows:</p>
+<ol>
+  <li>Generate many sample points $\mathbf{x}_k \in \mathcal{X}$.</li>
+  <li>Form the corresponding moment matrices $\mathbf{M}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$.</li>
+  <li>Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{M}_1), \text{vec}(\mathbf{M}_2), \dots]$.</li>
+  <li>Compute the Singular Value Decomposition (SVD) or QR decomposition of $\mathbf{L}$. The left singular vectors corresponding to non-zero singular values will form an orthonormal basis for the range space (our $\mathcal{V}$), and the vectors corresponding to zero singular values will form a basis for the nullspace (our $\mathcal{V}^\perp$).</li>
+</ol>
+
+<h3 id="conclusion-and-discussion">Conclusion and Discussion</h3>
+
+<p>We’ve seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.</p>
+
+<p>An obvious limitation of this approach is that it can not easily deal with inequality constraints. However, I would argue that at least the equality-constrained part can handled in a very elegant way through this subspace view.</p>
+
+<p>For a complete picture, it would be desirable to define the matrix $\mathbf{C}$ from samples directly, and to explore alternative bases as opposed to the monomial basis. I am planning to treat these topics in a follow-up blogpost.</p>
+
+  </div>
+
+  
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Contact and more</h2>
+
+    <div class=footer-col-wrapper>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <ul class="contact-list">
+          <li> firstname.lastname(replace ü with ue)@gmail.com </li>
+          </ul>
+        </div>
+        <div class="col-sm-4">
+          <ul class="social-media-list">
+            
+            <li>
+              <a href="https://github.com/duembgen">
+  <span class="icon icon--github"><svg viewBox="0 0 16 16" width="16px" height="16px"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"
+  />
+</svg>
+</span>
+  <span class="username">Github</span>
+</a>
+
+            </li>
+            
+            
+            
+            <li>
+              <a href="https://www.linkedin.com/in/duembgen">
+	<span class="icon  icon--linkedin"><!-- <svg viewBox="0 50 512 512" > -->
+<svg viewBox="0 50 512 512" width="16px" height="16px">
+  <path fill="#828282" d="M150.65,100.682c0,27.992-22.508,50.683-50.273,50.683c-27.765,0-50.273-22.691-50.273-50.683
+  C50.104,72.691,72.612,50,100.377,50C128.143,50,150.65,72.691,150.65,100.682z M143.294,187.333H58.277V462h85.017V187.333z
+  M279.195,187.333h-81.541V462h81.541c0,0,0-101.877,0-144.181c0-38.624,17.779-61.615,51.807-61.615
+  c31.268,0,46.289,22.071,46.289,61.615c0,39.545,0,144.181,0,144.181h84.605c0,0,0-100.344,0-173.915
+  s-41.689-109.131-99.934-109.131s-82.768,45.369-82.768,45.369V187.333z"/>
+</svg>
+</span>
+	<span class="username">Linkedin</span>
+</a>
+
+            </li>
+            
+
+            
+
+            
+            <li>
+              <a href="https://scholar.google.com/citations?user=_ABmvmkAAAAJ">
+  <span class="icon icon--scholar"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="16pt"
+   height="16pt"
+   viewBox="0 0 16 16"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg4692"
+   sodipodi:docname="icon-scholar2.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata4698">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4696" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
+     id="namedview4694"
+     showgrid="false"
+     inkscape:zoom="15.404049"
+     inkscape:cx="14.083712"
+     inkscape:cy="18.92775"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4692" />
+  <g
+     transform="matrix(0.00533566,0,0,-0.00533566,0.0375594,16.302718)"
+     id="g4690"
+     style="fill:#000000;fill-opacity:0.32242988;stroke:none">
+    <path
+       d="m 971,2987 c -6,-8 -7,-18 -3,-22 4,-5 2,-5 -4,-2 -7,4 -27,-8 -45,-26 -19,-17 -44,-39 -55,-47 -12,-8 -50,-41 -85,-72 -61,-54 -126,-111 -217,-189 -23,-20 -38,-40 -34,-44 4,-5 2,-5 -5,-2 -6,4 -23,-7 -37,-24 -14,-17 -26,-27 -26,-23 0,4 -11,-3 -25,-16 -13,-12 -22,-27 -18,-33 3,-6 1,-7 -6,-3 -7,5 -29,-10 -57,-37 -25,-25 -46,-45 -48,-44 -8,6 -117,-103 -112,-112 4,-6 1,-9 -7,-6 -17,7 -89,-55 -83,-71 3,-8 0,-11 -10,-7 -15,5 -54,-22 -54,-38 0,-5 138,-10 308,-11 l 307,-3 -3,-25 c -7,-68 41,-276 61,-263 6,3 7,1 3,-5 -9,-15 58,-108 75,-104 8,2 11,0 7,-3 -12,-12 12,-47 27,-41 9,3 12,0 9,-8 -3,-7 6,-18 18,-24 13,-7 38,-23 56,-37 37,-26 126,-63 182,-73 19,-4 81,-7 138,-7 56,0 102,-2 102,-5 0,-3 -7,-23 -15,-45 -30,-83 -8,-204 50,-281 45,-59 46,-58 -83,-69 -67,-6 -110,-12 -269,-42 -18,-3 -31,-8 -29,-12 2,-3 -10,-7 -28,-8 -43,-2 -170,-58 -236,-104 -94,-65 -183,-168 -173,-198 4,-9 3,-13 -2,-9 -11,10 -46,-59 -52,-102 -13,-95 -14,-121 -4,-175 16,-88 85,-207 113,-197 5,1 7,-4 6,-10 -2,-7 3,-12 10,-10 8,1 11,-2 8,-6 -7,-13 30,-46 43,-38 5,4 13,1 17,-5 4,-8 3,-9 -4,-5 -7,4 -12,5 -12,3 0,-12 114,-68 127,-63 8,3 12,2 8,-3 -9,-16 147,-60 270,-77 132,-17 348,3 490,47 92,28 194,75 212,97 8,9 11,10 7,2 -10,-19 44,14 64,38 6,9 12,12 12,8 0,-5 7,-3 15,4 8,7 12,17 8,23 -3,6 -1,7 5,3 7,-4 12,-2 12,4 0,6 4,9 9,6 4,-3 17,4 27,16 12,13 13,18 4,13 -12,-8 -12,-5 1,15 9,14 22,25 30,25 16,0 90,115 92,144 1,12 4,21 8,21 3,0 11,24 17,53 13,55 15,230 4,223 -4,-2 -7,12 -8,32 0,44 -49,156 -64,147 -5,-3 -8,0 -5,7 7,17 -64,100 -79,91 -6,-3 -8,-2 -3,2 9,10 -41,65 -60,65 -7,0 -13,3 -13,8 0,4 -19,22 -41,41 -40,33 -40,33 -62,15 -22,-19 -22,-19 -4,2 16,20 16,21 -1,37 -21,19 -37,22 -26,5 5,-7 3,-8 -5,-4 -7,5 -10,10 -7,13 3,3 -15,28 -39,55 -25,28 -45,54 -45,60 0,5 -4,7 -8,4 -8,-5 -11,11 -13,82 -1,51 36,119 89,166 142,122 243,241 227,267 -5,7 -4,10 3,5 14,-8 48,105 57,189 7,62 -9,191 -25,211 -6,6 -7,14 -3,17 3,4 1,7 -5,7 -6,0 -9,7 -5,17 4,11 3,14 -5,9 -8,-4 -10,-2 -6,7 3,8 1,18 -5,22 -18,10 -12,39 12,57 137,107 186,151 181,160 -4,7 -2,8 4,4 7,-4 12,-2 12,4 0,6 4,9 9,6 4,-3 17,4 27,16 11,12 14,19 8,15 -6,-3 -11,0 -11,8 0,10 5,11 17,5 12,-6 21,-3 32,10 9,10 13,22 10,26 -4,4 -2,4 5,1 12,-7 100,60 96,74 -2,5 4,6 12,3 11,-5 15,-23 15,-75 0,-65 -2,-70 -25,-79 l -24,-9 -1,-526 c 0,-398 3,-525 12,-525 6,0 8,-3 5,-7 -4,-3 0,-15 10,-25 25,-28 103,-25 131,5 l 22,23 v 527 527 l -25,12 c -24,11 -25,15 -25,98 0,55 -5,91 -12,99 -10,11 -10,13 0,7 11,-7 18,13 12,39 -1,6 2,7 5,3 11,-10 47,11 40,23 -4,5 -3,8 2,7 16,-5 54,24 50,37 -4,8 1,11 13,8 10,-3 21,0 24,6 5,7 -230,11 -792,11 -660,0 -801,-2 -811,-13 z m 389,-347 c 30,-10 59,-16 65,-13 5,4 7,3 3,-2 -7,-7 39,-50 53,-50 9,0 24,-15 24,-24 0,-14 43,-60 50,-53 3,4 5,3 4,-3 -5,-14 33,-75 43,-69 4,3 5,-3 1,-12 -5,-13 -3,-15 7,-9 9,5 11,4 6,-3 -4,-6 2,-28 12,-49 43,-85 66,-202 67,-333 0,-122 -1,-126 -34,-195 -19,-38 -33,-74 -32,-78 1,-5 -3,-6 -8,-3 -12,8 -29,-15 -26,-36 2,-10 -1,-20 -5,-23 -5,-3 -7,4 -5,15 4,20 3,20 -28,-2 -18,-12 -34,-25 -37,-28 -3,-3 -12,-6 -20,-7 -8,-1 -39,-6 -67,-12 -38,-7 -69,-7 -110,1 -32,6 -64,11 -70,11 -7,0 -13,4 -13,9 0,4 -6,8 -13,8 -7,0 -42,28 -77,62 -36,34 -69,61 -73,60 -5,-1 -6,2 -3,7 3,5 -12,39 -34,75 -23,37 -43,80 -47,96 -3,17 -10,30 -15,30 -5,0 -7,3 -4,8 2,4 -2,32 -10,62 -25,96 -29,236 -9,310 10,36 18,73 18,82 1,9 4,15 8,12 4,-2 12,9 19,25 6,16 20,37 31,47 10,9 16,21 12,27 -3,5 -1,7 4,4 13,-8 36,17 25,28 -4,5 -1,5 6,1 7,-4 20,-2 28,5 22,18 101,38 154,38 25,0 70,-8 100,-19 z m -725,-19 c 3,-5 2,-12 -3,-15 -5,-3 -9,1 -9,9 0,17 3,19 12,6 z m -115,-75 c 0,-2 -8,-10 -17,-17 -16,-13 -17,-12 -4,4 13,16 21,21 21,13 z m 1190,-831 c 0,-2 -6,-8 -13,-14 -10,-8 -14,-7 -14,2 0,8 6,14 14,14 7,0 13,-1 13,-2 z m -315,-493 c -3,-3 -11,0 -18,7 -9,10 -8,11 6,5 10,-3 15,-9 12,-12 z m 187,-183 c 40,-28 83,-60 95,-71 12,-12 27,-17 34,-13 7,5 10,4 6,-2 -8,-13 17,-36 27,-25 4,4 6,0 4,-8 -2,-8 3,-14 10,-12 8,1 11,-2 8,-7 -6,-9 22,-37 33,-35 3,1 5,-2 3,-7 -1,-5 11,-27 27,-50 16,-22 33,-53 36,-70 4,-16 10,-27 13,-25 4,2 8,-29 10,-69 4,-87 -14,-164 -54,-225 -15,-25 -27,-49 -25,-55 1,-5 -1,-7 -4,-3 -4,4 -22,-3 -39,-16 -45,-34 -133,-77 -191,-93 -81,-22 -220,-27 -320,-13 -111,17 -108,16 -117,20 -5,1 -11,3 -15,4 -5,1 -25,10 -46,19 -21,9 -45,14 -55,11 -13,-5 -14,-4 -4,4 11,7 7,11 -15,16 -15,4 -42,18 -60,32 -17,13 -36,24 -42,24 -6,0 -11,7 -11,15 0,13 -11,19 -31,17 -3,-1 -6,5 -6,11 0,7 -12,31 -26,54 -15,24 -27,47 -27,53 0,6 -3,9 -7,7 -11,-7 -17,52 -17,158 0,85 2,94 37,159 20,38 37,66 37,61 0,-4 18,10 39,31 22,21 37,42 34,47 -3,6 -2,7 4,4 12,-8 173,57 184,75 5,7 9,8 9,3 0,-7 29,-5 83,6 47,10 130,18 194,18 l 113,1 z"
+       id="path4686"
+       style="fill:#000000;fill-opacity:0.32242988"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 1955,390 c -3,-5 -1,-10 4,-10 6,0 11,5 11,10 0,6 -2,10 -4,10 -3,0 -8,-4 -11,-10 z"
+       id="path4688"
+       style="fill:#000000;fill-opacity:0.32242988"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
+</span>
+  <span class="username">Google Scholar</span>
+</a>
+
+            </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- Latest compiled and minified JavaScript -->
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+
+</html>

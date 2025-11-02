@@ -1,4 +1,863 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-08-29T12:35:16+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">KIPD: From Feasibility to Unconstrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/24/kipd-minimization.html" rel="alternate" type="text/html" title="KIPD: From Feasibility to Unconstrained Minimization" /><published>2025-08-24T00:00:00+00:00</published><updated>2025-08-24T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/24/kipd-minimization</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/24/kipd-minimization.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-11-02T22:40:34+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">SOS &amp;amp; Moments: The Subspace View</title><link href="http://duembgen.github.io/2025/10/27/subspaces.html" rel="alternate" type="text/html" title="SOS &amp;amp; Moments: The Subspace View" /><published>2025-10-27T00:00:00+00:00</published><updated>2025-10-27T00:00:00+00:00</updated><id>http://duembgen.github.io/2025/10/27/subspaces</id><content type="html" xml:base="http://duembgen.github.io/2025/10/27/subspaces.html"><![CDATA[<p><em>This writeup has made my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
+
+<p>In this post, we’ll explore a geometric perspective on sum-of-squares (SOS) and moment relaxations for solving polynomial optimization problems. In the literature, we come across very different formulations, and the connections between those formulations are often blurred. I hope that this blogpost clarifies things for the reader the way it did for me!</p>
+
+<p>You can run the notebook implementing the toy example here:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-10-27-subspaces.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<h3 id="the-original-problem">The Original Problem</h3>
+
+<p>Let’s consider a general non-convex optimization problem of the form:</p>
+
+\[\min_{\mathbf{x} \in \mathcal{X}} p(\mathbf{x})\]
+
+<p>where $p(\mathbf{x})$ is a polynomial and $\mathcal{X}$ is a set defined by polynomial equalities, for instance, $\mathcal{X} = \{ \mathbf{x} \in \mathbb{R}^d \mid q_i(\mathbf{x}) = 0, \,i\in[n] \}$, where we introduced the shorthand $[n]$ for $\{1, \ldots, n\}$. This problem may in general be hard to solve due to the non-convexity of the objective and the feasible set.</p>
+
+<p>A powerful technique to tackle such problems is to solve a series of convex relaxations. To do so, we first rewrite the problem using “lifted” variables. We define a vector of monomials, $\phi(\mathbf{x})$, which in machine learning would be called the feature vector. The objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:</p>
+
+\[\min_{\mathbf{x} \in \mathcal{X}} \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle\]
+
+<p>The matrix $\mathbf{M}(\mathbf{x}) = \phi(\mathbf{x})\phi(\mathbf{x})^\top$ is sometimes known as a (pseudo) moment matrix.</p>
+
+<h3 id="the-subspace-view">The Subspace View</h3>
+
+<p>The core idea is to write everything in terms of the vector space spanned by these moment matrices, and its orthogonal complement. Let’s define the subspace $\mathcal{V}$ as:</p>
+
+\[\mathcal{V} = \text{span} \{ \phi(\mathbf{x})\phi(\mathbf{x})^\top \mid \mathbf{x} \in \mathcal{X} \}\]
+
+<p>Every feasible point of our lifted problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\{ \mathbf{B}_i \}_{i\in[n_b]}$, so that every element $\mathbf{X}$ of $\mathcal{V}$ can be written as</p>
+
+\[\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i,\]
+
+<p>for some choices $\alpha_i$. In particular, there exist some $\alpha$ that allow to characterize each element of the feasible set $\mathcal{X}$.</p>
+
+<p>If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{M}$ for which there exists a positive measure $\mu$ such that $\mathbf{M}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}$ (see <a href="https://francisbach.com/sums-of-squares-for-dummies/">this post</a> for more details, and below for the visualization of our toy example).</p>
+
+<figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/subspaces-export.svg" width="100%" height="auto" alt="Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example" data-zoomable="" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example</p>
+</figcaption>
+  
+</figure>
+
+<div class="example-box">
+
+  <h4 id="running-example">Running Example</h4>
+
+  <p>Let’s make this concrete with a simple example that we’ll follow throughout the post.</p>
+  <ul>
+    <li><strong>Feasible Set</strong>: $\mathcal{X} = \{x \in \mathbb{R} \mid q_0(x)=x^2 - 1 = 0\}$, which is just the set $\{-1, 1\}$.</li>
+    <li><strong>Lifting Map</strong>: We use the monomial vector $\phi(x) = [1, x, x^2, x^3]^\top$.</li>
+  </ul>
+
+  <p>For $x=1$, the moment matrix is:</p>
+
+\[\phi(1)\phi(1)^\top = \begin{pmatrix} 1 \\ 1 \\ 1 \\ 1 \end{pmatrix} \begin{pmatrix} 1 &amp; 1 &amp; 1 &amp; 1 \end{pmatrix} = \begin{pmatrix} 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 1 &amp; 1 \end{pmatrix} =: \mathbf{B}_1\]
+
+  <p>For $x=-1$, the moment matrix is:</p>
+
+\[\phi(-1)\phi(-1)^\top = \begin{pmatrix} 1 \\ -1 \\ 1 \\ -1 \end{pmatrix} \begin{pmatrix} 1 &amp; -1 &amp; 1 &amp; -1 \end{pmatrix} = \begin{pmatrix} 1 &amp; -1 &amp; 1 &amp; -1 \\ -1 &amp; 1 &amp; -1 &amp; 1 \\ 1 &amp; -1 &amp; 1 &amp; -1 \\ -1 &amp; 1 &amp; -1 &amp; 1 \end{pmatrix} =: \mathbf{B}_2\]
+
+  <p>The subspace $\mathcal{V}$ is the span of these two matrices, $\mathcal{V} = \text{span}(\mathbf{B}_1, \mathbf{B}_2)$. This is a 2-dimensional subspace within the ambient space of $4 \times 4$ symmetric matrices, which has dimension $\frac{4 \times 5}{2} = 10$. For a more compact notation, we use the half-vectorization operator and define $\mathbf{b}_i:=\mathrm{vech}(\mathbf{B}_i)\in\mathbb{R}^{10}$, where we scale off-diagonal elements by $\sqrt{2}$ to ensure $\langle \mathbf{A}, \mathbf{B}\rangle = \mathbf{a}^\top\mathbf{b}$.</p>
+</div>
+
+<p>We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the set $\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \}$. Let’s call the basis vectors $\{\mathbf{U}_j\}_{j\in [n_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{X}$, we must have:</p>
+
+\[\langle \mathbf{U}_j, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0\]
+
+<div class="example-box">
+  <h4 id="running-example-1">Running Example</h4>
+  <p>Our ambient space of symmetric $4 \times 4$ matrices is 10-dimensional, and we found that $\text{dim}(\mathcal{V}) = 2$. Therefore, the nullspace $\mathcal{V}^{\perp}$ has dimension $10 - 2 = 8$. This means we have 8 nullspace basis vectors, and it is less straight forward to write them down. Instead, you can see a plot of the numerically found vectors below. The procedure of finding these, using an SVD, is outlined in <a href="#appendix2">Appendix 2</a>.</p>
+
+  <figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/output_7_0.png" width="300" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Numerically found nullspace basis vectors</p>
+</figcaption>
+  
+</figure>
+
+  <figure style="text-align: center;">
+  <picture>
+    <!-- Auto scaling with imagemagick -->
+    <!--
+      See https://www.debugbear.com/blog/responsive-images#w-descriptors-and-the-sizes-attribute and
+      https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images for info on defining 'sizes' for responsive images
+    -->
+    
+    <img src="/assets/images/blog/2025-10-27/output_6_0.png" width="300" height="auto" onerror="this.onerror=null; $('.responsive-img-srcset').remove();" />
+  </picture>
+
+  
+    <figcaption class="caption text-center" style="font-style: italic; font-size:1.8rem"><p>Numerically found span basis vectors</p>
+</figcaption>
+  
+</figure>
+
+</div>
+
+<h3 id="the-moment-relaxation">The Moment Relaxation</h3>
+
+<p>To derive tractable relaxations, we can rewrite the problem as a (linear) problem on the space of measures:</p>
+
+\[\begin{align*}
+\min_{\mu} &amp; \int \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle d\mu(\mathbf{x}) 
+= \langle \mathbf{C}, \int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x}) \rangle 
+\\ 
+&amp; \text{s.t.} \quad \phi(\mathbf{x})\phi(\mathbf{x})^\top \in \mathcal{V}.
+\end{align*}\]
+
+<p>Now we want to find a computationally tractable outer approximation of the set</p>
+
+\[\mathcal{K} = \{\mathbf{M} \;| \mathbf{M} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}\]
+
+<p>An intuitive choice is to add all characteristics of this set that are computationally easy to handle:</p>
+
+\[\mathcal{\widehat{K}} = \{\mathbf{M} \;| \begin{cases} 
+&amp; \mathbf{M} = \sum_i \alpha_i \mathbf{B}_i &amp; \text{(want to lie in same subspace)} \\ 
+&amp; \mathbf{M} \succeq 0 &amp; \text{(because it is an outer product of same vector and $\mu \geq 0$)} \\
+&amp; \langle \mathbf{A}_0, \mathbf{M} \rangle = 1 &amp; \text{(we assume normalization and that $\phi(\mathbf{x})_0=1$)} 
+\end{cases} \}\]
+
+<p>Here, $\mathbf{A}_0$ is a matrix with top-left element equal to 1.  With this choice, we obtain our first convex relaxation:</p>
+
+\[\begin{align*}
+\textbf{(Moment-Image)} \quad \min_{\alpha_i, \gamma} \quad &amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle \\
+\text{s.t.} \quad &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\
+&amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{A}_0 \rangle = 1
+\end{align*}\]
+
+<h3 id="the-sos-relaxation">The SOS Relaxation</h3>
+
+<p>We will see now that we can also derive the classic Sum-of-Squares (SOS) relaxation, using this time the basis ${\mathbf{U}_j}$ for the orthogonal complement of the subspace, $\mathcal{V}^{\perp}$.</p>
+
+<p>The SOS relaxation can be written as:</p>
+
+\[\begin{align*}
+\max_{c, \mathbf{H}} \quad &amp; c \\
+\text{s.t.} \quad &amp; \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle - c = \langle \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle, \quad \forall \mathbf{x} \in \mathcal{X} \\
+&amp; \mathbf{H} \succeq 0
+\end{align*}\]
+
+<p>We can reuse the homogenization matrix $\mathbf{A}_0$ to write $c = c \cdot \langle \mathbf{A}_0, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle$. Thus the constraint becomes:</p>
+
+\[\langle \mathbf{C} - c\mathbf{A}_0 - \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0, \quad \forall \mathbf{x} \in \mathcal{X}\]
+
+<p>In other words, the matrix $\mathbf{C} - c\mathbf{A}_0 - \mathbf{H}$ is in the nullspace of $\mathcal{V}$! This means we can express it as a linear combination of the nullspace basis vectors ${\mathbf{U}_i}$:</p>
+
+\[\mathbf{C} - c\mathbf{A}_0 - \mathbf{H} = \sum_i \beta_i \mathbf{U}_i\]
+
+<p>Rearranging this gives the constraint from our <strong>(SOS-Image)</strong> formulation: $\mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i = \mathbf{H} \succeq 0$.</p>
+
+<p>Therefore, the SOS relaxation is:</p>
+
+\[\begin{align*}
+\textbf{(SOS-Image)} \quad \max_{c, \beta_j} \quad &amp; c \\
+\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_j \beta_j \mathbf{U}_j \succeq 0
+\end{align*}\]
+
+<div class="example-box">
+  <h4 id="running-example-2">Running Example</h4>
+
+  <p>For the running example problem, we now introduce a cost function to minimize, to then check if the convex relaxations are tight.</p>
+
+  <p>We chose $f(x)=1+x$ so that we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. With this choice, we obtain:</p>
+
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="n">cp</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B_basis</span><span class="p">))</span>
+<span class="n">objective</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Minimize</span><span class="p">(</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cp</span><span class="p">.</span><span class="n">trace</span><span class="p">(</span><span class="n">C</span> <span class="o">@</span> <span class="n">Bi</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span>
+<span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Bi</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span> <span class="o">&gt;&gt;</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">cp</span><span class="p">.</span><span class="n">trace</span><span class="p">(</span><span class="n">A0</span> <span class="o">@</span> <span class="n">Bi</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+<span class="n">problem</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s">"SCS"</span><span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">value</span> <span class="o">*</span> <span class="n">Bi</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Bi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">B_basis</span><span class="p">)])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  optimal value: </span><span class="si">{</span><span class="n">problem</span><span class="p">.</span><span class="n">value</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  alpha: </span><span class="si">{</span><span class="n">alpha</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  X:</span><span class="se">\n</span><span class="si">{</span><span class="n">X</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div>  </div>
+
+  <pre><code class="language-raw">optimal value: -0.0000
+alpha: [ 0. -4.]
+X:
+[[ 1. -1.  1. -1.]
+ [-1.  1. -1.  1.]
+ [ 1. -1.  1. -1.]
+ [-1.  1. -1.  1.]]
+</code></pre>
+
+  <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">c</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">()</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">U_basis</span><span class="p">))</span>
+<span class="n">objective</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Maximize</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">C</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">A0</span> <span class="o">+</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">Ui</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Ui</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">U_basis</span><span class="p">)])</span> <span class="o">&gt;&gt;</span> <span class="mi">0</span>
+<span class="p">]</span>
+
+<span class="n">problem</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+<span class="n">problem</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s">"SCS"</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">H</span> <span class="o">=</span> <span class="n">C</span> <span class="o">-</span> <span class="n">problem</span><span class="p">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">A0</span> <span class="o">+</span> <span class="n">cp</span><span class="p">.</span><span class="nb">sum</span><span class="p">([</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">value</span> <span class="o">*</span> <span class="n">Ui</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Ui</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">U_basis</span><span class="p">)])</span>
+
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  optimal value: </span><span class="si">{</span><span class="n">problem</span><span class="p">.</span><span class="n">value</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  beta: </span><span class="si">{</span><span class="n">beta</span><span class="p">.</span><span class="n">value</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"  H:</span><span class="se">\n</span><span class="si">{</span><span class="n">H</span><span class="p">.</span><span class="nb">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div>  </div>
+
+  <pre><code class="language-raw">optimal value: -0.0000
+beta: [0.578 0.161 0.409 0.161 0.578 0.41  0.161 0.409]
+H:
+[[0.126 0.125 0.124 0.125]
+ [0.125 0.125 0.125 0.125]
+ [0.124 0.125 0.126 0.125]
+ [0.125 0.125 0.125 0.125]]
+</code></pre>
+
+</div>
+
+<h3 id="kernel-forms">Kernel Forms</h3>
+
+<p>We have called the problem we derived thus far <strong>(Moment-Image)</strong> and <strong>(SOS-Image)</strong> because of their particular form: the matrix variable is parametrized as the image of some basis functions – in one case, the basis of the span, in the other case, the nullspace basis. For each problem, we can also derive a so-called <strong>Kernel</strong> form. We introduce the matrix variable first, and then constrain it to lie in the correct subspace, using elements from the orthogonal complement. Thus, in kernel form, the primal moment relaxation is formulated using the basis of the nullspace $\mathcal{V}^\perp$, and the dual SOS program is formulated using the basis of the subspace $\mathcal{V}$.</p>
+
+<p>Here is a summary table:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><br /></td>
+      <td><strong>Image Form</strong> <br /><br /></td>
+      <td><strong>Kernel Form</strong> <br /><br /></td>
+    </tr>
+    <tr>
+      <td><strong>Dual (SOS)</strong>$\;\;$</td>
+      <td>\(\begin{align} \max\;&amp; c \\ &amp;\text{s.t. }\mathbf{C} - c\mathbf{A}_0- \sum_j \beta_j \mathbf{U}_j \succeq 0\end{align}\)</td>
+      <td>\(\begin{align}\max\;&amp;c  \\  \text{s.t.}\; &amp;\langle \mathbf{B}_i, \mathbf{C} - c \mathbf{A}_0  - \mathbf{H} \rangle = 0, \; i\in[n_b]  \\ &amp;\mathbf{H} \succeq 0 \end{align}\) <br /><br /><br /></td>
+    </tr>
+    <tr>
+      <td><strong>Primal (Moment)</strong>$\;\;$</td>
+      <td>\(\begin{align*}\min &amp;\sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle  \\ \text{s.t. } &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\ &amp; \sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle = 1 \end{align*}\)</td>
+      <td>\(\begin{align*}\min &amp;\langle \mathbf{C}, \mathbf{X} \rangle \\ \text{s.t. }  \; &amp;\langle \mathbf{X}, \mathbf{U}_j \rangle = 0, \; j \in [n_u] \\ &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\ &amp; \mathbf{X} \succeq 0, \end{align*}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Let’s see in more detailed how the kernel forms were derived above:</p>
+
+<p>For the dual form, the condition $\mathbf{H} = \mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_j \mathbf{U}_j$ is equivalent to:</p>
+<ul>
+  <li>$\mathbf{H} - \mathbf{C} + c\mathbf{A}_0$ lies in the affine subspace $(\mathbf{C} - c\mathbf{A}_0) + \mathcal{V}^{\perp}$.</li>
+  <li>This implies $\langle \mathbf{H} - \mathbf{C} + c\mathbf{A}_0, \mathbf{B}_i \rangle = 0$ for all basis vectors $\mathbf{B}_i \in \mathcal{V}$.</li>
+</ul>
+
+<p>For the primal form, the condition $\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i + \gamma \mathbf{A}_0$ is equivalent to:</p>
+<ul>
+  <li>$\mathbf{X}$ lies in the affine subspace $\mathcal{V} + \text{span}(\mathbf{A}_0)$.</li>
+  <li>This implies $\langle \mathbf{X} - \gamma \mathbf{A}_0, \mathbf{U}_j \rangle = 0$ for all basis vectors $\mathbf{U}_j \in \mathcal{V}^{\perp}$.</li>
+</ul>
+
+<p>It is interesting to note that the diagonals of the table are duals of each other! The dual of the image SOS form is the kernel moment form, and the dual of the image moment form is the kernel SOS form. For pedagogical purposes, we derive this in <a href="#appendix1">Appendix 1</a> below.</p>
+
+<hr />
+
+<div class="example-box">
+  <h4 id="running-example-3">Running Example</h4>
+
+  <p>We solve the example problem using each of the four SDP formulations. Since there are only two basis vectors and 8 nullspace basis vectors, we expect the <strong>Moment Image</strong> form and the <strong>SOS Kernel</strong> form to be the most efficient. 
+Below is the output of the provided example script:</p>
+
+  <pre><code class="language-raw">sos image solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 28ms
+
+sos kernel solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 9ms
+
+moment image solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 8ms
+
+moment kernel solution:
+  optimal value: -1.0000
+  x: -1.0
+  time: 14ms
+done
+</code></pre>
+  <p>Although the timings are very imprecise (they include the time to setup the problem and convert it to standard form) we can see that the sos kernel and the moment image forms take the least time to solve.</p>
+
+</div>
+
+<h3 id="appendix1">Appendix 1: Verification via dual</h3>
+
+<p>We can verify our calculations by checking that the duals as outlined above.</p>
+
+<h4 id="image-sos">Image SOS</h4>
+<p>The image SOS formulation is:</p>
+
+\[\begin{align*}
+\max_{c, \beta_i} \quad &amp; c \\
+\text{s.t.} \quad &amp; \mathbf{C} - c \mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i \succeq 0
+\end{align*}\]
+
+<p>This is a “textbook SDP”, and its dual is:</p>
+
+\[\begin{align*}
+\min_{\mathbf{X}} \quad &amp; \langle \mathbf{C}, \mathbf{X} \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{U}_i \rangle = 0, \quad i \in [n_u] \\
+&amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
+&amp; \mathbf{X} \succeq 0
+\end{align*}\]
+
+<p>which is precisely the <strong>Primal (Moment) Kernel Form</strong>.</p>
+
+<h4 id="image-moment">Image Moment</h4>
+
+<p>The image Moment formulation is:</p>
+
+\[\begin{align*}
+\min_{\alpha_i, \gamma} \quad &amp; \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle \\
+\text{s.t.} \quad &amp; \sum_i \alpha_i \mathbf{B}_i \succeq 0 \\
+&amp; \sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle = 1
+\end{align*}\]
+
+<p>The Lagrangian is:</p>
+
+\[L(\alpha, H, c) = \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} \rangle - \langle \sum_i \alpha_i \mathbf{B}_i, \mathbf{H} \rangle - c(\sum_i \alpha_i \langle \mathbf{A}_0, \mathbf{B}_i \rangle - 1).\]
+
+<p>Rearranging terms gives:</p>
+
+\[L = \sum_i \alpha_i \langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle + c.\]
+
+<p>The dual function is $\max_{\alpha} L(\alpha, H, c)$, which is $-\infty$ unless $\langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle = 0$ for all $i$. The dual problem is therefore:</p>
+
+\[\begin{align*}
+\max_{c, \mathbf{H}} \quad &amp; c \\
+\text{s.t.} \quad &amp; \langle \mathbf{B}_i, \mathbf{C} - \mathbf{H} - c\mathbf{A}_0 \rangle = 0, \quad i \in [n_b] \\
+&amp; \mathbf{H} \succeq 0
+\end{align*}\]
+
+<p>This is precisely the <strong>Dual (SOS) Kernel Form</strong>.</p>
+
+<h3 id="appendix2">Appendix 2: Numerical Basis Calclation</h3>
+
+<p>A practical question is how to find the bases ${\mathbf{B}_i}$ for $\mathcal{V}$ and ${\mathbf{U}_j}$ for $\mathcal{V}^\perp$. A simple approach, assuming one can generate feasible samples of $\mathcal{X}$, is to find these bases numerically by sampling. The procedure is as follows:</p>
+<ol>
+  <li>Generate many sample points $\mathbf{x}_k \in \mathcal{X}$.</li>
+  <li>Form the corresponding moment matrices $\mathbf{M}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$.</li>
+  <li>Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{M}_1), \text{vec}(\mathbf{M}_2), \dots]$.</li>
+  <li>Compute the Singular Value Decomposition (SVD) or QR decomposition of $\mathbf{L}$. The left singular vectors corresponding to non-zero singular values will form an orthonormal basis for the range space (our $\mathcal{V}$), and the vectors corresponding to zero singular values will form a basis for the nullspace (our $\mathcal{V}^\perp$).</li>
+</ol>
+
+<h3 id="conclusion-and-discussion">Conclusion and Discussion</h3>
+
+<p>We’ve seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.</p>
+
+<p>An obvious limitation of this approach is that it can not easily deal with inequality constraints. However, I would argue that at least the equality-constrained part can handled in a very elegant way through this subspace view.</p>
+
+<p>For a complete picture, it would be desirable to define the matrix $\mathbf{C}$ from samples directly, and to explore alternative bases as opposed to the monomial basis. I am planning to treat these topics in a follow-up blogpost.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[This writeup has made my previous post “series” on Kernel-Image-Primal-Dual SOS formulations somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading this great blog post of Francis Bach.]]></summary></entry><entry><title type="html">KIPD: From Unconstrained to Constrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/28/kipd-constrained.html" rel="alternate" type="text/html" title="KIPD: From Unconstrained to Constrained Minimization" /><published>2025-08-28T00:00:00+00:00</published><updated>2025-08-28T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/28/kipd-constrained</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/28/kipd-constrained.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/24/kipd-minimization.html">previous post</a> on using Sum-of-Squares (SOS) for unconstrained minimization. This post extends the framework to handle polynomial equality constraints, leveraging deeper results from algebraic geometry. The evolution of these posts has been greatly accelerated with the help of Gemini, a process I discuss <a href="/misc/2025/08/18/blog-posts-in-2025.html">here</a>.</em></p>
+
+<p>In the last post, we saw how to find a global lower bound for a polynomial $p(x)$ by finding the largest $\gamma$ such that $p(x) - \gamma$ is a sum of squares (SOS). Now, we consider the constrained optimization problem:</p>
+
+\[\begin{aligned}
+\min_{x} \quad &amp; p(x) \\
+\text{s.t.} \quad &amp; g_j(x) = 0, \quad j=1, \dots, m \\
+\end{aligned}\]
+
+<p>For simplicity, we will consider a single equality constraint $g(x) = 0$. The core idea remains the same: reformulate the problem as finding the largest scalar $\gamma$ that acts as a lower bound. However, the non-negativity condition no longer needs to hold for all $x$, only for those $x$ that satisfy the constraint.</p>
+
+\[\begin{aligned}
+\max_{\gamma} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma \geq 0 \quad \forall x \text{ s.t. } g(x) = 0 \\
+\end{aligned}\]
+
+<p>This is where we need a more powerful tool than simple SOS decomposition. The algebraic certificate for a polynomial being non-negative over a variety (a set defined by polynomial equalities) is given by the <strong>Positivstellensatz</strong>. A simplified version (Putinar’s Positivstellensatz) tells us that a sufficient condition for $p(x) - \gamma \ge 0$ on the set where $g(x)=0$ is the existence of an SOS polynomial $s(x)$ and an arbitrary polynomial “Lagrange multiplier” $t(x)$ such that:</p>
+
+\[p(x) - \gamma = s(x) + t(x)g(x)\]
+
+<p>This identity must hold for all $x$. By substituting the coefficients of $t(x)$ as decision variables, we can again formulate a semidefinite program (SDP). This leads to our new fundamental problem:</p>
+
+\[\begin{aligned}
+\textbf{(SOS-opt-C)}\quad\max_{\gamma, \mathbf{X}, \mathbf{t}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p(x) - \gamma = \mathbf{v}(x)^\top \mathbf{X} \mathbf{v}(x) + t(x)g(x) \\
+&amp; \mathbf{X} \succeq 0
+\end{aligned}\]
+
+<p>Here, $\mathbf{t}$ represents the vector of coefficients of the multiplier polynomial $t(x)$. The degrees of the monomial vector $\mathbf{v}(x)$ and the multiplier $t(x)$ must be chosen high enough for the identity to be possible. This approach is the foundation of the powerful Lasserre hierarchy for polynomial optimization.</p>
+
+<p>Just like before, this problem can be formulated in four ways.</p>
+
+<h3 id="a-quick-overview">A Quick Overview</h3>
+
+<p>The introduction of the multiplier polynomial $t(x)g(x)$ adds a new linear term to our coefficient-matching equations. This term is linear in the unknown coefficients of $t(x)$, which become new decision variables in our primal forms. In the dual forms, this results in new linear constraints on the dual variables.</p>
+
+<p>GEMINI: correct the table using the new formulation.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"><strong>Kernel Form</strong></th>
+      <th style="text-align: left"><strong>Image Form</strong></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Primal</strong></td>
+      <td style="text-align: left"><strong>(P-K) Primal Kernel Problem</strong> <br /> Maximize $\gamma$ by finding a Gram matrix $\mathbf{X}$ and multiplier coefficients $\mathbf{t}$ that satisfy coefficient-matching constraints. <br /><br /> \(\begin{aligned} \max_{\mathbf{X}, \gamma, \mathbf{t}} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; p_i - \delta_{i0}\gamma = \langle \mathbf{A}_i, \mathbf{X} \rangle + \sum_k t_k g_{i-k} \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(P-I) Primal Image Problem</strong> <br /> Maximize $\gamma$ subject to a parameterized Gram matrix being positive semidefinite. The parameterization now also depends on $\mathbf{t}$. <br /><br /> \(\begin{aligned} \max_{\mathbf{s}, \gamma, \mathbf{t}} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}, \mathbf{g}, \mathbf{t}) - \gamma \mathbf{A}_0 + \sum_j s_j \mathbf{B}_j \succeq 0 \end{aligned}\)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Dual</strong></td>
+      <td style="text-align: left"><strong>(D-K) Dual Kernel Problem</strong> <br /> Minimize a linear function of the polynomial’s coefficients, with additional linear constraints on the dual variables. <br /><br /> \(\begin{aligned} \min_{\boldsymbol{\lambda}} \quad &amp; \boldsymbol{\lambda}^\top \mathbf{p} \\ \text{s.t.} \quad &amp; \sum_i \lambda_i \mathbf{A}_i \succeq 0 \\ &amp; \lambda_0 = 1 \\ &amp; \sum_i \lambda_i g_{i-k} = 0, \quad \forall k \end{aligned}\)</td>
+      <td style="text-align: left"><strong>(D-I) Dual Image Problem</strong> <br /> Minimize an inner product subject to normalization and additional orthogonality constraints related to $g(x)$. <br /><br /> \(\begin{aligned} \min_{\mathbf{X}} \quad &amp; \langle \mathbf{X}, \mathbf{Y}(\mathbf{p}) \rangle \\ \text{s.t.} \quad &amp; \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\ &amp; \langle \mathbf{X}, \mathbf{B}_j \rangle = 0, \quad \forall j \\ &amp; \langle \mathbf{X}, \mathbf{M}_{k} \rangle = 0, \quad \forall k \\ &amp; \mathbf{X} \succeq 0 \end{aligned}\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see these four optimization formulations at work in this Jupyter notebook:</p>
+
+<p><a href="https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-08-25-sos-constrained-optimization.ipynb"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a></p>
+
+<p>Now, let’s look at how each of these is derived.</p>
+
+<h4 id="the-primal-kernel-form">The Primal Kernel Form</h4>
+
+<p>We start with the central identity $p(x) - \gamma = \mathbf{v}(x)^\top \mathbf{X} \mathbf{v}(x) + t(x)g(x)$ and equate the coefficients of each monomial $x^i$ on both sides. The coefficient of $x^i$ in each term is:</p>
+
+<ul>
+  <li>On the left: $p_\alpha - \delta_{\alpha \mathbf{0}}\gamma$, where $p_\alpha$ is the coefficient of $p(x)$ corresponding to the multi-index $\alpha$ and $\delta_{\alpha\mathbf{0}}$ is 1 if $\alpha=\mathbf{0}$ and 0 otherwise.</li>
+  <li>In the SOS term: $\langle \mathbf{A}_i, \mathbf{X} \rangle$ (matrix $\mathbf{A}_i$ picks all the terms of the moment matrix corresponding to $x^\mathbf{\alpha}$.</li>
+  <li>We formulate matrices $\mathbf{C}_{ik}$ that will incorporate the equality constraints as follows. For each equality constraint $g_i(x)$ we form: $g_i(x)t_i(x) = \sum_k  t_{ik} \langle\mathbf{C}_{ik}, v(x)v(x)^\top\rangle$, where $t_{ik}$ are the coefficients of the polynomial $t_i(x)$.</li>
+</ul>
+
+<h5 id="example">Example</h5>
+<p>We take as example a problem with two equality constraints: $g_1(x) = a^2 + b^2 - 1 = 0$, $g_2(x)=a-1=0$. We write the polynomial dual variables as</p>
+
+\[t_0(x) =t_0^{00} + t_0^{10} a + t_0^{01} b + t_0^{11} ab + \ldots\]
+
+<p>First, we note that the degree of $t_0(x)$ is zero, the degree of $t_1(x)$ is one (since the total degree of each $g_i(x)t_i(x)$ should $\leq 2$. Plugging this in, we get:</p>
+
+\[\begin{align}
+\sum_{i=1}^{2} g_i(x)t_i(x) &amp;= t_0^{00}(a^2 + b^2 - 1) + t_1^{00}(a - 1) + t_1^{10}a(a-1) + t_1^{01}b(a-1)  \\
+&amp; = \langle t_0^{00} \mathbf{C}_0^{00} + t_1^{00} \mathbf{C}_1^{00} + \ldots, v(x)v(x)^\top \rangle \\
+\end{align}\]
+
+<p>where the matrices $C_0^{00}$ to $C_{1}^{01}$ are given below:</p>
+
+<p>GEMINI: fill this in.</p>
+
+<p>Equating these gives a system of linear equations. This gives the <strong>primal kernel</strong> formulation:</p>
+
+\[\textbf{(P-K)}\quad
+\begin{align}
+\max_{\mathbf{X}, \gamma, \mathbf{t}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p_{\alpha} - \delta_{\alpha\mathbf{0}} \gamma = \langle \mathbf{A}_\alpha, \mathbf{X} \rangle + \sum_{k} t_k^{\alpha} \langle \mathbf{C}_k^{\alpha}, \mathbf{X}\rangle \quad \forall \alpha \\
+&amp; \mathbf{X} \succeq 0 
+\end{align}\]
+
+<h4 id="the-primal-image-form">The Primal Image Form</h4>
+
+<p>The <strong>primal image</strong> form finds a parameterization of $\mathbf{X}$ that will always satisfy the constraints. We have the following parameterization:</p>
+
+\[\mathbf{X} = \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 - \sum_j s_j \mathbf{N}_j\]
+
+<p>where $\mathbf{N}<em>j$ are basis vectors of the nullspace of all operators $\mathbf{A}</em>\alpha$ and $\mathbf{C}_i^\alpha$.</p>
+
+<h5 id="example-1">Example</h5>
+
+<p>For simplicity, we use the half-vecotrization operator to find the null space basis vectors. This consists of multiplying the off-diagonal elements by $\sqrt{2}$ so that $\mathrm{vech}(A)^top\mathrm{vech}{B}=\langle A, B \rangle$:</p>
+
+\[\begin{bmatrix}
+-1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 \\
+-1 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+ 0 &amp;-1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+ 0 &amp; 0 &amp;-1 &amp; 0 &amp; 1 &amp; 0 \\
+\end{bmatrix}\]
+
+<p>We can find the nullspace of this constraint matrix to find the basis vectors $\mathbf{N}_j$. This matrix has rank 4, so its nullspace is 2-dimensional. Two basis vectors are:</p>
+
+\[\mathbf{n}_1 = [1, 1, 0, 1, 0, 0]^\top, \quad \mathbf{n}_2 = [0, 0, 1, 0, 1, 0]^\top\]
+
+<p>These vectors can be reshaped into symmetric matrices $\mathbf{N}_1, \mathbf{N}_2$ that form the basis for the homogeneous part of the solution.</p>
+
+\[\textbf{(P-I)}\quad
+\begin{align}
+\max_{\mathbf{s}, \gamma, \mathbf{t}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; \mathbf{Y}(\mathbf{p}) - \gamma \mathbf{A}_0 - \sum_j s_j \mathbf{N}_j \succeq 0
+\end{align}\]
+
+<p>Of course. Here is a rewrite of the “Dual Problems” section with a derivation via the Lagrangian, as well as a revised conclusion.</p>
+
+<hr />
+
+<h3 id="the-dual-problems">The Dual Problems</h3>
+
+<p>Every semidefinite program has a corresponding dual problem, which is derived from the Lagrangian of the primal problem. The dual often provides a different and powerful interpretation. For our constrained SOS problem, the dual reveals a deep connection to the theory of moments and probability distributions.</p>
+
+<h4 id="derivation-via-the-lagrangian">Derivation via the Lagrangian</h4>
+
+<p>To derive the dual, we start with the <strong>primal kernel</strong> formulation (P-K). The problem is:</p>
+
+\[\begin{align}
+\max_{\mathbf{X}, \gamma, \mathbf{t}} \quad &amp; \gamma \\
+\text{s.t.} \quad &amp; p_{\alpha} - \delta_{\alpha\mathbf{0}} \gamma = \langle \mathbf{A}_\alpha, \mathbf{X} \rangle + \left(\sum_j t_j(x)g_j(x)\right)_\alpha \quad \forall \alpha \\
+&amp; \mathbf{X} \succeq 0
+\end{align}\]
+
+<p>where $(\cdot)_\alpha$ denotes the coefficient of the monomial $x^\alpha$. We can write the linear term more explicitly. Let $t_j(x) = \sum_\beta (t_j)_\beta x^\beta$. Then the coefficient of $x^\alpha$ in $\sum_j t_j(x)g_j(x)$ is $\sum_{j,\beta} (t_j)_\beta (x^\beta g_j(x))_\alpha$.</p>
+
+<p>We introduce a Lagrange multiplier (a dual variable) $y_\alpha$ for each coefficient-matching constraint. The Lagrangian function is:</p>
+
+\[L(\mathbf{X}, \gamma, \mathbf{t}; \mathbf{y}) = \gamma - \sum_\alpha y_\alpha \left( \langle \mathbf{A}_\alpha, \mathbf{X} \rangle + \sum_{j,\beta} (t_j)_\beta (x^\beta g_j(x))_\alpha + \delta_{\alpha\mathbf{0}}\gamma - p_\alpha \right)\]
+
+<p>The dual problem is obtained by minimizing the dual function $g(\mathbf{y}) = \sup_{\mathbf{X}\succeq 0, \gamma, \mathbf{t}} L$ over the dual variables $\mathbf{y}$. To find this supremum, we rearrange the Lagrangian by grouping terms for the primal variables:</p>
+
+\[\begin{align}
+L = &amp; \quad \gamma(1 - y_{\mathbf{0}}) \\
+&amp; - \sum_{j,\beta} (t_j)_\beta \left( \sum_\alpha y_\alpha (x^\beta g_j(x))_\alpha \right) \\
+&amp; - \left\langle \sum_\alpha y_\alpha \mathbf{A}_\alpha, \mathbf{X} \right\rangle \\
+&amp; + \sum_\alpha y_\alpha p_\alpha
+\end{align}\]
+
+<p>For the supremum to be finite, the terms multiplying the unconstrained variables $\gamma$ and $(t_j)_\beta$ must be zero. This gives us the first set of constraints for the dual problem:</p>
+<ol>
+  <li><strong>From $\gamma$:</strong> $1 - y_{\mathbf{0}} = 0 \implies y_{\mathbf{0}} = 1$.</li>
+  <li><strong>From $t_j(x)$:</strong> For each coefficient $(t_j)_\beta$, its multiplier must be zero: $\sum_\alpha y_\alpha (x^\beta g_j(x))_\alpha = 0$. This must hold for all $j$ and all basis multi-indices $\beta$ of the multiplier polynomial $t_j(x)$.</li>
+</ol>
+
+<p>The supremum over $\mathbf{X} \succeq 0$ of $-\langle \sum_\alpha y_\alpha \mathbf{A}_\alpha, \mathbf{X} \rangle$ is finite only if the matrix $\sum_\alpha y_\alpha \mathbf{A}_\alpha$ is positive semidefinite. This gives the main constraint:</p>
+<ol>
+  <li><strong>From $\mathbf{X}$:</strong> $\mathbf{M}(\mathbf{y}) := \sum_\alpha y_\alpha \mathbf{A}_\alpha \succeq 0$. This is the famous <strong>moment matrix</strong>.</li>
+</ol>
+
+<p>With these conditions met, the Lagrangian simplifies to $\sum_\alpha y_\alpha p_\alpha$. The dual problem is to minimize this value.</p>
+
+<h4 id="the-dual-kernel-moment-form">The Dual Kernel (Moment) Form</h4>
+
+<p>The derivation above leads directly to the <strong>dual kernel</strong> or <strong>moment</strong> formulation. The variables $y_\alpha$ are interpreted as moments of a hypothetical probability distribution.</p>
+
+\[\textbf{(D-K)}\quad
+\begin{align}
+\min_{\mathbf{y}} \quad &amp; \sum_\alpha y_\alpha p_\alpha \\
+\text{s.t.} \quad &amp; y_\mathbf{0} = 1 \\
+&amp; \mathbf{M}(\mathbf{y}) \succeq 0 \\
+&amp; \sum_\alpha y_\alpha (x^\beta g_j(x))_\alpha = 0 \quad \forall j, \beta
+\end{align}\]
+
+<p>Let’s interpret these constraints in the language of moments. The vector $\mathbf{y}$ defines a linear functional $L_\mathbf{y}$ that maps a polynomial $q(x) = \sum q_\alpha x^\alpha$ to its “expected value” $L_\mathbf{y}(q) = \sum q_\alpha y_\alpha$.</p>
+<ol>
+  <li>The objective is to minimize the expected value of our cost polynomial $p(x)$.</li>
+  <li>$y_\mathbf{0} = 1$ is a normalization, meaning the expected value of the polynomial $1$ is $1$.</li>
+  <li>$\mathbf{M}(\mathbf{y}) \succeq 0$ is the moment matrix condition. Its $(i,k)$-th entry is $y_{\alpha_i+\alpha_k}$, where $x^{\alpha_i}$ and $x^{\alpha_k}$ are monomials from the basis $\mathbf{v}(x)$. This condition ensures that the functional is non-negative on any SOS polynomial.</li>
+  <li>The final constraint, which can be written as $\sum_\delta (g_j)_\delta y_{\beta+\delta} = 0$, is a “localizing” condition. It means that the expected value of any polynomial multiple of a constraint $g_j(x)$ is zero (i.e., $L_\mathbf{y}(h(x)g_j(x))=0$). This forces the underlying measure to be supported only on the set where $g_j(x)=0$.</li>
+</ol>
+
+<h4 id="the-dual-image-form">The Dual Image Form</h4>
+
+<p>By taking the dual of the <strong>primal image</strong> form (P-I), we arrive at the <strong>dual image</strong> formulation. The dual variable is now a positive semidefinite matrix $\mathbf{Z}$ of the same size as $\mathbf{X}$. The constraints of the primal image form, which involve the nullspace vectors $\mathbf{N}_j$ and the particular solution $\mathbf{Y}(\dots)$, translate directly into constraints on $\mathbf{Z}$.</p>
+
+\[\textbf{(D-I)}\quad
+\begin{align}
+\min_{\mathbf{Z}} \quad &amp; \langle \mathbf{Y(p)}, \mathbf{Z} \rangle \\
+\text{s.t.} \quad &amp; \langle \mathbf{Y_0}, \mathbf{Z} \rangle = 1 \\
+&amp; \langle \mathbf{Z}, \mathbf{N}_j \rangle = 0 \quad \forall j \\
+&amp; \langle \mathbf{Y}_{j,\beta}, \mathbf{Z} \rangle = 0 \quad \forall j, \beta \\
+&amp; \mathbf{Z} \succeq 0
+\end{align}\]
+
+<p>Here, $\mathbf{Y(p)}$, $\mathbf{Y_0}$, and $\mathbf{Y}_{j,\beta}$ are specific symmetric matrices (particular solutions) that represent the polynomials $p(x)$, the constant $1$, and the basis polynomials for the multiplier term $x^\beta g_j(x)$, respectively. For example, $\mathbf{Y(p)}$ is any matrix satisfying $\langle \mathbf{A}_\alpha, \mathbf{Y(p)} \rangle = p_\alpha$ for all $\alpha$.</p>
+
+<p>The constraints have a clear geometric interpretation in the space of symmetric matrices:</p>
+<ol>
+  <li>The objective minimizes the inner product of $\mathbf{Z}$ with the matrix representing the cost polynomial.</li>
+  <li>The constraints $\langle \mathbf{Z}, \mathbf{N}_j \rangle = 0$ force $\mathbf{Z}$ to lie in the subspace orthogonal to the nullspace of the coefficient-matching map (i.e., in its image space).</li>
+  <li>The constraints $\langle \mathbf{Y}_{j,\beta}, \mathbf{Z} \rangle = 0$ enforce the same moment-like conditions from the dual kernel form, but now expressed in terms of the matrix $\mathbf{Z}$.</li>
+</ol>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We have extended the sum-of-squares framework for unconstrained optimization to handle polynomial equality constraints using a result from real algebraic geometry known as the Positivstellensatz. By introducing multiplier polynomials, we can again formulate the search for a global lower bound as a semidefinite program.</p>
+
+<p>This single problem can be viewed from four different perspectives, forming a complete primal-dual picture:</p>
+<ul>
+  <li><strong>Primal Kernel:</strong> Find an SOS polynomial and multiplier coefficients. The constraints are on the coefficients of the polynomials.</li>
+  <li><strong>Primal Image:</strong> Find an SOS polynomial by parameterizing the space of all feasible polynomials. The constraint is a single linear matrix inequality.</li>
+  <li><strong>Dual Kernel (Moment):</strong> As derived via the Lagrangian, this form seeks an optimal “pseudo-measure” or moment sequence $\mathbf{y}$ that is supported on the constraint set.</li>
+  <li><strong>Dual Image:</strong> Find an optimal positive semidefinite moment matrix $\mathbf{Z}$ that lies within a specific subspace defined by the problem’s constraints.</li>
+</ul>
+
+<p>Under mild assumptions (strong duality holds), these four formulations are equivalent. However, one may be more efficient or insightful than another depending on the specific problem structure. This primal-dual framework is the foundation of the powerful Lasserre hierarchy, which provides a sequence of increasingly accurate SDP relaxations that converge to the true global minimum of a polynomial optimization problem.</p>
+
+<h3 id="conclusion-1">Conclusion</h3>
+
+<h3 id="references--further-reading">References / further reading</h3>
+
+<p>The Moment-SOS hierarchy is a cornerstone of modern polynomial optimization. Foundational references include:
+<a class="citation" href="#parrilo_semidefinite_2003">(Parrilo, 2003)</a>
+(missing reference)</p>
+
+<h3 id="bibliography">Bibliography</h3>
+
+<ol class="bibliography"><li><span id="dumbgen_toward_2024">Dümbgen, F., Holmes, C., Agro, B., &amp; Barfoot, T. D. (2024). Toward Globally Optimal State Estimation Using Automatically Tightened Semidefinite Relaxations. <i>IEEE Transactions on Robotics</i>, <i>40</i>, 4338–4358.</span></li>
+<li><span id="parrilo_semidefinite_2003">Parrilo, P. A. (2003). Semidefinite Programming Relaxations for Semialgebraic Problems. <i>Mathematical Programming</i>, <i>96</i>(2), 293–320.</span></li></ol>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[This is a follow-up to my previous post on using Sum-of-Squares (SOS) for unconstrained minimization. This post extends the framework to handle polynomial equality constraints, leveraging deeper results from algebraic geometry. The evolution of these posts has been greatly accelerated with the help of Gemini, a process I discuss here.]]></summary></entry><entry><title type="html">Solving Rotation Averaging from Samples</title><link href="http://duembgen.github.io/research/2025/08/27/rotation-averaging-sfs.html" rel="alternate" type="text/html" title="Solving Rotation Averaging from Samples" /><published>2025-08-27T00:00:00+00:00</published><updated>2025-08-27T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/27/rotation-averaging-sfs</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/27/rotation-averaging-sfs.html"><![CDATA[<p><em>This is another blogpost, based on my handwritten notes and completed plus polished <a href="/misc/2025/08/18/blog-posts-in-2025.html">with a little help from Gemini</a>.</em></p>
+
+<p>These notes solve a deceivingly simple instance of rotation averaging, inspired from Example 3.2 of (missing reference), but using real as opposed to complex rotation matrices, and elaborating more in detail the connections of this approach with the non-sampling versions.</p>
+
+\[\textbf{(R-min)} \quad 
+\begin{align} \underset{\mathbf{R}}{\min} \quad &amp; p(\mathbf{R}) \\ \text{s.t.} \quad &amp; \mathbf{R}^T\mathbf{R} = \mathbf{I} \\
+&amp; \mathrm{det}(\mathbf{R})=1
+\end{align}\]
+
+<p>where $p(\mathbf{R})$ is some polynomial, given below, and the constraints enforce that $\mathbf{R}$ is an orthogonal matrix. A well-known relaxation of this problem is:</p>
+
+\[\textbf{(R-max)} \quad \begin{align} \underset{\gamma, \mathbf{H}\succeq 0 }{\max} \quad &amp; \gamma \\ \text{s.t.}
+\quad &amp; p(\mathbf{R}) - \gamma = v_d(\mathbf{R})^\top \mathbf{H} v_d(\mathbf{R}) \quad \forall \mathbf{R} \in \mathrm{SO}(2)
+\end{align}\]
+
+<p>where we have introduced $v_d(\mathbf{R})$, a polynomial basis vector for polynomials of degree $d$, for example the monomials:</p>
+
+\[v_2(\mathbf{R})^\top  = \begin{bmatrix} h &amp;  R_{11} &amp; R_{12} &amp; R_{21} &amp; R_{22} &amp; R_{11}^2 &amp; R_{11}R_{12} &amp; \cdots &amp; R_{22}^2\end{bmatrix}.\]
+
+<h3 id="first-mistery-dual-feasibility">First mistery: Dual feasibility</h3>
+
+<p>As we have seen in <a href="research/2025/08/23/kipd-minimization.html">this other blogpost</a>, we can formulate the dual of problem $\textbf{(R-max)}$, and then the dual variable $\mathbf{X}$ actually corresponds to the rank relaxation of the original problem. But why will this $\mathbf{X}$ actually obey the original primal constraints?</p>
+
+<h3 id="second-mistery-sampling-based-version">Second mistery: Sampling-based version</h3>
+
+<p>The second mistery is very related, and concerns the sample-based formulation of the original problem. As stated in (missing reference), we can solve the following problem:</p>
+
+\[\textbf{(R-max-N)} \quad \begin{align} \underset{\gamma, \mathbf{H}\succeq 0 }{\max} \quad &amp; \gamma \\ \text{s.t.}
+\quad &amp; p(\mathbf{R}_i) - \gamma = v_d(\mathbf{R}_i)^\top \mathbf{H} v_d(\mathbf{R}_i) \quad i=1,\ldots, N 
+\end{align}\]
+
+<p>where $\mathbf{R}_i$ are simply some feasible points of the original problem (i.e., valid rotations). How come that the dual matrix $\mathbf{X}$ when using this problem formulation will actually satisfy the original constraints? The problem <strong>{(R-max-N)}</strong> doesn’t even know about the constraints! They were just used to create valid samples…</p>
+
+<p>I hope that by the end of this blogpost I will have clear answers to both of these questions.</p>
+
+<ul>
+  <li><a href="#1-a-non-sampling-based-approach">1. A non-sampling-based approach</a></li>
+  <li><a href="#2-a-sampling-based-approach">2. A sampling-based approach</a></li>
+</ul>
+
+<h2 id="1-a-non-sampling-based-approach">1. A non-sampling-based-approach</h2>
+
+<p>In the non-sampling-based approach, we formulate the optimization problem over the continuous space of rotations.</p>
+
+<h3 id="1a-minimal-formulation">1.a Minimal formulation</h3>
+
+<p>Let’s consider the problem of minimizing a polynomial function $p(\mathbf{R})$ over the special orthogonal group SO(2), which represents rotations in 2D.</p>
+
+<p>The objective function is given by:</p>
+
+\[p(\mathbf{R}) = 4R_{21} - 2R_{12}R_{21} - 2R_{11}R_{22} + 3\]
+
+<p>A 2D rotation matrix $\mathbf{R}$ can be parameterized by an angle $\theta$, or more conveniently for polynomial optimization, by two variables $a$ and $b$ such that $a^2+b^2=1$:</p>
+
+\[\mathbf{R} = \begin{bmatrix} \cos(\theta) &amp; \sin(\theta) \\ -\sin(\theta) &amp; \cos(\theta) \end{bmatrix} = \begin{bmatrix} b &amp; a \\ -a &amp; b \end{bmatrix} = \begin{bmatrix} \sqrt{1-a^2} &amp; a \\ -a &amp; \sqrt{1-a^2} \end{bmatrix}\]
+
+<p>where we have set $a = \sin(\theta)$ and $b = \cos(\theta)$. Substituting this into the objective function, we get a polynomial in terms of $a$:</p>
+
+\[p(a) = 4(-a) - 2(a)(-a) - 2(\sqrt{1-a^2})(\sqrt{1-a^2}) + 3 = -4a + 2a^2 - 2(1-a^2) + 3 = 4a^2 - 4a + 1\]
+
+<p>This is a simple quadratic function. We can find the minimum by taking the derivative with respect to $a$ and setting it to zero:</p>
+
+\[\frac{\partial p(a)}{\partial a} = 8a - 4 = 0 \quad \implies \quad a^* = \frac{1}{2}\]
+
+<p>This gives $b^* = \pm \sqrt{1 - (1/2)^2} = \pm \frac{\sqrt{3}}{2}$. The optimal rotation matrices are:</p>
+
+\[\mathbf{R}_\pm^* = \begin{bmatrix} \pm \frac{\sqrt{3}}{2} &amp; \frac{1}{2} \\ -\frac{1}{2} &amp; \pm \frac{\sqrt{3}}{2} \end{bmatrix}\]
+
+<p>The optimal value is $p(\mathbf{R}^*) = 4(1/2)^2 - 4(1/2) + 1 = 1 - 2 + 1 = 0$.</p>
+
+<p>Now, let’s see how to solve this using Semidefinite Programming.</p>
+
+<h4 id="1ai-the-primal-problem">1.a.i The primal problem</h4>
+
+<p>To formulate this as an SDP, we first define a vector of variables $\mathbf{x} = [1, a, b]^T$. The constraints are $x_0 = 1$ and $a^2+b^2 = x_1^2 + x_2^2 = 1$ (Note that this constraint includes both the orthogonal constraints and the determinant constraint). The objective function in terms of $a$ and $b$ is $p(a,b) = -4a + 2a^2 - 2b^2 + 3$.</p>
+
+<p>We can lift this problem into a higher-dimensional space using a matrix variable $\mathbf{X} = \mathbf{x}\mathbf{x}^T$.</p>
+
+\[\mathbf{X} = \begin{bmatrix} 1 \\ a \\ b \end{bmatrix} \begin{bmatrix} 1 &amp; a &amp; b \end{bmatrix} = \begin{bmatrix} 1 &amp; a &amp; b \\ a &amp; a^2 &amp; ab \\ b &amp; ab &amp; b^2 \end{bmatrix} = \begin{bmatrix} X_{00} &amp; X_{01} &amp; X_{02} \\ X_{10} &amp; X_{11} &amp; X_{12} \\ X_{20} &amp; X_{21} &amp; X_{22} \end{bmatrix}\]
+
+<p>The objective function can be written as a linear function of the elements of $\mathbf{X}$:</p>
+
+\[p(\mathbf{X}) = -4X_{01} + 2X_{11} - 2X_{22} + 3X_{00} = \left\langle \begin{bmatrix} 3 &amp; -2 &amp; 0 \\ -2 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; -2 \end{bmatrix}, \mathbf{X} \right\rangle\]
+
+<p>The constraints become:</p>
+
+<ol>
+  <li>$X_{00} = 1$:</li>
+</ol>
+
+\[\left\langle \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{bmatrix}, \mathbf{X} \right\rangle = 1\]
+
+<ol>
+  <li>$a^2+b^2 = 1 \implies X_{11}+X_{22}=1$:</li>
+</ol>
+
+\[\left\langle \begin{bmatrix} -1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}, \mathbf{X} \right\rangle = 0\]
+
+<p>Now to the SDP formulation.</p>
+
+<p>The constraint $\mathbf{X} = \mathbf{x}\mathbf{x}^T$ is non-convex. We relax this to $\mathbf{X} \succeq \mathbf{x}\mathbf{x}^T$, which, by the Schur complement, is equivalent to:</p>
+
+\[\begin{bmatrix} \mathbf{X} &amp; \mathbf{x} \\ \mathbf{x}^T &amp; 1 \end{bmatrix} \succeq 0\]
+
+<p>However, a simpler relaxation that is often used is just $\mathbf{X} \succeq 0$. So we replace the rank-1 constraint $\mathbf{X} = \mathbf{x}\mathbf{x}^T$ with a positive semidefinite constraint $\mathbf{X} \succeq 0$.</p>
+
+<p>The primal SDP is:</p>
+
+\[\begin{align} \underset{\mathbf{X}}{\min} \quad &amp; \left\langle \begin{bmatrix} 3 &amp; -2 &amp; 0 \\ -2 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; -2 \end{bmatrix}, \mathbf{X} \right\rangle \\ \text{s.t.} \quad &amp; \left\langle \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{bmatrix}, \mathbf{X} \right\rangle = 1 \\ &amp; \left\langle \begin{bmatrix} -1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix}, \mathbf{X} \right\rangle = 0 \\ &amp; \mathbf{X} \succeq 0 \end{align}\]
+
+<p>It is not obvious how one would solve this by hand. As it turns out, the dual problem, on the other hand, is super simple to solve!</p>
+
+<h4 id="1aii-the-dual-problem">1.a.ii The dual problem</h4>
+
+<p>The dual problem can be formulated as:</p>
+
+\[\begin{align} \underset{y_1, y_2}{\max} \quad &amp; y_1 \\ \text{s.t.} \quad &amp; \begin{bmatrix} 3 &amp; -2 &amp; 0 \\ -2 &amp; 2 &amp; 0 \\ 0 &amp; 0 &amp; -2 \end{bmatrix} - y_1 \begin{bmatrix} 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{bmatrix} - y_2 \begin{bmatrix} -1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \succeq 0 \end{align}\]
+
+<p>Which simplifies to:</p>
+
+\[\begin{pmatrix} 3-y_1+y_2 &amp; -2 &amp; 0 \\ -2 &amp; 2-y_2 &amp; 0 \\ 0 &amp; 0 &amp; -2-y_2 \end{pmatrix} \succeq 0\]
+
+<p>For this matrix to be positive semidefinite, all its principal minors must be non-negative.</p>
+
+<ul>
+  <li>
+    <p>One minor is simply given by: $-2-y_2 \ge 0 \implies y_2 \leq -2$.</p>
+  </li>
+  <li>
+    <p>Another one is: $-(2-y_2)(2+y_2)=-(4 - y_2^2)=y_2^2 - 4 \geq 0$, which implies $y_2 \leq -2$ or $y_2 \geq 2$. Combining with the first condition, we still have $y_2 \leq -2$.</p>
+  </li>
+  <li>
+    <p>The last one is:</p>
+
+\[\begin{align}
+0 &amp; \leq (3-y_1+y_2)(2-y_2) - 4   \\
+  &amp;= 6-2y_1+2y_2-3y_2+y_1y_2 -y_2^2- 4 \\
+  &amp;=2-2y_1-y_2+y_1y_2-y_2^2 \\
+  &amp;\text{(using the fact that $y_2\leq -2$)} \\
+  &amp; \leq 2-2y_1+2-2y_1-4 \\ 
+  &amp; \leq -4y_1
+\end{align}\]
+
+    <p>and therefore $y_1\leq 0$</p>
+  </li>
+</ul>
+
+<p>Since we want to maximize $y_1$, we should choose $y_1=0$. We therefore have strong duality!</p>
+
+<h3 id="2-a-sampling-based-approach">2. A sampling-based approach</h3>
+
+<p>We want to explore if a sampling-based approach can be more practical. The idea is to enforce the optimization constraints only on a set of sample points.</p>
+
+<p>The dual problem is to find the largest $\gamma$ such that $p(\mathbf{x}) - \gamma$ is a sum of squares (SOS) of polynomials.</p>
+
+\[\begin{align} \underset{\gamma}{\max} \quad &amp; \gamma \\ \text{s.t.} \quad &amp; p(\mathbf{x}_i) - \gamma \ge 0 \quad \forall \mathbf{x}_i \in \mathrm{SO}(2) \end{align}\]
+
+<p>This can be written as finding a positive semidefinite matrix $\mathbf{H}$ such that for a vector of monomials $\mathbf{v}(\mathbf{x})$, we have $p(\mathbf{x}_i) - \gamma = \mathbf{v}(\mathbf{x}_i)^T \mathbf{H} \mathbf{v}(\mathbf{x}_i)$ for all samples $\mathbf{x}_i$.</p>
+
+<p>Let $p_i = p(\mathbf{x}_i)$ and $\mathbf{v}_i = \mathbf{v}(\mathbf{x}_i)$.</p>
+
+\[p_i - \gamma = \mathbf{v}_i^T \mathbf{H} \mathbf{v}_i\]
+
+<p>If we stack the constraints for $N$ samples, we get $\mathbf{p} - \gamma\mathbf{1} = \mathrm{diag}(\mathbf{V}^T\mathbf{H}\mathbf{V})$.
+Here $\mathbf{V} = [\mathbf{v}_1, \dots, \mathbf{v}_N]$.</p>
+
+<h4 id="2a-with-orthogonalization">2.a With orthogonalization</h4>
+
+<p>To simplify the problem, we can use a basis where the samples are orthogonal. Let $\mathbf{V} = \mathbf{U}\mathbf{S}_r\mathbf{W}_r^T$ be the thin SVD of the matrix $\mathbf{V}$. Then we have:</p>
+
+\[\mathbf{p} - \gamma\mathbf{1} = \mathrm{diag}(\mathbf{W}_r\mathbf{S}_r\mathbf{U}^T \mathbf{H} \mathbf{U}\mathbf{S}_r\mathbf{W}_r^T)\]
+
+<p>Let $\mathbf{H}_r = \mathbf{S}_r\mathbf{U}^T \mathbf{H} \mathbf{U}\mathbf{S}_r$. Then we solve for a smaller matrix $\mathbf{H}_r \in \mathbb{R}^{r \times r}$ where $r$ is the rank of $\mathbf{V}$.</p>
+
+<p>The dual variable $\mathbf{X}$ is related to the matrix $\mathbf{H}$. The elements of $\mathbf{X}$ are the dual variables to the constraints that define the moments of the distribution. The dual variable to the constraint $p(\mathbf{x}) - \gamma = \mathbf{v}(\mathbf{x})^T \mathbf{H} \mathbf{v}(\mathbf{x})$ is the moment matrix, which is our primal variable $\mathbf{X}$.</p>
+
+<p>To recover $\mathbf{H}$ from $\mathbf{H}_r$, we can use the pseudoinverse: $\mathbf{U}^T\mathbf{H}\mathbf{U} = \mathbf{S}_r^{-1}\mathbf{H}_r\mathbf{S}_r^{-1}$. This only defines the projection of $\mathbf{H}$ onto the space spanned by the first $r$ left singular vectors of $\mathbf{V}$. The remaining components of $\mathbf{H}$ can be chosen arbitrarily as long as $\mathbf{H} \succeq 0$.</p>
+
+<h4 id="2b-with-a-kernelized-formulation">2.b With a kernelized formulation</h4>
+
+<p>Instead of using monomials $\mathbf{v}(\mathbf{x})$, we can use a kernel function</p>
+
+<p>\(k(\mathbf{x}_i, \mathbf{x}) = \phi(\mathbf{x}_i)^T\phi(\mathbf{x}_j)\).</p>
+
+<p>But we never have to explicitly use feature map $\phi$; instead, we can form the following formulation of an SOS polynomial:</p>
+
+\[k(x)^\top K k(x) = \begin{bmatrix}k(x, x_1)\]
+
+<p>Each column of the matrix $\mathbf{V}$ is then given by the feature map $\phi(\mathbf{x}_i)$.</p>
+
+<p>The Gram matrix $\mathbf{K}_{ij} = k(\mathbf{x}_i, \mathbf{x}_j)$ can be used directly, and this is known as the kernel trick. This avoids having to explicitly specify the monomial basis, which can be very high-dimensional.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We have explored different ways to tackle the rotation averaging problem using semidefinite programming. The non-sampling-based approach provides an exact solution to the relaxed problem but can be computationally expensive. The sampling-based methods offer a more scalable alternative, especially when combined with orthogonalization or kernel methods. These techniques transform a non-convex problem over the manifold of rotations into a convex SDP that can be solved efficiently, providing a powerful tool for robust geometric estimation in various applications.</p>
+
+<h2 id="sandbox">Sandbox</h2>
+
+<h3 id="1b-vectorized-formulation">1.b Vectorized formulation</h3>
+
+<p>We can also vectorize the entire rotation matrix $\mathbf{R}$. Let $\mathbf{x} = [1, R_{11}, R_{12}, R_{21}, R_{22}]^T$. The objective function is linear in the outer product $\mathbf{X} = \mathbf{x}\mathbf{x}^T$:</p>
+
+\[p(\mathbf{X}) = 4X_{03} - 2X_{23} - 2X_{14} + 3X_{00}\]
+
+<p>So the cost matrix $\mathbf{C}$ is:</p>
+
+\[\mathbf{C} = \begin{bmatrix} 3 &amp; 0 &amp; 0 &amp; 2 &amp; -1 \\ 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 \\ 0 &amp; 0 &amp; 0 &amp; -1 &amp; 0 \\ 2 &amp; 0 &amp; -1 &amp; 0 &amp; 0 \\ -1 &amp; -1 &amp; 0 &amp; 0 &amp; 0 \end{bmatrix}\]
+
+<p>The constraints are:</p>
+<ol>
+  <li>$X_{00}=1$</li>
+  <li>$\mathbf{R}^T\mathbf{R} = \mathbf{I}$, which gives:
+    <ul>
+      <li>$R_{11}^2 + R_{21}^2 = 1 \implies X_{11}+X_{33}=1$</li>
+      <li>$R_{12}^2 + R_{22}^2 = 1 \implies X_{22}+X_{44}=1$</li>
+      <li>$R_{11}R_{12} + R_{21}R_{22} = 0 \implies X_{12}+X_{34}=0$</li>
+    </ul>
+  </li>
+  <li>$\mathbf{R}\mathbf{R}^T = \mathbf{I}$ gives equivalent constraints.</li>
+  <li>The determinant constraint $\det(\mathbf{R}) = R_{11}R_{22} - R_{12}R_{21} = 1 \implies X_{14}-X_{23}=1$.</li>
+</ol>
+
+<h4 id="1bi-the-primal-problem">1.b.i The primal problem</h4>
+
+\[\begin{align} \underset{\mathbf{X}}{\min} \quad &amp; \langle \mathbf{C}, \mathbf{X} \rangle \\ \text{s.t.} \quad &amp; X_{00} = 1 \\ &amp; X_{11} + X_{33} = 1 \\ &amp; X_{22} + X_{44} = 1 \\ &amp; X_{12} + X_{34} = 0 \\ &amp; X_{14} - X_{23} = 1 \\ &amp; \mathbf{X} \succeq 0 \end{align}\]
+
+<h4 id="1bii-the-dual-problem">1.b.ii The dual problem</h4>
+
+\[\begin{align} \underset{\mathbf{y}}{\max} \quad &amp; y_0 + y_1 + y_2 + y_4 \\ \text{s.t.} \quad &amp; \mathbf{C} - \mathrm{diag}(y_0, y_1, y_2, y_1, y_2) - y_3(\mathbf{e}_1\mathbf{e}_2^T+\mathbf{e}_2\mathbf{e}_1^T+\mathbf{e}_3\mathbf{e}_4^T+\mathbf{e}_4\mathbf{e}_3^T) \\ &amp; - y_4(\mathbf{e}_1\mathbf{e}_4^T+\mathbf{e}_4\mathbf{e}_1^T-\mathbf{e}_2\mathbf{e}_3^T-\mathbf{e}_3\mathbf{e}_2^T) \succeq 0 \end{align}\]
+
+<p>where $\mathbf{e}_i$ are the standard basis vectors.</p>]]></content><author><name></name></author><category term="research" /><summary type="html"><![CDATA[This is another blogpost, based on my handwritten notes and completed plus polished with a little help from Gemini.]]></summary></entry><entry><title type="html">KIPD: From Feasibility to Unconstrained Minimization</title><link href="http://duembgen.github.io/research/2025/08/24/kipd-minimization.html" rel="alternate" type="text/html" title="KIPD: From Feasibility to Unconstrained Minimization" /><published>2025-08-24T00:00:00+00:00</published><updated>2025-08-24T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/08/24/kipd-minimization</id><content type="html" xml:base="http://duembgen.github.io/research/2025/08/24/kipd-minimization.html"><![CDATA[<p><em>This is a follow-up to my <a href="/research/2025/08/18/kernel-image-primal-dual.html">previous post</a> on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in <a href="/misc/2025/08/18/blog-posts-in-2025.html">other post</a> about writing blog-posts with the helpf of Gemini</em></p>
 
 <p>In the last post, we explored how to determine if a polynomial $p(x)$ can be written as a sum of squares. This is a powerful tool for certifying that a polynomial is non-negative. But what if we want to find the <em>global minimum</em> of a polynomial? With only a few changes to the optimization problems, we can use SOS techniques to solve this, or at least find a good lower bound.</p>
 
