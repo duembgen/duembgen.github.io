@@ -47,12 +47,12 @@ $$
 
 for some choices $\alpha_i$. In particular, there exist some $\alpha$ that allow to characterize each element of the feasible set $\mathcal{X}$. 
 
-If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{M}$ for which there exists a positive measure $\mu$ such that $\mathbf{M}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
+If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{M}$ for which there exists a positive measure $\mu$ such that $\mathbf{M}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\\{\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}\\}$ --- we call this set for convenience $\bar{\mathcal{X}}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
 
 {% include figure.liquid
   path="/assets/images/blog/2025-10-27/subspaces-export.svg"
   alt="Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example"
-  caption="Visualization of subspace $\mathcal{V}$ and $\mathcal{X},\mathcal{K}$ for the running example"
+  caption="Visualization of subspace $\mathcal{V}$ and $\bar{\mathcal{X}},\mathcal{K}$ for the running example"
   zoomable=true
   sizes="(max-width:30px)"
 %}
