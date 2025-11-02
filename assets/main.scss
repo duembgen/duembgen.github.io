@@ -23,3 +23,17 @@
   object-position: 0 0;
   vertical-align: bottom; 
 }
+
+.example-box {
+  background-color: #e7f3fe; /* A light blue background */
+  border-left: 5px solid #2196F3; /* A solid blue left border */
+  padding: 15px 20px; /* Add some space inside the box */
+  margin: 20px 0; /* Add some space outside the box */
+  border-radius: 5px; /* Optional: rounded corners */
+  color: #333; /* Darker text for readability */
+}
+
+.example-box h4 {
+  margin-top: 0;
+  color: #2196F3;
+}
