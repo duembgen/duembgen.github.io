@@ -326,7 +326,7 @@ The image SOS formulation is:
 $$
 \begin{align*}
 \max_{c, \beta_i} \quad & c \\
-\text{s.t.} \quad & \mathbf{C} - c \mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i \succeq 0
+\text{s.t.} \quad & \mathbf{C} - c \mathbf{A}_0 - \sum_j \beta_j \mathbf{U}_j \succeq 0
 \end{align*}
 $$
 
@@ -335,7 +335,7 @@ This is a "textbook SDP", and its dual is:
 $$
 \begin{align*}
 \min_{\mathbf{X}} \quad & \langle \mathbf{C}, \mathbf{X} \rangle \\
-\text{s.t.} \quad & \langle \mathbf{X}, \mathbf{U}_i \rangle = 0, \quad i \in [n_u] \\
+\text{s.t.} \quad & \langle \mathbf{X}, \mathbf{U}_j \rangle = 0, \quad j \in [n_u] \\
 & \langle \mathbf{X}, \mathbf{A}_0 \rangle = 1 \\
 & \mathbf{X} \succeq 0
 \end{align*}
