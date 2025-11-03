@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-11-03T10:18:32+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">SOS and Moments: A Subspace View</title><link href="http://duembgen.github.io/research/2025/10/27/subspaces.html" rel="alternate" type="text/html" title="SOS and Moments: A Subspace View" /><published>2025-10-27T00:00:00+00:00</published><updated>2025-10-27T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/10/27/subspaces</id><content type="html" xml:base="http://duembgen.github.io/research/2025/10/27/subspaces.html"><![CDATA[<p><em>This writeup renders my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="http://duembgen.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="http://duembgen.github.io/" rel="alternate" type="text/html" /><updated>2025-11-03T10:30:14+00:00</updated><id>http://duembgen.github.io/feed.xml</id><title type="html">Frederike Dümbgen</title><subtitle>Frederike Dümbgen&apos;s personal website</subtitle><entry><title type="html">SOS and Moments: A Subspace View</title><link href="http://duembgen.github.io/research/2025/10/27/subspaces.html" rel="alternate" type="text/html" title="SOS and Moments: A Subspace View" /><published>2025-10-27T00:00:00+00:00</published><updated>2025-10-27T00:00:00+00:00</updated><id>http://duembgen.github.io/research/2025/10/27/subspaces</id><content type="html" xml:base="http://duembgen.github.io/research/2025/10/27/subspaces.html"><![CDATA[<p><em>This writeup renders my <a href="/research/2025/08/24/kipd-minimization.html">previous post “series” on Kernel-Image-Primal-Dual SOS formulations</a> somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading <a href="https://francisbach.com/sums-of-squares-for-dummies/">this</a> great blog post of Francis Bach.</em></p>
 
 <p><em>To generate this blogpost, I used Gemini to type up my handwritten notes. The narrative was written by myself, but I did use Gemini as a “critique” after the fact. I added a section about this in the end of this <a href="/misc/2025/08/18/blog-posts-in-2025.html">other blogpost</a>.</em></p>
 
@@ -36,9 +36,9 @@
   <p>Since the highest degree of this problem is 3, we could use the monomial vector $\phi(x) = [1, x, x^2]^\top$ to represent it in linear form.
 For pedagogical reasons, we chose $\phi(x) = [1, x, x^2, x^3]^\top$.</p>
 
-  <p>A valid choice for $\mathbf{C}$ would be a matrix that is zero everywhere except for $C_{14} = C_{41} = 0.5$ (to get $0.5x^3 + 0.5x^3 = x^3$) and $C_{11} = 1$. So</p>
+  <p>A valid choice for $\mathbf{C}$ would be a matrix that is zero everywhere except for $C_{12} = C_{21} = 0.5$ (to get $0.5x^3 + 0.5x^3 = x^3$) and $C_{00} = 1$. So</p>
 
-\[\mathbf{C} = \begin{pmatrix} 1 &amp; 0 &amp; 0 &amp; 0.5 \\ 0 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 0 \\ 0.5 &amp; 0 &amp; 0 &amp; 0 \end{pmatrix}.\]
+\[\mathbf{C} = \begin{pmatrix} 1 &amp; 0 &amp; 0 &amp; 0.0 \\ 0 &amp; 0 &amp; 0.5 &amp; 0 \\ 0 &amp; 0.5 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{pmatrix}.\]
 
   <p>This is one of many possible choices for $\mathbf{C}$.</p>
 </div>
@@ -310,26 +310,26 @@ H:
 Below is the output of the provided example script:</p>
 
   <pre><code class="language-raw">sos image solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 28ms
+  time: 6ms
 
 sos kernel solution:
-  optimal value: -1.0000
+  optimal value: 0.0000
   x: -1.0
-  time: 9ms
+  time: 4ms
 
 moment image solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 8ms
+  time: 4ms
 
 moment kernel solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 14ms
-done
+  time: 6ms
 </code></pre>
+
   <p>Although the timings are very imprecise (they include the time to setup the problem and convert it to standard form) we can see that the sos kernel and the moment image forms take the least time to solve.</p>
 
 </div>
