@@ -327,9 +327,7 @@ For pedagogical reasons, we chose $\phi(x) = [1, x, x^2, x^3]^\top$.</p>
 <div class="example-box">
   <h4 id="running-example-3">Running Example</h4>
 
-  <p>For the running example problem, we now introduce a cost function to minimize, to then check if the convex relaxations are tight.</p>
-
-  <p>We chose $f(x)=1+x$ so that we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. With this choice, we obtain:</p>
+  <p>Recall that with our cost function $p(x)=1+x^3$ and the feasible set $\{-1, 1\}$, we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. We can verify that both the moment and SOS relaxation return this solution:</p>
 
   <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">cvxpy</span> <span class="k">as</span> <span class="n">cp</span>
 <span class="n">alpha</span> <span class="o">=</span> <span class="n">cp</span><span class="p">.</span><span class="n">Variable</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B_basis</span><span class="p">))</span>
