@@ -48,10 +48,10 @@ $$
 Since the highest degree of this problem is 3, we could use the monomial vector $\phi(x) = [1, x, x^2]^\top$ to represent it in linear form.
 For pedagogical reasons, we chose $\phi(x) = [1, x, x^2, x^3]^\top$. 
 
-A valid choice for $\mathbf{C}$ would be a matrix that is zero everywhere except for $C_{14} = C_{41} = 0.5$ (to get $0.5x^3 + 0.5x^3 = x^3$) and $C_{11} = 1$. So
+A valid choice for $\mathbf{C}$ would be a matrix that is zero everywhere except for $C_{12} = C_{21} = 0.5$ (to get $0.5x^3 + 0.5x^3 = x^3$) and $C_{00} = 1$. So
 
 $$
-\mathbf{C} = \begin{pmatrix} 1 & 0 & 0 & 0.5 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0.5 & 0 & 0 & 0 \end{pmatrix}.
+\mathbf{C} = \begin{pmatrix} 1 & 0 & 0 & 0.0 \\ 0 & 0 & 0.5 & 0 \\ 0 & 0.5 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{pmatrix}.
 $$
 
 This is one of many possible choices for $\mathbf{C}$.
@@ -316,26 +316,26 @@ Below is the output of the provided example script:
 
 ```raw
 sos image solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 28ms
+  time: 6ms
 
 sos kernel solution:
-  optimal value: -1.0000
+  optimal value: 0.0000
   x: -1.0
-  time: 9ms
+  time: 4ms
 
 moment image solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 8ms
+  time: 4ms
 
 moment kernel solution:
-  optimal value: -1.0000
+  optimal value: -0.0000
   x: -1.0
-  time: 14ms
-done
+  time: 6ms
 ```
+
 Although the timings are very imprecise (they include the time to setup the problem and convert it to standard form) we can see that the sos kernel and the moment image forms take the least time to solve. 
 
 </div>
