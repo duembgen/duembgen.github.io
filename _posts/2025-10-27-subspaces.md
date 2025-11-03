@@ -216,9 +216,7 @@ $$
 <div class="example-box" markdown="1">
 #### Running Example
 
-For the running example problem, we now introduce a cost function to minimize, to then check if the convex relaxations are tight. 
-
-We chose $f(x)=1+x$ so that we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. With this choice, we obtain: 
+Recall that with our cost function $p(x)=1+x^3$ and the feasible set $\\{-1, 1\\}$, we have the optimum $\hat{x}=-1$ with optimal cost $\hat{c}=0$. We can verify that both the moment and SOS relaxation return this solution:
 
 ```python
 import cvxpy as cp
