@@ -5,9 +5,11 @@ date: 2025-10-27
 categories: [research]
 ---
 
-*This writeup has made my [previous post "series" on Kernel-Image-Primal-Dual SOS formulations](/research/2025/08/24/kipd-minimization.html) somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading [this](https://francisbach.com/sums-of-squares-for-dummies/) great blog post of Francis Bach.*
+_This writeup renders my [previous post "series" on Kernel-Image-Primal-Dual SOS formulations](/research/2025/08/24/kipd-minimization.html) somewhat obsolete. It provides a more mathematically principled way of deriving things, by embracing the subspace view. I decided to restart from scratch after reading [this](https://francisbach.com/sums-of-squares-for-dummies/) great blog post of Francis Bach._
 
-In this post, we'll explore a geometric perspective on sum-of-squares (SOS) and moment relaxations for solving polynomial optimization problems. In the literature, we come across very different formulations, and the connections between those formulations are often blurred. I hope that this blogpost clarifies things for the reader the way it did for me! 
+_To generate this blogpost, I used Gemini to type up my handwritten notes. The narrative was written by myself, but I did use Gemini as a "critique" after the fact. I added a section about this in the end of this [other blogpost](/misc/2025/08/18/blog-posts-in-2025.html)._
+
+In this post, we'll explore a geometric perspective on sum-of-squares (SOS) and moment relaxations for solving polynomial optimization problems. In the literature, we come across very different formulations, and the connections between those formulations are often blurred. I hope that this blogpost clarifies these connections for the reader as much as it it did for me.
 
 You can run the notebook implementing the toy example here: 
 
@@ -31,6 +33,31 @@ $$
 
 The matrix $\mathbf{M}(\mathbf{x}) = \phi(\mathbf{x})\phi(\mathbf{x})^\top$ is sometimes known as a (pseudo) moment matrix. 
 
+<div class="example-box" markdown="1"> 
+
+#### Running Example
+
+Let's make this concrete with a simple example that we'll follow throughout the post:
+
+$$\begin{align}
+\min_x \; & 1 + x^3 \\
+\text{s.t.} \; & x^2 - 1 = 0
+\end{align}
+$$
+
+Since the highest degree of this problem is 3, we could use the monomial vector $\phi(x) = [1, x, x^2]^\top$ to represent it in linear form.
+For pedagogical reasons, we chose $\phi(x) = [1, x, x^2, x^3]^\top$. 
+
+A valid choice for $\mathbf{C}$ would be a matrix that is zero everywhere except for $C_{14} = C_{41} = 0.5$ (to get $0.5x^3 + 0.5x^3 = x^3$) and $C_{11} = 1$. So
+
+$$
+\mathbf{C} = \begin{pmatrix} 1 & 0 & 0 & 0.5 \\ 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0 \\ 0.5 & 0 & 0 & 0 \end{pmatrix}.
+$$
+
+This is one of many possible choices for $\mathbf{C}$.
+</div>
+
+
 ### The Subspace View
 
 The core idea is to write everything in terms of the vector space spanned by these moment matrices, and its orthogonal complement. Let's define the subspace $\mathcal{V}$ as:
@@ -39,7 +66,7 @@ $$
 \mathcal{V} = \text{span} \{ \phi(\mathbf{x})\phi(\mathbf{x})^\top \mid \mathbf{x} \in \mathcal{X} \}
 $$
 
-Every feasible point of our lifted problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\\{ \mathbf{B}_i \\}\_{i\in[n\_b]}$, so that every element $\mathbf{X}$ of $\mathcal{V}$ can be written as
+Every moment matrix $\mathbf{M}(\mathbf{x})$ corresponding to a feasible point of our problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\\{ \mathbf{B}_i \\}\_{i\in[n\_b]}$, so that every element $\mathbf{X}$ of $\mathcal{V}$ can be written as
 
 $$
 \mathbf{X} = \sum_i \alpha_i \mathbf{B}_i,
@@ -47,7 +74,7 @@ $$
 
 for some choices $\alpha_i$. In particular, there exist some $\alpha$ that allow to characterize each element of the feasible set $\mathcal{X}$. 
 
-If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{M}$ for which there exists a positive measure $\mu$ such that $\mathbf{M}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\\{\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}\\}$ --- we call this set for convenience $\bar{\mathcal{X}}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
+If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{X}$ for which there exists a positive measure $\mu$ such that $\mathbf{X}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\\{\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}\\}$ --- we call this set for convenience $\bar{\mathcal{X}}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
 
 {% include figure.liquid
   path="/assets/images/blog/2025-10-27/subspaces-export.svg"
@@ -62,9 +89,9 @@ If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matr
 
 #### Running Example
 
-Let's make this concrete with a simple example that we'll follow throughout the post.
-- **Feasible Set**: $\mathcal{X} = \\{x \in \mathbb{R} \mid q_0(x)=x^2 - 1 = 0\\}$, which is just the set $\\{-1, 1\\}$.
-- **Lifting Map**: We use the monomial vector $\phi(x) = [1, x, x^2, x^3]^\top$. 
+Let's return to the running example to make this concrete.
+
+The feasible set is $\mathcal{X} = \\{x \in \mathbb{R} \mid q_0(x)=x^2 - 1 = 0\\}$, which is just the set $\\{-1, 1\\}$.
 
 For $x=1$, the moment matrix is:
 
@@ -81,7 +108,7 @@ $$
 The subspace $\mathcal{V}$ is the span of these two matrices, $\mathcal{V} = \text{span}(\mathbf{B}_1, \mathbf{B}_2)$. This is a 2-dimensional subspace within the ambient space of $4 \times 4$ symmetric matrices, which has dimension $\frac{4 \times 5}{2} = 10$. For a more compact notation, we use the half-vectorization operator and define $\mathbf{b}_i:=\mathrm{vech}(\mathbf{B}_i)\in\mathbb{R}^{10}$, where we scale off-diagonal elements by $\sqrt{2}$ to ensure $\langle \mathbf{A}, \mathbf{B}\rangle = \mathbf{a}^\top\mathbf{b}$.
 </div>
 
-We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the set $\\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \\}$. Let's call the basis vectors $\\{\mathbf{U}_j\\}\_{j\in [n\_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{X}$, we must have:
+We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the span of $\\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \\}$. Let's call the basis vectors $\\{\mathbf{U}_j\\}\_{j\in [n\_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{X}$, we must have:
 
 $$
 \langle \mathbf{U}_j, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0
@@ -125,20 +152,20 @@ $$
 Now we want to find a computationally tractable outer approximation of the set 
 
 $$
-\mathcal{K} = \{\mathbf{M} \;| \mathbf{M} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}
+\mathcal{K} = \{\mathbf{X} \;| \mathbf{M} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}
 $$
 
 An intuitive choice is to add all characteristics of this set that are computationally easy to handle:
 
 $$
 \mathcal{\widehat{K}} = \{\mathbf{M} \;| \begin{cases} 
-& \mathbf{M} = \sum_i \alpha_i \mathbf{B}_i & \text{(want to lie in same subspace)} \\ 
-& \mathbf{M} \succeq 0 & \text{(because it is an outer product of same vector and $\mu \geq 0$)} \\
-& \langle \mathbf{A}_0, \mathbf{M} \rangle = 1 & \text{(we assume normalization and that $\phi(\mathbf{x})_0=1$)} 
+& \mathbf{X} = \sum_i \alpha_i \mathbf{B}_i & \text{(want to lie in same subspace)} \\ 
+& \mathbf{X} \succeq 0 & \text{(because it is an outer product of same vector and $\mu \geq 0$)} \\
+& \langle \mathbf{A}_0, \mathbf{X} \rangle = 1 & \text{(we assume normalization and that $\phi(\mathbf{x})_0=1$)} 
 \end{cases} \}
 $$
 
-Here, $\mathbf{A}_0$ is a matrix with top-left element equal to 1.  With this choice, we obtain our first convex relaxation: 
+Here, $\mathbf{A}_0$ is a matrix with top-left element equal to 1, see [Appendix 3](#appendix3).  With this choice, we obtain our first convex relaxation: 
 
 $$
 \begin{align*}
@@ -151,7 +178,7 @@ $$
 
 ### The SOS Relaxation
 
-We will see now that we can also derive the classic Sum-of-Squares (SOS) relaxation, using this time the basis $\{\mathbf{U}_j\}$ for the orthogonal complement of the subspace, $\mathcal{V}^{\perp}$. 
+Next, we will see that we can also derive the classic Sum-of-Squares (SOS) relaxation, using this time the basis $\{\mathbf{U}_j\}$ for the orthogonal complement of the subspace, $\mathcal{V}^{\perp}$. 
 
 The SOS relaxation can be written as:
 
@@ -169,7 +196,7 @@ $$
 \langle \mathbf{C} - c\mathbf{A}_0 - \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0, \quad \forall \mathbf{x} \in \mathcal{X}
 $$
 
-In other words, the matrix $\mathbf{C} - c\mathbf{A}_0 - \mathbf{H}$ is in the nullspace of $\mathcal{V}$! This means we can express it as a linear combination of the nullspace basis vectors $\{\mathbf{U}_i\}$:
+In other words, the matrix $\mathbf{C} - c\mathbf{A}_0 - \mathbf{H}$ is in the orthogonal complement of $\mathcal{V}$! This means we can express it as a linear combination of the nullspace basis vectors $\{\mathbf{U}_i\}$:
 
 $$
 \mathbf{C} - c\mathbf{A}_0 - \mathbf{H} = \sum_i \beta_i \mathbf{U}_i
@@ -274,12 +301,12 @@ For the dual form, the condition $\mathbf{H} = \mathbf{C} - c\mathbf{A}_0 - \sum
 - $\mathbf{H} - \mathbf{C} + c\mathbf{A}_0$ lies in the affine subspace $(\mathbf{C} - c\mathbf{A}_0) + \mathcal{V}^{\perp}$.
 - This implies $\langle \mathbf{H} - \mathbf{C} + c\mathbf{A}_0, \mathbf{B}_i \rangle = 0$ for all basis vectors $\mathbf{B}_i \in \mathcal{V}$. 
 
-For the primal form, the condition $\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i + \gamma \mathbf{A}_0$ is equivalent to:
-- $\mathbf{X}$ lies in the affine subspace $\mathcal{V} + \text{span}(\mathbf{A}_0)$.
-- This implies $\langle \mathbf{X} - \gamma \mathbf{A}_0, \mathbf{U}_j \rangle = 0$ for all basis vectors $\mathbf{U}_j \in \mathcal{V}^{\perp}$.
+For the primal form, the condition $\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i$ is equivalent to:
+- $\mathbf{X}$ lies in the affine subspace $\mathcal{V}$.
+- This implies $\langle \mathbf{X}, \mathbf{U}_j \rangle = 0$ for all basis vectors $\mathbf{U}_j \in \mathcal{V}^{\perp}$.
 
 
-It is interesting to note that the diagonals of the table are duals of each other! The dual of the image SOS form is the kernel moment form, and the dual of the image moment form is the kernel SOS form. For pedagogical purposes, we derive this in [Appendix 1](#appendix1) below.
+It is interesting to note that the formulations on the diagonals of the table are duals of each other! The dual of the image SOS form is the kernel moment form, and the dual of the image moment form is the kernel SOS form. For pedagogical purposes, we derive this in [Appendix 1](#appendix1) below.
 
 ***
 
@@ -315,7 +342,15 @@ Although the timings are very imprecise (they include the time to setup the prob
 
 </div>
 
-### Appendix 1: Verification via dual {#appendix1}
+### Conclusion and Discussion
+
+We've seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.
+
+An obvious limitation of this approach is that it cannot easily deal with inequality constraints. However, I would argue that at least the equality-constrained part can handled in a very elegant way through this subspace view. 
+
+To complete the picture, a natural next step would be to define the matrix $\mathbf{C}$ from samples directly, and to explore alternative bases as opposed to the monomial basis. I am planning to treat these topics in a follow-up blogpost. 
+
+### Appendix 1: Verification via the Duals {#appendix1}
 
 We can verify our calculations by checking that the duals as outlined above. 
 
@@ -379,18 +414,16 @@ $$
 
 This is precisely the **Dual (SOS) Kernel Form**.
 
-### Appendix 2: Numerical Basis Calclation {#appendix2}
+### Appendix 2: Numerical Basis Calculation {#appendix2}
 
 A practical question is how to find the bases $\{\mathbf{B}_i\}$ for $\mathcal{V}$ and $\{\mathbf{U}_j\}$ for $\mathcal{V}^\perp$. A simple approach, assuming one can generate feasible samples of $\mathcal{X}$, is to find these bases numerically by sampling. The procedure is as follows:
 1. Generate many sample points $\mathbf{x}_k \in \mathcal{X}$.
-2. Form the corresponding moment matrices $\mathbf{M}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$.
-3. Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{M}_1), \text{vec}(\mathbf{M}_2), \dots]$.
+2. Form the corresponding moment matrices $\mathbf{X}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$.
+3. Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{X}_1), \text{vec}(\mathbf{X}_2), \dots]$.
 4. Compute the Singular Value Decomposition (SVD) or QR decomposition of $\mathbf{L}$. The left singular vectors corresponding to non-zero singular values will form an orthonormal basis for the range space (our $\mathcal{V}$), and the vectors corresponding to zero singular values will form a basis for the nullspace (our $\mathcal{V}^\perp$).
 
-### Conclusion and Discussion
+### Appendix 3: A Note on the Normalization Constraint {#appendix3}
 
-We've seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.
+The constraint $\langle \mathbf{A}\_0, \mathbf{X} \rangle = 1$ is a standard normalization. Since we chose our lifting map such that the first component is always 1 ($\phi(\mathbf{x})\_0=1$), the top-left entry of any moment matrix $\mathbf{X}(\mathbf{x}) = \phi(\mathbf{x})\phi(\mathbf{x})^\top$ is always $\mathbf{X}\_{00} = 1 \times 1 = 1$. The matrix $\mathbf{A}\_0$ is simply a selector for this top-left entry.
 
-An obvious limitation of this approach is that it can not easily deal with inequality constraints. However, I would argue that at least the equality-constrained part can handled in a very elegant way through this subspace view. 
-
-For a complete picture, it would be desirable to define the matrix $\mathbf{C}$ from samples directly, and to explore alternative bases as opposed to the monomial basis. I am planning to treat these topics in a follow-up blogpost. 
+By enforcing this on the relaxed variable $\mathbf{X}$, we are essentially saying that the underlying measure $\mu$ is a probability measure, i.e., $\int d\mu(x) = 1$. This prevents the trivial solution where $\mathbf{X}=0$.

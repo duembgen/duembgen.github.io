@@ -5,7 +5,9 @@ date: 2025-08-18
 categories: [research]
 ---
 
-_I finally got around to writing my first blogpost, thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and maybe because others might find this interesting, I am writing [another blogpost](/misc/2025/08/18/blog-posts-in-2025.html) about my process to generated this blogpost (and hopefully a few more in the future) using Gemini. 
+_Note from November 3rd 2025: The concepts of this blogpost are better described in the [more recent post](/research/2025/10/27/subspaces.html)_
+
+_I finally got around to writing my first blogpost, and it was partly thanks to LLMs. This blogpost is not just AI-generated, but thanks to the latest and greatest LLM magic, the time to go from handwritten notes to a polished blogpost was greatly reduced. For full transparency, and because others might find this interesting, I am writing [another blogpost](/misc/2025/08/18/blog-posts-in-2025.html) about my process to generated this blogpost (and hopefully a few more in the future) using Gemini. 
 If you are interested in the follow-up question: tackling minimization rather than feasibility problems with SOS, you might want to look at [this follow-up post](/research/2025/08/24/kipd-minimization.html)_
 
 Checking if a polynomial is non-negative is a fundamental problem that appears in many areas of engineering and mathematics. While checking for non-negativity is computationally hard in general, a powerful sufficient condition is to check if the polynomial can be written as a sum of squares (SOS) of other polynomials. This condition is not only tractable—it can be checked by solving a semidefinite program (SDP)—but it is also a key component in a wide range of optimization methods for polynomial systems.

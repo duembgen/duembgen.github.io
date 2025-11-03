@@ -5,6 +5,8 @@ date: 2025-08-24
 categories: [research]
 ---
 
+_Note from November 3rd 2025: The concepts of this blogpost are better described in the [more recent post](/research/2025/10/27/subspaces.html)_
+
 _This is a follow-up to my [previous post](/research/2025/08/18/kernel-image-primal-dual.html) on different formulations (Kernel, Image, Primal, Dual) of Sum-of-Squares (SOS) feasibility problems. This post took significantly less time to write because it is really an evolution of the previous post, which Gemini is amazingly good at. I added a paragraph about this in [other post](/misc/2025/08/18/blog-posts-in-2025.html) about writing blog-posts with the helpf of Gemini_
 
 
