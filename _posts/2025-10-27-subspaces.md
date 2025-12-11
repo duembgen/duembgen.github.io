@@ -25,7 +25,7 @@ $$
 
 where $p(\mathbf{x})$ is a polynomial and $\mathcal{X}$ is a set defined by polynomial equalities, for instance, $\mathcal{X} = \\{ \mathbf{x} \in \mathbb{R}^d \mid q_i(\mathbf{x}) = 0, \,i\in[n] \\}$, where we introduced the shorthand $[n]$ for $\\{1, \ldots, n\\}$. This problem may in general be hard to solve due to the non-convexity of the objective and the feasible set.
 
-A powerful technique to tackle such problems is to solve a series of convex relaxations. To do so, we first rewrite the problem using "lifted" variables. We define a vector of monomials, $\phi(\mathbf{x})$, which in machine learning would be called the feature vector. The objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:
+A powerful technique to tackle such problems is to solve a series of convex relaxations. To do so, we first rewrite the problem using "lifted" variables. We define a vector of monomials, $\phi(\mathbf{x})^\top$, which in machine learning would be called the feature vector. The objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:
 
 $$
 \min_{\mathbf{x} \in \mathcal{X}} \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle
@@ -54,7 +54,7 @@ $$
 \mathbf{C} = \begin{pmatrix} 1 & 0 & 0 & 0.0 \\ 0 & 0 & 0.5 & 0 \\ 0 & 0.5 & 0 & 0 \\ 0 & 0 & 0 & 0 \end{pmatrix}.
 $$
 
-This is one of many possible choices for $\mathbf{C}$.
+This is one of many possible choices for $\mathbf{C}$. We outline a procedure to obtain a candidate matrix $\mathbf{C}$ from function samples $f_i:=f(\mathbf{x}_i)$ in [Appendix 2](#appendix2).
 </div>
 
 
@@ -184,6 +184,7 @@ The SOS relaxation can be written as:
 
 $$
 \begin{align*}
+\textbf{(SOS)} \quad
 \max_{c, \mathbf{H}} \quad & c \\
 \text{s.t.} \quad & \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle - c = \langle \mathbf{H}, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle, \quad \forall \mathbf{x} \in \mathcal{X} \\
 & \mathbf{H} \succeq 0
@@ -199,7 +200,7 @@ $$
 In other words, the matrix $\mathbf{C} - c\mathbf{A}_0 - \mathbf{H}$ is in the orthogonal complement of $\mathcal{V}$! This means we can express it as a linear combination of the nullspace basis vectors $\{\mathbf{U}_i\}$:
 
 $$
-\mathbf{C} - c\mathbf{A}_0 - \mathbf{H} = \sum_i \beta_i \mathbf{U}_i
+\mathbf{C} - c\mathbf{A}_0 - \mathbf{H} = \sum_j \beta_j \mathbf{U}_j
 $$
 
 Rearranging this gives the constraint from our **(SOS-Image)** formulation: $\mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_i \mathbf{U}_i = \mathbf{H} \succeq 0$.
@@ -295,7 +296,7 @@ Here is a summary table:
 
 Let's see in more detailed how the kernel forms were derived above:
 
-For the dual form, the condition $\mathbf{H} = \mathbf{C} - c\mathbf{A}_0 - \sum_i \beta_j \mathbf{U}_j$ is equivalent to:
+For the dual form, the condition $\mathbf{H} = \mathbf{C} - c\mathbf{A}_0 - \sum_j \beta_j \mathbf{U}_j$ is equivalent to:
 - $\mathbf{H} - \mathbf{C} + c\mathbf{A}_0$ lies in the affine subspace $(\mathbf{C} - c\mathbf{A}_0) + \mathcal{V}^{\perp}$.
 - This implies $\langle \mathbf{H} - \mathbf{C} + c\mathbf{A}_0, \mathbf{B}_i \rangle = 0$ for all basis vectors $\mathbf{B}_i \in \mathcal{V}$. 
 
@@ -412,16 +413,62 @@ $$
 
 This is precisely the **Dual (SOS) Kernel Form**.
 
-### Appendix 2: Numerical Basis Calculation {#appendix2}
+### Appendix 2: Numerical Basis and Cost Calculation {#appendix2}
 
-A practical question is how to find the bases $\{\mathbf{B}_i\}$ for $\mathcal{V}$ and $\{\mathbf{U}_j\}$ for $\mathcal{V}^\perp$. A simple approach, assuming one can generate feasible samples of $\mathcal{X}$, is to find these bases numerically by sampling. The procedure is as follows:
+A practical question is how to find the cost matrix $\mathbf{C}$ and bases $\{\mathbf{B}_i\}$ for $\mathcal{V}$ and $\{\mathbf{U}_j\}$ for $\mathcal{V}^\perp$. A simple approach, assuming one can generate feasible samples of $\mathcal{X}$, is to find these matrices numerically by sampling. The procedures are as follows:
+
 1. Generate many sample points $\mathbf{x}_k \in \mathcal{X}$.
-2. Form the corresponding moment matrices $\mathbf{X}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$.
-3. Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{X}_1), \text{vec}(\mathbf{X}_2), \dots]$.
-4. Compute the Singular Value Decomposition (SVD) or QR decomposition of $\mathbf{L}$. The left singular vectors corresponding to non-zero singular values will form an orthonormal basis for the range space (our $\mathcal{V}$), and the vectors corresponding to zero singular values will form a basis for the nullspace (our $\mathcal{V}^\perp$).
+2. Form the corresponding moment matrices $\mathbf{X}_k = \phi(\mathbf{x}_k)\phi(\mathbf{x}_k)^\top$, $k\in[n]$.
+3. Stack the vectorized versions of these matrices into a large matrix $\mathbf{L} = [\text{vec}(\mathbf{X}_1), \cdots, \text{vec}(\mathbf{X}_n)]$.
+
+#### Basis computation
+
+Compute the Singular Value Decomposition (SVD) or QR decomposition of $\mathbf{L}$. The left singular vectors corresponding to non-zero singular values will form an orthonormal basis for the range space (our $\mathcal{V}$), and the vectors corresponding to zero singular values will form a basis for the nullspace (our $\mathcal{V}^\perp$).
+
+#### Cost computation
+
+Create the vector of $n$ function evaluations, $\mathbf{f}=[f(\mathbf{x}_1), \cdots, f(\mathbf{x}_n)]^\top$. 
+Compute a solution to $\mathbf{f} = \mathbf{L}\mathbf{c}$; this solution $\hat{\mathbf{c}}$ corresponds to the
+half-vectorized form of a candidate cost function $\mathbf{C}$. 
 
 ### Appendix 3: A Note on the Normalization Constraint {#appendix3}
 
 The constraint $\langle \mathbf{A}\_0, \mathbf{X} \rangle = 1$ is a standard normalization. Since we chose our lifting map such that the first component is always 1 ($\phi(\mathbf{x})\_0=1$), the top-left entry of any moment matrix $\mathbf{X}(\mathbf{x}) = \phi(\mathbf{x})\phi(\mathbf{x})^\top$ is always $\mathbf{X}\_{00} = 1 \times 1 = 1$. The matrix $\mathbf{A}\_0$ is simply a selector for this top-left entry.
 
 By enforcing this on the relaxed variable $\mathbf{X}$, we are essentially saying that the underlying measure $\mu$ is a probability measure, i.e., $\int d\mu(x) = 1$. This prevents the trivial solution where $\mathbf{X}=0$.
+
+### The Kernelized Version
+
+An annoyance of the above method is the need to pick a basis function $\phi(\mathbf{x})$ manually. Since we only use samples of this basis function, it seems natural to instead seek a kernelized method, where the basis functions are implicitly defined through carefully chosen kernels. Such a treatment would also allow for using infinite-dimensional feature functions, such as the ones induced by Gaussian or Laplacian kernels. However, for the sake of brevity, we move such a discussion to a later blogpost. 
+
+Here, we focus on finite-dimensional feature functions. For example, for the space of polynomials, it is well-known that by chosing the kernel 
+
+$$
+k(\mathbf{x},\mathbf{y})=(1 + \mathbf{x}^\top\mathbf{y})^d, 
+$$
+
+the corresponding RKHS will include all polynomials up to degree $d$. In particular, the canonical feature map $\phi(\mathbf{x})$ is made of (appropriately scaled) monomials.
+
+It can be shown (see, e.g., {% cite rudi_finding_2024 %}) that the solution to the problem (SOS), when evaluating at given samples $\mathbf{x}_i$, is of the form
+
+$$
+\hat{\mathbf{H}} = \sum_{i,j=1}^n \mathbf{F}_{ij} \phi(\mathbf{x}_i)\phi(\mathbf{x}_j)^\top = \mathbf{\Phi}^\top \mathbf{F} \mathbf{\Phi},
+$$
+
+where $\mathbf{F}$ is an unknown coefficients matrix and we have introduced $\mathbf{\Phi}^\top=[\phi(\mathbf{x}_1), \cdots, \phi(\mathbf{x}_n)]$. 
+Plugging this into the constraints of the original (SOS) problem, we obtain
+
+$$
+\phi(\mathbf{x}_i)^\top \mathbf{H}\phi(\mathbf{x}_i) =
+\phi(\mathbf{x}_i)^\top \mathbf{\Phi}^\top\mathbf{F}\mathbf{\Phi}\phi(\mathbf{x}_i) =
+\mathbf{k}_i^\top \mathbf{F}\mathbf{k}_i
+$$
+
+where we introduced $\mathbf{k}_i := 
+[\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_1), \cdots \phi(\mathbf{x}_i)^\top\phi(\mathbf{x}_n))]$. We observe that $\phi$ only appears in inner products in this new constraint formulation, meaning that we rewrite the constraint as a function of $k(\mathbf{x}, \mathbf{y})=\phi(\mathbf{x})^\top\phi(\mathbf{y})$, leading to $\mathbf{k}_i=[k(\mathbf{x}_i, \mathbf{x}_1), \cdots, k(\mathbf{x}_i, \mathbf{x}_n)]$. 
+
+This kernelization of the problem allows for different kernels to be applied, and to address questions like the choice of the optimal kernel function, based on the function class and types of samples. We will dive into this question further in the next blog post. 
+
+### Bibliography
+
+{% bibliography %}
