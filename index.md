@@ -19,8 +19,13 @@ If you are passionate about optimization for robotics, and would like to work wi
 
 ### Latest news 
 
+*Last update: December 12, 2025.*
 
-*Last update: June 21, 2025.*
+**December 2025** I had a blast visiting the LS2N centre in Nantes today; thank you to Clément Moreau for inviting me!
+
+**October 2025** Super happy that I could visit Toulouse one last time before leaving for the US; this time with my student Louis, and seeing not only the POP team but also the Gepetto team. Thank you to Didier Henrion, Nicolas Mansard, and Ege Gürsoy, for the warm welcome!
+
+**September 2025** Presented at the Journée Nationale de la Recherche Robotique in Rennes. It was great to connect with the French robotics community! Thank you to Justin Carpentier for giving me this opportunity!
 
 **June 2025** I was faculty chair for this year's [RSS Pioneers workshop](https://sites.google.com/view/rsspioneers2025/home?authuser=0) in Los Angeles, California. After RSS I am honored to be presenting our latest research at the [CCDC at UC Santa Barbara](https://www.ccdc.ucsb.edu/). 
 
