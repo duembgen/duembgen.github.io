@@ -341,13 +341,43 @@ Although the timings are very imprecise (they include the time to setup the prob
 
 </div>
 
+### The Kernelized Version
+
+An annoyance of the above method is the need to pick a basis function $\phi(\mathbf{x})$ manually. Since we only use samples of this basis function, it seems natural to instead seek a kernelized method, where the basis functions are implicitly defined through carefully chosen kernels. Such a treatment would also allow for using infinite-dimensional feature functions, such as the ones induced by Gaussian or Laplacian kernels. However, for the sake of brevity, we move such a discussion to a later blogpost. 
+
+Here, we focus on finite-dimensional feature functions. For example, for the space of polynomials, it is well-known that by chosing the kernel 
+
+$$
+k(\mathbf{x},\mathbf{y})=(1 + \mathbf{x}^\top\mathbf{y})^d, 
+$$
+
+the corresponding RKHS will include all polynomials up to degree $d$. In particular, the canonical feature map $\phi(\mathbf{x})$ is made of (appropriately scaled) monomials.
+
+It can be shown (see, e.g., {% cite rudi_finding_2024 %}) that the solution to the problem (SOS), when evaluating at given samples $\mathbf{x}_i$, is of the form
+
+$$
+\hat{\mathbf{H}} = \sum_{i,j=1}^n \mathbf{F}_{ij} \phi(\mathbf{x}_i)\phi(\mathbf{x}_j)^\top = \mathbf{\Phi}^\top \mathbf{F} \mathbf{\Phi},
+$$
+
+where $\mathbf{F}$ is an unknown coefficients matrix and we have introduced $\mathbf{\Phi}^\top=[\phi(\mathbf{x}_1), \cdots, \phi(\mathbf{x}_n)]$. 
+Plugging this into the constraints of the original (SOS) problem, we obtain
+
+$$
+\phi(\mathbf{x}_i)^\top \mathbf{H}\phi(\mathbf{x}_i) =
+\phi(\mathbf{x}_i)^\top \mathbf{\Phi}^\top\mathbf{F}\mathbf{\Phi}\phi(\mathbf{x}_i) =
+\mathbf{k}_i^\top \mathbf{F}\mathbf{k}_i
+$$
+
+where we introduced $\mathbf{k}_i := 
+[\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_1), \cdots \phi(\mathbf{x}_i)^\top\phi(\mathbf{x}_n))]$. We observe that $\phi$ only appears in inner products in this new constraint formulation, meaning that we rewrite the constraint as a function of $k(\mathbf{x}, \mathbf{y})=\phi(\mathbf{x})^\top\phi(\mathbf{y})$, leading to $\mathbf{k}_i=[k(\mathbf{x}_i, \mathbf{x}_1), \cdots, k(\mathbf{x}_i, \mathbf{x}_n)]$. 
+
+This kernelization of the problem allows for different kernels to be applied, and to address questions like the choice of the optimal kernel function, based on the function class and types of samples. We will dive into this question further in the next blog post. 
+
 ### Conclusion and Discussion
 
 We've seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.
 
-An obvious limitation of this approach is that it cannot easily deal with inequality constraints. However, I would argue that at least the equality-constrained part can handled in a very elegant way through this subspace view. 
-
-To complete the picture, a natural next step would be to define the matrix $\mathbf{C}$ from samples directly, and to explore alternative bases as opposed to the monomial basis. I am planning to treat these topics in a follow-up blogpost. 
+An obvious limitation of this approach is that it cannot easily deal with inequality constraints. However, at least the equality-constrained part of polynomial optimization problems can handled in a very elegant way through this subspace view. 
 
 ### Appendix 1: Verification via the Duals {#appendix1}
 
@@ -437,37 +467,6 @@ The constraint $\langle \mathbf{A}\_0, \mathbf{X} \rangle = 1$ is a standard nor
 
 By enforcing this on the relaxed variable $\mathbf{X}$, we are essentially saying that the underlying measure $\mu$ is a probability measure, i.e., $\int d\mu(x) = 1$. This prevents the trivial solution where $\mathbf{X}=0$.
 
-### The Kernelized Version
-
-An annoyance of the above method is the need to pick a basis function $\phi(\mathbf{x})$ manually. Since we only use samples of this basis function, it seems natural to instead seek a kernelized method, where the basis functions are implicitly defined through carefully chosen kernels. Such a treatment would also allow for using infinite-dimensional feature functions, such as the ones induced by Gaussian or Laplacian kernels. However, for the sake of brevity, we move such a discussion to a later blogpost. 
-
-Here, we focus on finite-dimensional feature functions. For example, for the space of polynomials, it is well-known that by chosing the kernel 
-
-$$
-k(\mathbf{x},\mathbf{y})=(1 + \mathbf{x}^\top\mathbf{y})^d, 
-$$
-
-the corresponding RKHS will include all polynomials up to degree $d$. In particular, the canonical feature map $\phi(\mathbf{x})$ is made of (appropriately scaled) monomials.
-
-It can be shown (see, e.g., {% cite rudi_finding_2024 %}) that the solution to the problem (SOS), when evaluating at given samples $\mathbf{x}_i$, is of the form
-
-$$
-\hat{\mathbf{H}} = \sum_{i,j=1}^n \mathbf{F}_{ij} \phi(\mathbf{x}_i)\phi(\mathbf{x}_j)^\top = \mathbf{\Phi}^\top \mathbf{F} \mathbf{\Phi},
-$$
-
-where $\mathbf{F}$ is an unknown coefficients matrix and we have introduced $\mathbf{\Phi}^\top=[\phi(\mathbf{x}_1), \cdots, \phi(\mathbf{x}_n)]$. 
-Plugging this into the constraints of the original (SOS) problem, we obtain
-
-$$
-\phi(\mathbf{x}_i)^\top \mathbf{H}\phi(\mathbf{x}_i) =
-\phi(\mathbf{x}_i)^\top \mathbf{\Phi}^\top\mathbf{F}\mathbf{\Phi}\phi(\mathbf{x}_i) =
-\mathbf{k}_i^\top \mathbf{F}\mathbf{k}_i
-$$
-
-where we introduced $\mathbf{k}_i := 
-[\phi(\mathbf{x}_i)^\top \phi(\mathbf{x}_1), \cdots \phi(\mathbf{x}_i)^\top\phi(\mathbf{x}_n))]$. We observe that $\phi$ only appears in inner products in this new constraint formulation, meaning that we rewrite the constraint as a function of $k(\mathbf{x}, \mathbf{y})=\phi(\mathbf{x})^\top\phi(\mathbf{y})$, leading to $\mathbf{k}_i=[k(\mathbf{x}_i, \mathbf{x}_1), \cdots, k(\mathbf{x}_i, \mathbf{x}_n)]$. 
-
-This kernelization of the problem allows for different kernels to be applied, and to address questions like the choice of the optimal kernel function, based on the function class and types of samples. We will dive into this question further in the next blog post. 
 
 ### Bibliography
 

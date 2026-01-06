@@ -4,18 +4,16 @@ layout: page
 image: profile-crop.jpg
 ---
 
-I am an incoming assistant professor at CMU Mechanical Engineering, with courtesy appointment with the CMU Robotics Institute. My research interest is to make autonomous robots more capable and trustworthy by exploiting recent advances in optimization and artificial intelligence. I am currently a starting researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
+I am Assistant Professor in Mechanical Engineering, Carnegie Mellon University, and hold a courtesy appointment with the Robotics Institute. My research interest is to make autonomous robots more capable and trustworthy by exploiting recent advances in optimization and artificial intelligence. Until December 2025, I was a starting researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
 
 [Google Scholar](https://scholar.google.com/citations?hl=en&user=45QAZbUAAAAJ) / [LinkedIn](https://www.linkedin.com/in/duembgen/)
 
 
 ### Working with me
 
+Undergraduate / Master's Research Students: If you are passionate about optimization for robotics, and would like to work with me in January 2026 or September 2026 semester, please get in touch via e-mail with your CV and a short research statement. You can also browse [this page](https://www.meche.engineering.cmu.edu/education/undergraduate-education/undergraduate-experience/projects/index.html) (CMU internal) for open positions.  
 
-**CMU MechE Research Students**: I am happy to co-advise students starting September 2025, if there is a strong fit. Don't hesitate to get in touch (see below).
-
-If you are passionate about optimization for robotics, and would like to work with me at CMU starting January 2026 or September 2026, please get in touch via e-mail with your CV and a short research statement. 
-
+Postdocs: I am always open to interview strong candidates. In particular, if you would like to apply to join my lab with the [Carnegie Bosch Institute postdoctoral fellowship](https://carnegiebosch.cmu.edu/fellowships/index.html) (deadline is January 31, 2026), please get in touch. 
 
 ### Latest news 
 
