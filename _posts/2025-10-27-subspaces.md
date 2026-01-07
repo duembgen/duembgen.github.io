@@ -15,6 +15,7 @@ You can run the notebook implementing the toy example here:
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/duembgen/notebooks/HEAD?urlpath=%2Fdoc%2Ftree%2F2025-10-27-subspaces.ipynb)
 
+
 ### The Original Problem
 
 Let's consider a general non-convex optimization problem of the form:
@@ -468,6 +469,9 @@ The constraint $\langle \mathbf{A}\_0, \mathbf{X} \rangle = 1$ is a standard nor
 
 By enforcing this on the relaxed variable $\mathbf{X}$, we are essentially saying that the underlying measure $\mu$ is a probability measure, i.e., $\int d\mu(x) = 1$. This prevents the trivial solution where $\mathbf{X}=0$.
 
+#### Acknowledgments
+
+I would like to thank Francis Bach for numerous valuable discussions around the subject of this post.
 
 ### Bibliography
 
