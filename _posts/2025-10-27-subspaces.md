@@ -23,9 +23,9 @@ $$
 \min_{\mathbf{x} \in \mathcal{X}} p(\mathbf{x})
 $$
 
-where $p(\mathbf{x})$ is a polynomial and $\mathcal{X}$ is a set defined by polynomial equalities, for instance, $\mathcal{X} = \\{ \mathbf{x} \in \mathbb{R}^d \mid q_i(\mathbf{x}) = 0, \,i\in[n] \\}$, where we introduced the shorthand $[n]$ for $\\{1, \ldots, n\\}$. This problem may in general be hard to solve due to the non-convexity of the objective and the feasible set.
+where $p(\mathbf{x})$ is a polynomial and $\mathcal{X}$ is a set defined by polynomial equalities, for instance, $\mathcal{X} = \\{ \mathbf{x} \in \mathbb{R}^d \mid q_i(\mathbf{x}) = 0, \,i\in[n] \\}$, where we introduced the shorthand $[n]$ for $\\{1, \ldots, n\\}$. This problem may in general be hard to solve when the objective and/or feasible set are non-convex.
 
-A powerful technique to tackle such problems is to solve a series of convex relaxations. To do so, we first rewrite the problem using "lifted" variables. We define a vector of monomials, $\phi(\mathbf{x})^\top$, which in machine learning would be called the feature vector. The objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:
+A powerful technique to tackle such problems is to solve a series of increasingly tight convex relaxations. To do so, we first rewrite the problem using "lifted" variables. We define a vector of monomials, $\phi(\mathbf{x})$, akin to a feature vector in machine learning. We choose the feature vector such that objective can then be written as an inner product $p(\mathbf{x}) = \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle$ for some matrix $\mathbf{C}$, where $\langle, \rangle$ is trace inner product. Our problem becomes:
 
 $$
 \min_{\mathbf{x} \in \mathcal{X}} \langle \mathbf{C}, \phi(\mathbf{x})\phi(\mathbf{x})^\top \rangle
@@ -66,15 +66,16 @@ $$
 \mathcal{V} = \text{span} \{ \phi(\mathbf{x})\phi(\mathbf{x})^\top \mid \mathbf{x} \in \mathcal{X} \}
 $$
 
-Every moment matrix $\mathbf{M}(\mathbf{x})$ corresponding to a feasible point of our problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\\{ \mathbf{B}_i \\}\_{i\in[n\_b]}$, so that every element $\mathbf{X}$ of $\mathcal{V}$ can be written as
+Every moment matrix $\mathbf{M}(\mathbf{x})$ corresponding to a feasible point of our problem lies within this subspace $\mathcal{V}$. In other words, we can define a basis $\\{ \mathbf{B}_i \\}\_{i\in[n\_b]}$, so that every element $\mathbf{M}$ in $\mathcal{V}$ can be written as
 
 $$
-\mathbf{X} = \sum_i \alpha_i \mathbf{B}_i,
+\mathbf{M} = \sum_i \alpha_i \mathbf{B}_i,
 $$
 
-for some choices $\alpha_i$. In particular, there exist some $\alpha$ that allow to characterize each element of the feasible set $\mathcal{X}$. 
+for some chosen $\alpha_i$.  
 
-If we call $\mathcal{K}$ the space of all admissible moment matrices, i.e., matrices $\mathbf{X}$ for which there exists a positive measure $\mu$ such that $\mathbf{X}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$, that space corresponds to the closure of the convex hull of all $\\{\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}\\}$ --- we call this set for convenience $\bar{\mathcal{X}}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
+We call $\mathcal{K}$ the space of all admissible (pseudo) moment matrices. 
+<!--i.e., matrices $\mathbf{X}$ for which there exists a positive measure $\mu$ such that $\mathbf{X}=\int \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(\mathbf{x})$,--> This space corresponds to the closure of the convex hull of all $\\{\phi(\mathbf{x})\phi(\mathbf{x})$ for $\mathbf{x}\in\mathcal{X}\\}$ --- we call this set for convenience $\bar{\mathcal{X}}$ (see [this post](https://francisbach.com/sums-of-squares-for-dummies/) for more details, and below for the visualization of our toy example). 
 
 {% include figure.liquid
   path="/assets/images/blog/2025-10-27/subspaces-export.svg"
@@ -108,7 +109,7 @@ $$
 The subspace $\mathcal{V}$ is the span of these two matrices, $\mathcal{V} = \text{span}(\mathbf{B}_1, \mathbf{B}_2)$. This is a 2-dimensional subspace within the ambient space of $4 \times 4$ symmetric matrices, which has dimension $\frac{4 \times 5}{2} = 10$. For a more compact notation, we use the half-vectorization operator and define $\mathbf{b}_i:=\mathrm{vech}(\mathbf{B}_i)\in\mathbb{R}^{10}$, where we scale off-diagonal elements by $\sqrt{2}$ to ensure $\langle \mathbf{A}, \mathbf{B}\rangle = \mathbf{a}^\top\mathbf{b}$.
 </div>
 
-We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the span of $\\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \\}$. Let's call the basis vectors $\\{\mathbf{U}_j\\}\_{j\in [n\_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{X}$, we must have:
+We will also need a basis for $\mathcal{V}^{\perp}$, the nullspace of the span of $\\{ \phi(\mathbf{x})\phi(\mathbf{x})^T, \mathbf{x} \in \mathcal{X} \\}$. Let's call the basis vectors $\\{\mathbf{U}_j\\}\_{j\in [n\_u]}$. By definition of the nullspace, for any $\mathbf{x} \in \mathcal{M}$, we must have:
 
 $$
 \langle \mathbf{U}_j, \phi(\mathbf{x})\phi(\mathbf{x})^T \rangle = 0
@@ -152,13 +153,13 @@ $$
 Now we want to find a computationally tractable outer approximation of the set 
 
 $$
-\mathcal{K} = \{\mathbf{X} \;| \mathbf{M} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}
+\mathcal{K} = \{\mathbf{X} \;| \mathbf{X} = \int_\mathcal{X} \phi(\mathbf{x})\phi(\mathbf{x})^\top d\mu(x)\ \text{for some measure $\mu$.}\}
 $$
 
 An intuitive choice is to add all characteristics of this set that are computationally easy to handle:
 
 $$
-\mathcal{\widehat{K}} = \{\mathbf{M} \;| \begin{cases} 
+\mathcal{\widehat{K}} = \{\mathbf{X} \;| \begin{cases} 
 & \mathbf{X} = \sum_i \alpha_i \mathbf{B}_i & \text{(want to lie in same subspace)} \\ 
 & \mathbf{X} \succeq 0 & \text{(because it is an outer product of same vector and $\mu \geq 0$)} \\
 & \langle \mathbf{A}_0, \mathbf{X} \rangle = 1 & \text{(we assume normalization and that $\phi(\mathbf{x})_0=1$)} 
@@ -375,9 +376,9 @@ This kernelization of the problem allows for different kernels to be applied, an
 
 ### Conclusion and Discussion
 
-We've seen that by taking a subspace perspective, we can derive alternative but equivalent relaxations for polynomial optimization problems. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.
+We've seen that by taking a subspace perspective, we can derive relaxations for polynomial optimization problems using only information from feasible samples. Depending on the dimensions of the subspace $\mathcal{V}$ and its complement $\mathcal{V}^\perp$, one form might be more computationally efficient than the other. For instance, if the nullspace $\mathcal{V}^\perp$ has a very small dimension, the primal kernel form might have far fewer constraints than the image form.
 
-An obvious limitation of this approach is that it cannot easily deal with inequality constraints. However, at least the equality-constrained part of polynomial optimization problems can handled in a very elegant way through this subspace view. 
+An obvious limitation of this approach is that it cannot easily deal with inequality constraints. However, at least the equality-constrained part of polynomial optimization problems can handled in a very elegant way through this subspace view. To some extent, inequalities can be dealt with my introducing slack variables, but this may does not easily scale to many inequalities.
 
 ### Appendix 1: Verification via the Duals {#appendix1}
 
