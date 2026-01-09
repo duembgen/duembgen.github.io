@@ -4,7 +4,7 @@ layout: page
 image: profile-crop.jpg
 ---
 
-I am Assistant Professor in Mechanical Engineering, Carnegie Mellon University, and hold a courtesy appointment with the Robotics Institute. My research interest is to make autonomous robots more capable and trustworthy by exploiting recent advances in optimization and artificial intelligence. Until December 2025, I was a starting researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc at the University of Toronto in the Robotics Institute, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
+I am an Assistant Professor in Mechanical Engineering, Carnegie Mellon University, and hold a courtesy appointment with the Robotics Institute. My research interests are to make autonomous robots more capable and trustworthy by exploiting recent advances in optimization and artificial intelligence. Until December 2025, I was a researcher in the Willow research group at Inria Paris. Until February 2024, I was a postdoc in the Robotics Institute of University of Toronto, working with Timothy D. Barfoot on certifiably optimal state estimation. Before that, I obtained my Ph.D. in the AudioVisual Communications Laboratory (LCAV) at École polytechnique fédérale de Lausanne (EPFL) under the supervision of Martin Vetterli and Adam Scholefield, working on non-visual spatial perception.
 
 [Google Scholar](https://scholar.google.com/citations?hl=en&user=45QAZbUAAAAJ) / [LinkedIn](https://www.linkedin.com/in/duembgen/)
 
@@ -19,7 +19,7 @@ Postdocs: I am always open to interview strong candidates. In particular, if you
 
 *Last update: December 12, 2025.*
 
-**December 2025** I had a blast visiting the LS2N centre in Nantes today; thank you to Clément Moreau for inviting me!
+**December 2025** I had a blast visiting the LS2N centre in Nantes; thank you to Clément Moreau for inviting me!
 
 **October 2025** Super happy that I could visit Toulouse one last time before leaving for the US; this time with my student Louis, and seeing not only the POP team but also the Gepetto team. Thank you to Didier Henrion, Nicolas Mansard, and Ege Gürsoy, for the warm welcome!
 
@@ -27,9 +27,9 @@ Postdocs: I am always open to interview strong candidates. In particular, if you
 
 **June 2025** I was faculty chair for this year's [RSS Pioneers workshop](https://sites.google.com/view/rsspioneers2025/home?authuser=0) in Los Angeles, California. After RSS I am honored to be presenting our latest research at the [CCDC at UC Santa Barbara](https://www.ccdc.ucsb.edu/). 
 
-**May 2025** Visited Georgia Tech after ICRA 2025 in Atlanta and gave a talk in [Lunar lab](https://sites.gatech.edu/lunarlab/). Thank you, Lu Gan, for the the warm welcome! 
+**May 2025** Visited Georgia Tech after ICRA 2025 in Atlanta and gave a talk in [Lunar lab](https://sites.gatech.edu/lunarlab/). Thank you, Lu Gan, for the warm welcome! 
 
-**March 2025** I will be presenting our latest research at the MIT JTL Urban Mobility Lab's [online research seminar series](https://sites.mit.edu/jtl-seminar/).
+**March 2025** I presented our latest research at the MIT JTL Urban Mobility Lab's [online research seminar series](https://sites.mit.edu/jtl-seminar/).
 
 **February 2025** Nice success for Marie Curie postdoctoral fellowships in our centre! The Inria Paris centre secured 3 projects, for Ajay Sathya (Willow), Frederik Kunstner (Sierra), and myself (Willow). This is a great recognition for the research we do here at Inria Paris on optimization, simulation, and robotics.
 
