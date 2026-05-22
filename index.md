@@ -17,16 +17,17 @@ Previously, I was a researcher in the Willow group at Inria Paris (until Decembe
 ### Working with me
 
 #### Undergraduate / Master’s students
-If you’re excited about **optimization for robotics**, I’m happy to hear from you about research projects in **January 2026** or **September 2026**.  
-Please email me with:
-- CV
-- a short research statement (½–1 page)
 
-CMU undergraduate students can also browse the following page:  
-[Undergraduate Experience Projects (CMU internal)](https://www.meche.engineering.cmu.edu/education/undergraduate-education/undergraduate-experience/projects/index.html)
+I am actively recruiting Undergraduate and Master's students!
+Please checkout the ongoing projects on my lab's [website](https://trio-cmu.github.io/trio-website), and if it peaks your interest, send me an e-mail with with your:
+- CV
+- a short research statement (½–1 page), highlighting in particular which topics of my lab you are excited about. 
+
+CMU undergraduate students can also browse the following page for open research projects:
+[Undergraduate Experience Projects (CMU internal)](https://www.meche.engineering.cmu.edu/education/undergraduate-education/undergraduate-experience/projects/index.html).
 
 #### Postdocs
-I’m always open to interviewing strong candidates. In particular, if you would like to apply with the [**CBI Fellowship**](https://carnegiebosch.cmu.edu/fellowships/index.html) (deadline **January 31, 2026**), please get in touch.
+I’m always open to interviewing highly motivated postdoc candidates. In particular, if you would like to apply to the [**CBI Fellowship**](https://carnegiebosch.cmu.edu/fellowships/index.html) (deadline usually in January) or other fellowships, please get in touch.
 
 ---
 
