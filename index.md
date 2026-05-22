@@ -19,7 +19,7 @@ Previously, I was a researcher in the Willow group at Inria Paris (until Decembe
 #### Undergraduate / Master’s students
 
 I am actively recruiting Undergraduate and Master's students!
-Please checkout the ongoing projects on my lab's [website](https://trio-cmu.github.io/trio-website), and if it peaks your interest, send me an e-mail with with your:
+Please checkout the ongoing projects on my lab's [website](https://trio-cmu.github.io/trio-website), and if anything peaks your interest, send me an e-mail with with your:
 - CV
 - a short research statement (½–1 page), highlighting in particular which topics of my lab you are excited about. 
 
