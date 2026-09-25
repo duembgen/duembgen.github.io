@@ -10,7 +10,7 @@ My research focuses on making autonomous robots more capable and trustworthy by 
 
 Previously, I was a researcher in the Willow group at Inria Paris (until December 2025) and a postdoc at the University of Toronto working with Timothy D. Barfoot (until February 2024). I received my Ph.D. from EPFL (LCAV), advised by Martin Vetterli and Adam Scholefield, where I worked on non-visual spatial perception.
 
-**Links:** [Google Scholar](https://scholar.google.com/citations?hl=en&user=45QAZbUAAAAJ) · [LinkedIn](https://www.linkedin.com/in/duembgen/)
+**Links:** [Google Scholar](https://scholar.google.com/citations?user=_ABmvmkAAAAJ&hl=en&oi=ao) · [LinkedIn](https://www.linkedin.com/in/duembgen/)
 
 ---
 
